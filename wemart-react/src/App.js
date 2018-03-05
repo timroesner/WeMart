@@ -9,7 +9,7 @@ class App extends Component {
   }
 
   handleFormSubmit = (model) => {
-    console.log(model)
+    alert(model.firstName+' '+model.lastName+' '+model.email+' '+model.password)
   }
 
   render() {
@@ -26,6 +26,7 @@ class App extends Component {
             <TextField
               floatingLabelText="First Name"
               name="firstName"
+              type="firstName"
               hintText=""
               required
               style={{margin: '4%', marginBottom: '0%', width: '92%'}}
@@ -33,6 +34,7 @@ class App extends Component {
             <TextField
               floatingLabelText="Last Name"
               name="lastName"
+              type="lastName"
               hintText=""
               required
               style={{margin: '4%', marginBottom: '0%', width: '92%'}}
@@ -56,7 +58,7 @@ class App extends Component {
               required
               style={{margin: '4%', marginBottom: '0%', width: '92%'}}
             />
-            <Button snackStyle="primary" style={{margin: '4%', width: '92%'}} > 
+            <Button type="submit" snackStyle="primary" style={{margin: '4%', width: '92%'}} > 
               Submit 
             </Button>
           </Form>
