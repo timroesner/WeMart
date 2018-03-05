@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Form, TextField } from 'ic-snacks';
-import background from './background.png';
+import background from './background.svg';
 
 var AmazonCognitoIdentity = require('amazon-cognito-identity-js');
 
@@ -40,8 +40,14 @@ class SignUp extends Component {
     const formProps = {}
 
     return (
-      <div style={{height: '800px', marginTop: '-160px', backgroundColor: 'red' }} >
-        <div style={{margin: '25%', backgroundColor: '#b8babc', borderRadius: '10px'}} >
+      <div style={{ height: window.innerHeight+'px', overflow: 'auto', margin: '0px', backgroundImage: `url(${background})`, backgroundRepeat: 'repeate-y', backgroundColor: 'red' }} >
+        <div style={{
+          margin: `${0.25*window.innerHeight}px ${0.25*window.innerWidth}px ${0.25*window.innerHeight}px ${0.25*window.innerWidth}px`, 
+          backgroundColor: '#cdcdcd', 
+          borderRadius: '10px',
+          maxHeight: `${0.5*window.innerHeight}px`,
+          maxWidth: `${0.5*window.innerWidth}px`
+          }} >
           <Form
             onSubmit={this.handleFormSubmit}
             serverErrors={this.state.serverErrors}
@@ -53,7 +59,7 @@ class SignUp extends Component {
               type="firstName"
               hintText=""
               required
-              style={{margin: '4%', marginBottom: '0%', width: '92%'}}
+              style={{margin: '4%', marginBottom: '0%', width: '92%', height: '5%'}}
             />
             <TextField
               floatingLabelText="Last Name"
@@ -61,7 +67,7 @@ class SignUp extends Component {
               type="lastName"
               hintText=""
               required
-              style={{margin: '4%', marginBottom: '0%', width: '92%'}}
+              style={{margin: '4%', marginBottom: '0%', width: '92%', height: '5%'}}
             />
             <TextField
               floatingLabelText="Email"
@@ -71,7 +77,7 @@ class SignUp extends Component {
               validations={{isEmail: null, isLength: {min: 3, max: 30}}}
               validationErrorText="Sorry, please enter a valid email."
               required
-              style={{margin: '4%', marginBottom: '0%', width: '92%'}}
+              style={{margin: '4%', marginBottom: '0%', width: '92%', height: '5%'}}
             />
             <TextField
               floatingLabelText="Password"
@@ -80,9 +86,9 @@ class SignUp extends Component {
               validations={{isLength: {min: 8, max: 64}}}
               validationErrorText="Sorry, password must be min. 8 characters."
               required
-              style={{margin: '4%', marginBottom: '0%', width: '92%'}}
+              style={{margin: '4%', marginBottom: '0%', width: '92%', maxHeight: '5%'}}
             />
-            <Button type="submit" snackStyle="primary" style={{margin: '4%', width: '92%'}} > 
+            <Button type="submit" snackStyle="primary" style={{margin: '4%', width: '92%', height: '5%'}} > 
               Submit 
             </Button>
           </Form>
@@ -92,4 +98,4 @@ class SignUp extends Component {
   }
 }
 
-export default App;
+export default SignUp;
