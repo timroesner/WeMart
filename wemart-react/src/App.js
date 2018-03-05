@@ -1,57 +1,68 @@
 import React, { Component } from 'react';
-import { Button, TextField } from 'ic-snacks';
-import logo from './logo.svg';
+import { Button, Form, TextField } from 'ic-snacks';
+import background from './background.png';
 import './App.css';
 
 class App extends Component {
-  render() {
-    return (
-      <div style={{width: '335px', marginLeft: '20%', marginTop: '5%'}}>
-        <div style={{marginBottom: '10px'}}>
-        <TextField
-          style={{marginRight: '5px'}}
-          name="first_name"
-          type="text"
-          floatingLabelText="First Name"
-          halfWidth
-          required
-        />
-        <TextField
-          style={{marginLeft: '5px'}}
-          name="last_name"
-          type="text"
-          floatingLabelText="Last Name"
-          halfWidth
-          required
-        />
-        </div>
-        <div style={{marginBottom: '10px'}}>
-        <TextField
-          name="email"
-          type="email"
-          floatingLabelText="Email"
-          hintText="Enter your email address"
-          validations={{isEmail: null, isLength: {min: 3, max: 15}}}
-          validationErrorText="Please enter a valid email"
-          fullWidth
-          required
-        />
-        </div>
+  state = {
+    serverErrors: null
+  }
 
-      <div>
-        <TextField
-          name="password"
-          type="password"
-          floatingLabelText="Password"
-          hintText="Enter a secure password"
-          validations={{isLength: {min: 6}}}
-          validationErrorText="Password must be at least 6 characters"
-          fullWidth
-          required
-        />
-      </div>
-      </div>
-    );
+  handleFormSubmit = (model) => {
+    console.log(model)
+  }
+
+  render() {
+    const formProps = {}
+
+    return (
+      //<div style={{size: '100%', margin: '0%', backgroundColor: '#b8babc'}}>
+        <div style={{margin: '25%', backgroundColor: '#b8babc', borderRadius: '10px'}} >
+          <Form
+            onSubmit={this.handleFormSubmit}
+            serverErrors={this.state.serverErrors}
+            formProps={formProps}
+          >
+            <TextField
+              floatingLabelText="First Name"
+              name="firstName"
+              hintText=""
+              required
+              style={{margin: '4%', marginBottom: '0%', width: '92%'}}
+            />
+            <TextField
+              floatingLabelText="Last Name"
+              name="lastName"
+              hintText=""
+              required
+              style={{margin: '4%', marginBottom: '0%', width: '92%'}}
+            />
+            <TextField
+              floatingLabelText="Email"
+              name="email"
+              type="email"
+              hintText="jonnyappleseed@example.com"
+              validations={{isEmail: null, isLength: {min: 3, max: 15}}}
+              validationErrorText="Sorry, please enter a valid email."
+              required
+              style={{margin: '4%', marginBottom: '0%', width: '92%'}}
+            />
+            <TextField
+              floatingLabelText="Password"
+              name="password"
+              type="password"
+              validations={{isLength: {min: 8, max: 64}}}
+              validationErrorText="Sorry, password must be min. 8 characters."
+              required
+              style={{margin: '4%', marginBottom: '0%', width: '92%'}}
+            />
+            <Button snackStyle="primary" style={{margin: '4%', width: '92%'}} > 
+              Submit 
+            </Button>
+          </Form>
+        </div>
+      //</div>
+    )
   }
 }
 
