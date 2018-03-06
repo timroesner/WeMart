@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { Button, Form, TextField } from 'ic-snacks';
 import background from './background.svg';
+import './App.css';
+import registerServiceWorker from './registerServiceWorker';
 
 var AmazonCognitoIdentity = require('amazon-cognito-identity-js');
 
-class SignUp extends Component {
+class LogIn extends Component {
   state = {
     serverErrors: null
   }
@@ -37,65 +39,71 @@ class SignUp extends Component {
   }
 
   render() {
-    const formProps = {}
+    const txtStyle = {
+      margin: '6%', 
+      marginBottom: '0%', 
+      width: '88%'
+    }
 
     return (
-      <div style={{ height: window.innerHeight+'px', overflow: 'auto', margin: '0px', backgroundImage: `url(${background})`, backgroundRepeat: 'repeate-y', backgroundColor: 'red' }} >
+      <div style={{ 
+        height: window.innerHeight+'px', 
+        overflow: 'auto',  
+        backgroundImage: `url(${background})`, 
+        backgroundRepeat: 'repeate', 
+        backgroundColor: 'red', 
+        display: 'flex', 
+        alignItems: 'center' 
+      }} >
+
         <div style={{
-          margin: `${0.25*window.innerHeight}px ${0.25*window.innerWidth}px ${0.25*window.innerHeight}px ${0.25*window.innerWidth}px`, 
-          backgroundColor: '#cdcdcd', 
-          borderRadius: '10px',
-          maxHeight: `${0.5*window.innerHeight}px`,
-          maxWidth: `${0.5*window.innerWidth}px`
-          }} >
+          margin: 'auto',
+          backgroundColor: 'white', 
+          borderRadius: '15px',
+          maxWidth: `${0.5*window.innerWidth}px`,
+          minWidth: '250px'
+        }} >
+
           <Form
             onSubmit={this.handleFormSubmit}
             serverErrors={this.state.serverErrors}
-            formProps={formProps}
+            formProps={{}}
           >
-            <TextField
-              floatingLabelText="First Name"
-              name="firstName"
-              type="firstName"
-              hintText=""
-              required
-              style={{margin: '4%', marginBottom: '0%', width: '92%', height: '5%'}}
-            />
-            <TextField
-              floatingLabelText="Last Name"
-              name="lastName"
-              type="lastName"
-              hintText=""
-              required
-              style={{margin: '4%', marginBottom: '0%', width: '92%', height: '5%'}}
-            />
             <TextField
               floatingLabelText="Email"
               name="email"
               type="email"
-              hintText="jonnyappleseed@example.com"
+              hintText="johnappleseed@me.com"
               validations={{isEmail: null, isLength: {min: 3, max: 30}}}
               validationErrorText="Sorry, please enter a valid email."
               required
-              style={{margin: '4%', marginBottom: '0%', width: '92%', height: '5%'}}
+              style={txtStyle}
             />
             <TextField
               floatingLabelText="Password"
               name="password"
               type="password"
+              hintText="min. 8 characters"
               validations={{isLength: {min: 8, max: 64}}}
               validationErrorText="Sorry, password must be min. 8 characters."
               required
-              style={{margin: '4%', marginBottom: '0%', width: '92%', maxHeight: '5%'}}
+              style={txtStyle}
             />
-            <Button type="submit" snackStyle="primary" style={{margin: '4%', width: '92%', height: '5%'}} > 
-              Submit 
-            </Button>
+            <button class="primary" type="submit" style={{margin: '6% 15% 3% 15%', width: '70%', height:'2.2em'}} > 
+              Log In 
+            </button>
           </Form>
+          <p style={{
+              fontSize: '0.7em',
+              textAlign: 'center',
+              width: '100%',
+              color: '#696969',
+            }}> Already have an Account? <a href="#">Log In</a></p>
         </div>
       </div>
     )
   }
 }
 
-export default SignUp;
+ReactDOM.render(<LogIn />, document.getElementById('login'));
+registerServiceWorker();
