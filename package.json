@@ -4,7 +4,9 @@
   "private": true,
   "dependencies": {
     "amazon-cognito-identity-js": "^2.0.1",
+    "aws-sdk": "^2.207.0",
     "ic-snacks": "0.0.70",
+    "prop-types": "^15.6.1",
     "radium": "^0.22.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
