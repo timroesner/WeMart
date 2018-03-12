@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Form, TextField } from 'ic-snacks';
-import background from './background.svg';
+import background from './images/background.svg';
 import './App.css';
 import registerServiceWorker from './registerServiceWorker';
 
