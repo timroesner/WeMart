@@ -83,6 +83,11 @@
     margin: .5rem 2.5rem;
 }
 
+.itemCard__button-bar__add-to-cart{
+    width: 100%;
+    display: inherit;
+}
+
 .itemCard__loading-box{
     max-height: 1.8rem;
 }

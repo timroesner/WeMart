@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ItemCard from "./ItemCard";
-import './ItemsGrid.css';
+import '../stylesheets/ItemsGrid.css';
 
 export default class ItemsGrid extends React.Component{
     renderItems(){
         if(this.props.items.length === 0) {
-            let empty = Array.apply(null,Array(25).map(() => {}));
-            // Add loading boxes here
+            // Make an empty array of specified size to show the loading elements
+            let empty = Array.apply(null,Array(this.props.size).map(() => {}));
             return (
                 empty.map(() => <li className="itemsGrid__itemsCard">
                     <ItemCard />
@@ -16,7 +16,7 @@ export default class ItemsGrid extends React.Component{
         } else{
             return this.props.items.map((item) => <li className="itemsGrid__itemsCard">
                 <ItemCard
-                    key={item.itemid} name={item.name} image={item.image} price={item.price}
+                    itemID={item.itemid} name={item.name} image={item.image} price={item.price}
                     weight={item.quantity} salePrice={item.sale} departmentid={item.departmentid}/>
             </li>);
         }
@@ -31,6 +31,11 @@ export default class ItemsGrid extends React.Component{
     }
 }
 
+ItemsGrid.defaultProps = {
+    size: 5
+};
+
 ItemsGrid.propTypes = {
-  items: PropTypes.array.isRequired
+  items: PropTypes.array.isRequired,
+    size: PropTypes.number
 };
