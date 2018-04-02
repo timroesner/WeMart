@@ -5,6 +5,7 @@ import './App.css';
 import registerServiceWorker from './registerServiceWorker';
 
 var AmazonCognitoIdentity = require('amazon-cognito-identity-js');
+var AWS = require('aws-sdk')
 
 class LogIn extends Component {
   state = {
@@ -13,27 +14,40 @@ class LogIn extends Component {
 
   handleFormSubmit = (model) => {
 
+    var authenticationData = {
+        Username : model.email,
+        Password : model.password,
+    };
+    var authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails(authenticationData);
     var poolData = {
         UserPoolId : 'us-west-2_e6QP6fklc',
         ClientId : '2eoha404fgulrmtqc0ac4pmde5'
     };
     var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
-
-    var attributeList = [];
-
-    var dataEmail = {
-        Name : 'email',
-        Value : model.email
+    var userData = {
+        Username : model.email,
+        Pool : userPool
     };
-    var attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(dataEmail);
-    attributeList.push(attributeEmail);
 
-    userPool.signUp(model.email, model.password, attributeList, null, function(err, result){
-        if (err) {
-            alert(err);
-            return;
-        }
-        // redirect to page to enter verification code
+    // Necessary becuase the closure has no access to this.props
+    let nestedProp = this.props;
+
+    var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
+    cognitoUser.authenticateUser(authenticationDetails, {
+        onSuccess: function (result) {
+            console.log('access token + ' + result.getAccessToken().getJwtToken());
+
+            // Should be home page which then checks if user is logged in
+            nestedProp.history.push({
+              pathname: '/',
+              state: { user: cognitoUser }
+            })
+        },
+
+        onFailure: function(err) {
+            alert(err.message);
+        },
+
     });
   }
 
