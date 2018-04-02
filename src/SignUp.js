@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Button, Form, TextField } from 'ic-snacks';
 import background from './images/background.svg';
 import './App.css';
+import { withRouter } from "react-router-dom";
 
 var AmazonCognitoIdentity = require('amazon-cognito-identity-js');
 
@@ -11,7 +12,6 @@ class SignUp extends Component {
   }
 
   handleFormSubmit = (model) => {
-    //alert(model.firstName+' '+model.lastName+' '+model.email+' '+model.password)
 
     var poolData = {
         UserPoolId : 'us-west-2_e6QP6fklc',
@@ -28,12 +28,19 @@ class SignUp extends Component {
     var attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(dataEmail);
     attributeList.push(attributeEmail);
 
-    userPool.signUp(model.email, model.password, attributeList, null, function(err, result){
+    // Necessary becuase the closure has no access to this.props
+    let nestedProp = this.props;
+
+    userPool.signUp(model.email, model.password, attributeList, null, function(err, result) {
         if (err) {
-            alert(err);
+            alert(err.message);
             return;
         }
-        // redirect to page to enter verification code
+
+        nestedProp.history.push({
+          pathname: '/confirm',
+          search: '?email='+model.email
+        })
     });
   }
 
@@ -120,4 +127,4 @@ class SignUp extends Component {
   }
 }
 
-export default SignUp;
+export default withRouter(SignUp);

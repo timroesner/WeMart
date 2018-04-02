@@ -12,7 +12,6 @@ class LogIn extends Component {
   }
 
   handleFormSubmit = (model) => {
-    //alert(model.firstName+' '+model.lastName+' '+model.email+' '+model.password)
 
     var poolData = {
         UserPoolId : 'us-west-2_e6QP6fklc',
@@ -98,12 +97,11 @@ class LogIn extends Component {
               textAlign: 'center',
               width: '100%',
               color: '#696969',
-            }}> Already have an Account? <a href="#">Log In</a></p>
+            }}> Don't have an Account? <a href="/signup">Sign Up</a></p>
         </div>
       </div>
     )
   }
 }
 
-ReactDOM.render(<LogIn />, document.getElementById('login'));
-registerServiceWorker();
+export default LogIn;
