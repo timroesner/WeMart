@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import HorizontalScroll from './HorizontalScroll';
+import Header from './header';
+import { withRouter } from "react-router-dom";
 import '../stylesheets/home.css';
 
 class Home extends Component {
@@ -63,13 +65,16 @@ class Home extends Component {
 
   render() {
     return (
-      <div className="container">
-        <HorizontalScroll items={this.state.savingsItems} title="Browse by Department"/>
-        <HorizontalScroll items={this.state.savingsItems} title="History"/>
-        <HorizontalScroll items={this.state.savingsItems} title="Savings"/>
+      <div>
+        <Header />
+        <div className="container">
+          <HorizontalScroll items={this.state.savingsItems} title="Browse by Department"/>
+          <HorizontalScroll items={this.state.savingsItems} title="History"/>
+          <HorizontalScroll items={this.state.savingsItems} title="Savings"/>
+      </div>
       </div>
     );
   }
 }
 
-export default Home;
+export default withRouter(Home);

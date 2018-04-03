@@ -23,25 +23,25 @@ class ZipCodeCheck extends Component {
 
   render() {
     const txtStyle = {
-      margin: '6%', 
-      marginBottom: '0%', 
+      margin: '6%',
+      marginBottom: '0%',
       width: '88%'
     }
 
     return (
-      <div style={{ 
-        height: window.innerHeight+'px', 
-        overflow: 'auto',  
-        backgroundImage: `url(${background})`, 
-        backgroundRepeat: 'repeate', 
-        backgroundColor: 'red', 
-        display: 'flex', 
-        alignItems: 'center' 
+      <div style={{
+        height: window.innerHeight+'px',
+        overflow: 'auto',
+        backgroundImage: `url(${background})`,
+        backgroundRepeat: 'repeate',
+        backgroundColor: 'red',
+        display: 'flex',
+        alignItems: 'center'
       }} >
 
         <div style={{
           margin: 'auto',
-          backgroundColor: 'white', 
+          backgroundColor: 'white',
           borderRadius: '15px',
           maxWidth: `${0.5*window.innerWidth}px`,
           minWidth: '250px'
@@ -62,8 +62,8 @@ class ZipCodeCheck extends Component {
               required
               style={txtStyle}
             />
-            <button class="primary" type="submit" style={{margin: '6% 15% 3% 15%', width: '70%', height:'2.2em'}} > 
-              Submit 
+            <button class="primary" type="submit" style={{margin: '6% 15% 3% 15%', width: '70%', height:'2.2em'}} >
+              Submit
             </button>
           </Form>
           <p style={{
@@ -71,7 +71,7 @@ class ZipCodeCheck extends Component {
               textAlign: 'center',
               width: '100%',
               color: '#696969',
-          }}> 
+          }}>
             Already have an Account? <a href="/login">Log In</a>
           </p>
         </div>
