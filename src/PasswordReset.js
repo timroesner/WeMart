@@ -6,7 +6,7 @@ import { withRouter } from "react-router-dom";
 
 var AmazonCognitoIdentity = require('amazon-cognito-identity-js');
 
-class SignUp extends Component {
+class PasswordReset extends Component {
   state = {
     serverErrors: null
   }
@@ -103,4 +103,4 @@ class SignUp extends Component {
   }
 }
 
-export default withRouter(SignUp);
+export default withRouter(PasswordReset);

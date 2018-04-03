@@ -3,6 +3,7 @@ import { Button, Form, TextField } from 'ic-snacks';
 import background from './images/background.svg';
 import './App.css';
 import registerServiceWorker from './registerServiceWorker';
+import { withRouter } from "react-router-dom";
 
 var AmazonCognitoIdentity = require('amazon-cognito-identity-js');
 var email = ""
@@ -127,4 +128,4 @@ class Confirm extends Component {
   }
 }
 
-export default Confirm;
+export default withRouter(Confirm);

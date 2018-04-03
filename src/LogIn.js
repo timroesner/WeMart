@@ -3,6 +3,7 @@ import { Button, Form, TextField } from 'ic-snacks';
 import background from './images/background.svg';
 import './App.css';
 import registerServiceWorker from './registerServiceWorker';
+import { withRouter } from "react-router-dom";
 
 var AmazonCognitoIdentity = require('amazon-cognito-identity-js');
 var AWS = require('aws-sdk')
@@ -162,4 +163,4 @@ class LogIn extends Component {
   }
 }
 
-export default LogIn;
+export default withRouter(LogIn);
