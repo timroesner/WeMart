@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import HorizontalScroll from './HorizontalScroll';
 import Header from './header';
 import { withRouter } from "react-router-dom";
-import '../stylesheets/home.css';
 
 class Home extends Component {
   constructor(props) {
