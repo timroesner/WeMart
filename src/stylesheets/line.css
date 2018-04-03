@@ -1,0 +1,26 @@
+.line{
+    font-size: 1.4rem;
+    line-height: 2.1rem;
+    padding-right: 3rem;
+    padding-left: 3rem;
+    padding-bottom: 1rem;
+}
+.line_title{
+    width: 23.33333%;
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    padding: 0 1.5rem 0 1.5rem;
+}
+.line_value{
+    width: 50%;
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    padding: 0 1.5rem 0 1.5rem;
+}
+.line_change{
+    width: 10%;
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    padding: 0 1.5rem 0 1.5rem;
+    text-align: right;
+}

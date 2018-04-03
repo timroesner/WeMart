@@ -20,3 +20,8 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# aws secret keys
+src/db\.js
+
+src/Tester\.js

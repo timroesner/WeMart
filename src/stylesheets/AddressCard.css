@@ -1,0 +1,21 @@
+.addressCard{
+    border: .1rem solid #E5EDEC;
+    font-size: 1.6rem;
+    padding: 1.5rem;
+    cursor: pointer;
+}
+.addressCard:hover{
+    border: .1rem solid #ed7689;
+    background-color: #fff8f9;
+}
+.addressCard__address-label{
+    font-weight: 600;
+    width: 30rem;
+    display: inline-block;
+    padding-right: .8rem;
+}
+.addressCard__addressIcon{
+    display: inline-block;
+    padding-right: 6px;
+    vertical-align: top;
+}

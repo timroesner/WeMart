@@ -10,7 +10,7 @@ let spanStyle = {
     display: "inline-flex"
 };
 
-export default class QuantityButton extends React.Component{
+export default class Counter extends React.Component{
 
     render(){
         return(<div>
@@ -29,7 +29,7 @@ export default class QuantityButton extends React.Component{
     }
 }
 
-QuantityButton.propTypes = {
+Counter.propTypes = {
   quantity: PropTypes.number.isRequired,
     onIncrease: PropTypes.func,
     onDecrease: PropTypes.func,

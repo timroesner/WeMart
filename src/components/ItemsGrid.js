@@ -10,7 +10,7 @@ export default class ItemsGrid extends React.Component{
             let empty = Array.apply(null,Array(this.props.size).map(() => {}));
             return (
                 empty.map(() => <li className="itemsGrid__itemsCard">
-                    <ItemCard />
+                    <ItemCard/>
                 </li>)
             );
         } else{

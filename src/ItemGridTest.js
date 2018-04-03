@@ -1,5 +1,5 @@
 import React from 'react';
-import ItemsGrid from "./ItemsGrid";
+import ItemsGrid from "./components/ItemsGrid";
 import {db} from './db';
 
 export default class ItemGridTest extends React.Component{
@@ -43,8 +43,8 @@ export default class ItemGridTest extends React.Component{
 
     render(){
         return (
-            <div>
-                <ItemsGrid items={this.state.items}/>
+            <div id="root">
+                <ItemsGrid items={this.state.items} size={20}/>
             </div>
         );
     }
