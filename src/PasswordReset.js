@@ -6,41 +6,41 @@ import { withRouter } from "react-router-dom";
 
 var AmazonCognitoIdentity = require('amazon-cognito-identity-js');
 
-class SignUp extends Component {
+class PasswordReset extends Component {
   state = {
     serverErrors: null
   }
 
   handleFormSubmit = (model) => {
 
+    const queryParams = new URLSearchParams(this.props.location.search);
+    let email = queryParams.get('email')
+
     var poolData = {
         UserPoolId : 'us-west-2_e6QP6fklc',
         ClientId : '2eoha404fgulrmtqc0ac4pmde5'
     };
     var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
-
-    var attributeList = [];
-
-    var dataEmail = {
-        Name : 'email',
-        Value : model.email
+    var userData = {
+        Username : email,
+        Pool : userPool
     };
-    var attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(dataEmail);
-    attributeList.push(attributeEmail);
+    var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
 
     // Necessary becuase the closure has no access to this.props
     let nestedProp = this.props;
 
-    userPool.signUp(model.email, model.password, attributeList, null, function(err, result) {
-        if (err) {
-            alert(err.message);
-            return;
-        }
+    cognitoUser.confirmPassword(model.verificationCode, model.password, {
+      onSuccess() {
+          alert('Password confirmed!');
 
-        nestedProp.history.push({
-          pathname: '/confirm',
-          search: '?email='+model.email
-        })
+          nestedProp.history.push({
+            pathname: '/login'
+          })
+      },
+      onFailure(err) {
+          alert('Password not confirmed! '+err.message);
+      }
     });
   }
 
@@ -76,33 +76,15 @@ class SignUp extends Component {
             formProps={{}}
           >
             <TextField
-              floatingLabelText="First Name"
-              name="firstName"
-              type="firstName"
+              floatingLabelText="Verification Code"
+              name="verificationCode"
+              type="verificationCode"
               hintText=""
               required
               style={txtStyle}
             />
             <TextField
-              floatingLabelText="Last Name"
-              name="lastName"
-              type="lastName"
-              hintText=""
-              required
-              style={txtStyle}
-            />
-            <TextField
-              floatingLabelText="Email"
-              name="email"
-              type="email"
-              hintText="johnappleseed@me.com"
-              validations={{isEmail: null, isLength: {min: 3, max: 30}}}
-              validationErrorText="Sorry, please enter a valid email."
-              required
-              style={txtStyle}
-            />
-            <TextField
-              floatingLabelText="Password"
+              floatingLabelText="New Password"
               name="password"
               type="password"
               hintText="min. 8 characters"
@@ -112,19 +94,13 @@ class SignUp extends Component {
               style={txtStyle}
             />
             <button class="primary" type="submit" style={{margin: '6% 15% 3% 15%', width: '70%', height:'2.2em'}} > 
-              Sign Up 
+              Reset Password 
             </button>
           </Form>
-          <p style={{
-              fontSize: '0.7em',
-              textAlign: 'center',
-              width: '100%',
-              color: '#696969',
-            }}> Already have an Account? <a href="/login">Log In</a></p>
-        </div>
       </div>
+    </div>
     )
   }
 }
 
-export default withRouter(SignUp);
+export default withRouter(PasswordReset);

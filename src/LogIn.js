@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { Button, Form, TextField } from 'ic-snacks';
-import background from './background.svg';
+import background from './images/background.svg';
 import './App.css';
 import registerServiceWorker from './registerServiceWorker';
+import { withRouter } from "react-router-dom";
 
 var AmazonCognitoIdentity = require('amazon-cognito-identity-js');
+var AWS = require('aws-sdk')
 
 class LogIn extends Component {
   state = {
@@ -12,29 +14,82 @@ class LogIn extends Component {
   }
 
   handleFormSubmit = (model) => {
-    //alert(model.firstName+' '+model.lastName+' '+model.email+' '+model.password)
+
+    var authenticationData = {
+        Username : model.email,
+        Password : model.password,
+    };
+    var authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails(authenticationData);
+    var poolData = {
+        UserPoolId : 'us-west-2_e6QP6fklc',
+        ClientId : '2eoha404fgulrmtqc0ac4pmde5'
+    };
+    var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+    var userData = {
+        Username : model.email,
+        Pool : userPool
+    };
+
+    // Necessary becuase the closure has no access to this.props
+    let nestedProp = this.props;
+
+    var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
+    cognitoUser.authenticateUser(authenticationDetails, {
+        onSuccess: function (result) {
+            console.log('access token + ' + result.getAccessToken().getJwtToken());
+
+            // Should be home page which then checks if user is logged in
+            nestedProp.history.push({
+              pathname: '/',
+              state: { user: cognitoUser }
+            })
+        },
+
+        onFailure: function(err) {
+            alert(err.message);
+        },
+
+    });
+  }
+
+  handlePasswordReset = (e) => {
+    e.preventDefault();
+
+    var email = prompt('Please enter your email ','');
+
+    if (email == null) {
+      return
+    }
 
     var poolData = {
         UserPoolId : 'us-west-2_e6QP6fklc',
         ClientId : '2eoha404fgulrmtqc0ac4pmde5'
     };
     var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
-
-    var attributeList = [];
-
-    var dataEmail = {
-        Name : 'email',
-        Value : model.email
+    var userData = {
+        Username : email,
+        Pool : userPool
     };
-    var attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(dataEmail);
-    attributeList.push(attributeEmail);
 
-    userPool.signUp(model.email, model.password, attributeList, null, function(err, result){
-        if (err) {
-            alert(err);
-            return;
+    // Necessary becuase the closure has no access to this.props
+    let nestedProp = this.props;
+
+    var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
+
+    cognitoUser.forgotPassword({
+        onSuccess: function (data) {
+            // successfully initiated reset password request
+            console.log('CodeDeliveryData from forgotPassword: ' + data);
+
+            nestedProp.history.push ({
+              pathname: '/passwordreset',
+              search: '?email='+email
+            })
+        },
+
+        onFailure: function(err) {
+            alert(err.message);
         }
-        // redirect to page to enter verification code
     });
   }
 
@@ -98,12 +153,14 @@ class LogIn extends Component {
               textAlign: 'center',
               width: '100%',
               color: '#696969',
-            }}> Already have an Account? <a href="#">Log In</a></p>
+            }}> 
+            Don't have an Account? <a href="/signup">Sign Up</a> <br /><br />
+            Forgot your password? <a href="#" onClick={this.handlePasswordReset}>Reset It</a>
+            </p>
         </div>
       </div>
     )
   }
 }
 
-ReactDOM.render(<LogIn />, document.getElementById('login'));
-registerServiceWorker();
+export default withRouter(LogIn);
