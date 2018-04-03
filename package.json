@@ -4,10 +4,14 @@
   "private": true,
   "dependencies": {
     "aws-sdk": "^2.218.1",
+    "amazon-cognito-identity-js": "^2.0.1",
+    "aws-amplify": "^0.2.14",
     "ic-snacks": "0.0.70",
     "radium": "^0.22.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
+    "react-router": "^4.2.0",
+    "react-router-dom": "^4.2.2",
     "react-scripts": "1.1.1",
     "react-transition-group": "^2.2.1"
   },
