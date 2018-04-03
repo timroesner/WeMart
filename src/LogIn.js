@@ -51,6 +51,47 @@ class LogIn extends Component {
     });
   }
 
+  handlePasswordReset = (e) => {
+    e.preventDefault();
+
+    var email = prompt('Please enter your email ','');
+
+    if (email == null) {
+      return
+    }
+
+    var poolData = {
+        UserPoolId : 'us-west-2_e6QP6fklc',
+        ClientId : '2eoha404fgulrmtqc0ac4pmde5'
+    };
+    var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+    var userData = {
+        Username : email,
+        Pool : userPool
+    };
+
+    // Necessary becuase the closure has no access to this.props
+    let nestedProp = this.props;
+
+    var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
+
+    cognitoUser.forgotPassword({
+        onSuccess: function (data) {
+            // successfully initiated reset password request
+            console.log('CodeDeliveryData from forgotPassword: ' + data);
+
+            nestedProp.history.push ({
+              pathname: '/passwordreset',
+              search: '?email='+email
+            })
+        },
+
+        onFailure: function(err) {
+            alert(err.message);
+        }
+    });
+  }
+
   render() {
     const txtStyle = {
       margin: '6%', 
@@ -111,7 +152,10 @@ class LogIn extends Component {
               textAlign: 'center',
               width: '100%',
               color: '#696969',
-            }}> Don't have an Account? <a href="/signup">Sign Up</a></p>
+            }}> 
+            Don't have an Account? <a href="/signup">Sign Up</a> <br /><br />
+            Forgot your password? <a href="#" onClick={this.handlePasswordReset}>Reset It</a>
+            </p>
         </div>
       </div>
     )
