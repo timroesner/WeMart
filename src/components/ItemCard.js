@@ -5,15 +5,15 @@ import {StyleRoot} from "radium";
 import Counter from "./Counter";
 import onSaleBadge from '../images/onSaleBadge.png';
 
-// Style for the add to cart button
-let addToCart = {
-width: "100%", display: "inherit"
-};
+//STYLES
+//Add To cart button Style
+const addToCart = {width: "100%", display: "inherit"};
 //Item Card Styles
 const itemCard = {background:'#ffffff', width:'20.8rem', height:'35.2rem'};
-const itemCard_cardContents = {cursor:'pointer', margin};
-const itemCard_badge = {position: 'absolute', top: '.8rem', left: '.8rem', height: '2rem', width:'10rem', zIndex: '1'};
-const itemCard_badge_onSale = {itemCard_badge,background: `url(${onSaleBadge})`, backgroundSize: 'auto 2rem'};
+const itemCard_cardContents = {cursor:'pointer', margin:'0 auto 1rem auto',maxWidth:'15.8rem',display:'block'};
+const itemCard_badge = {position: 'absolute', top: '.8rem', left: '.8rem', height: '2rem', width:'10rem', zIndex: '1',
+backgroundRepeat:'no-repeat'};
+const itemCard_badge_onSale = {...itemCard_badge,  backgroundImage: `url(${onSaleBadge})`, backgroundSize: 'auto 2rem'};
 const itemCard_media = {margin: '0 auto'};
 const itemCard_media_image = {margin:'0 auto 01rem auto', display:'block', maxHeight:'15.5rem', maxWidth: '15.5rem', paddingTop:'1rem'};
 const itemCard_itemInfo = {padding: '.5rem 0 0',fontSize:'1.3rem'};
@@ -47,7 +47,7 @@ export default class ItemCard extends React.Component{
                 </div>
             );
         } else {
-            return <span style={itemCard_price_sale}>${this.props.price}</span>;
+            return <span style={itemCard_price}>${this.props.price}</span>;
         }
     }
 
