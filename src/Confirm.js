@@ -6,7 +6,7 @@ import registerServiceWorker from './registerServiceWorker';
 import { withRouter } from "react-router-dom";
 
 var AmazonCognitoIdentity = require('amazon-cognito-identity-js');
-var email = ""
+var email
 var cognitoUser
 
 class Confirm extends Component {
@@ -18,8 +18,8 @@ class Confirm extends Component {
     email = queryParams.get('email')
 
     var poolData = {
-        UserPoolId : 'us-west-2_e6QP6fklc',
-        ClientId : '2eoha404fgulrmtqc0ac4pmde5'
+        UserPoolId : process.env.Auth_UserPoolId,
+        ClientId : process.env.Auth_ClientId
     };
     var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
 
