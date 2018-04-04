@@ -39,10 +39,9 @@ class LogIn extends Component {
             console.log('access token + ' + result.getAccessToken().getJwtToken());
 
             // Should be home page which then checks if user is logged in
-            nestedProp.history.push({
-              pathname: '/',
-              state: { user: cognitoUser }
-            })
+            console.log(nestedProp);
+            console.log(cognitoUser.pool);
+            nestedProp.history.push('/accountsettings',);
         },
 
         onFailure: function(err) {
@@ -92,6 +91,14 @@ class LogIn extends Component {
         }
     });
   }
+
+  navigateToHome = () => {
+      console.log("Log in succesful");
+      console.log(this.props);
+      this.props.history.push({
+          pathname: '/accountsettings',
+      })
+  };
 
   render() {
     const txtStyle = {
