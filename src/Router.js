@@ -9,6 +9,7 @@ import Confirm from './Confirm'
 import PasswordReset from './PasswordReset'
 import ZipCodeCheck from './ZipCodeCheck'
 import Home from './components/Home'
+import Item from './Item'
 
 const Router = () => (
   <main>
@@ -18,6 +19,7 @@ const Router = () => (
       <Route path='/confirm' component={Confirm}/>
       <Route path='/passwordreset' component={PasswordReset}/>
       <Route path='/home' component={Home} />
+      <Route path='/item' component={Item} />
       <Route path='/' component={ZipCodeCheck}/>
     </Switch>
   </main>
