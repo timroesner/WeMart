@@ -78,6 +78,7 @@ handleZipClick = () => {
 
 	const searchBtn = {
 		position: 'absolute',
+		backgroundColor: 'red',
 	  top: '0',
 	  right: '0',
 	  zIndex: '2',
@@ -112,44 +113,72 @@ handleZipClick = () => {
   const isMobile = width <= 500;
   if (isMobile) {
     return (
-      <div className="container" style={{backgroundColor: '#F5F5F5'}}>
-				<div className="row">
-					<div className="container-fluid" style={center} >
-							<div style={{paddingLeft: '0'}} className="col-xs-2">
-								<button onClick={this.handleAccountClick} className="btn btn-danger btn-sm"><i className="far fa-user" /></button>
-							</div>
-							<div className="col-xs-8" style={{textAlign: 'center', color: '#E6003D'}}>
-								<h3>WeMart</h3>
-							</div>
-							<div style={{paddingRight: '0'}} className="col-xs-2">
-								<button onClick={this.showCart} style={{float: 'right'}} className="btn btn-danger btn-sm"><i className="fas fa-shopping-cart" /></button>
-							</div>
-						</div>
-					</div>
-				<div className="row">
-					<div className="container-fluid">
-						<div className="form-group"  style={{position: 'relative', margin: '15px 0'}}>
-							<form className="form-inline form-horizontal" onSubmit={this.handleSearch} >
-									<input name="search" value={this.state.value} onChange={this.handleSearchChange} type="text" placeholder="Search" className="form-control" style={{width: '100%'}}/>
-									<button type="submit" className="btn btn-danger btn-sm" style={searchBtn}><i className="fas fa-search" /></button>
-								</form>
-						</div>
-					</div>
+    <div className="container" style={{backgroundColor: '#F5F5F5'}}>
+
+		<div className="row">
+			<div className="container-fluid" style={center} >
+
+				<div style={{paddingLeft: '0'}} className="col-xs-2">
+					<button onClick={this.handleAccountClick} className="btn btn-danger btn-sm" style={{backgroundColor: 'red'}} >
+						<i className="far fa-user" />
+					</button>
 				</div>
-				<div className="row">
-						<div className="container">
-							<ul className="nav nav-tabs" style={mobileNav}>
-									<li style={mobileNavItems}><a style={links} href="#"><button style={astext}><i className="fas fa-th-large"></i><br /><span>Departments</span></button></a></li>
-									<li style={mobileNavItems}><a style={links} href="#"><button style={astext}><i className="fas fa-tag"></i><br /><span>Savings</span></button></a></li>
-									<li style={mobileNavItems}><a style={links} href="#"><button style={astext}><i className="fas fa-history"></i><br /><span>History</span></button></a></li>
-							</ul>
-						</div>
+
+				<div className="col-xs-8" style={{textAlign: 'center', color: '#E6003D'}}>
+					<h3>WeMart</h3>
+				</div>
+
+				<div style={{paddingRight: '0'}} className="col-xs-2">
+					<button onClick={this.showCart} style={{float: 'right', backgroundColor: 'red'}} className="btn btn-danger btn-sm">
+						<i className="fas fa-shopping-cart" />
+					</button>
+				</div>
+
+			</div>
+		</div>
+
+		<div className="row">
+			<div className="container-fluid">
+				<div className="form-group"  style={{position: 'relative', margin: '15px 0'}}>
+					<form className="form-inline form-horizontal" onSubmit={this.handleSearch} >
+						<input name="search" value={this.state.value} onChange={this.handleSearchChange} type="text" placeholder="Search" className="form-control" style={{width: '100%'}}/>
+						<button type="submit" className="btn btn-danger btn-sm" style={searchBtn}><i className="fas fa-search" /></button>
+					</form>
 				</div>
 			</div>
+		</div>
+
+		<div className="row">
+				<div className="container">
+					<ul className="nav nav-tabs" style={mobileNav}>
+							<li style={mobileNavItems}><a style={links} href="#">
+								<button style={astext}><i className="fas fa-th-large" /><br />
+									<span>Aisles</span>
+								</button></a>
+							</li>
+
+							<li style={mobileNavItems}> <a style={links} href="#">
+								<button style={astext}><i className="fas fa-tag" /><br />
+									<span>Savings</span>
+								</button></a>
+							</li>
+
+							<li style={mobileNavItems}><a style={links} href="#">
+								<button style={astext}><i className="fas fa-history" /><br />
+									<span>History</span>
+								</button></a>
+							</li>
+					</ul>
+				</div>
+		</div>
+
+	</div>
     );
   } else {
     return (
-	<nav className="navbar navbar-light" style={{backgroundColor: '#F5F5F5'}}>
+    <div style={{paddingBottom: '115px'}}>
+	<nav className="navbar navbar-light" style={{width: '100%', backgroundColor: '#F5F5F5', position: 'fixed', zIndex:'10', marginBottom: '115px'}}>
+
 		<div className="container-fluid" style={center}>
 			<div className="navbar-header" style={{width: '15%', paddingTop: '3px'}}>
     			<a className="navbar-brand" style={center} href="/">
@@ -196,6 +225,7 @@ handleZipClick = () => {
 			<li role="navigation" style={pillsLi}><button className="primaryRedWithHover" style={astext}>History</button></li>
 	    </ul>
 	</nav>
+	</div>
 	);
 	}
   	}

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import HorizontalScroll from './HorizontalScroll';
 import Header from './header';
+import Footer from './Footer';
 import { withRouter } from "react-router-dom";
 
 class Home extends Component {
@@ -71,6 +72,7 @@ class Home extends Component {
           <HorizontalScroll items={this.state.savingsItems} title="History"/>
           <HorizontalScroll items={this.state.savingsItems} title="Savings"/>
       </div>
+      <Footer />
       </div>
     );
   }
