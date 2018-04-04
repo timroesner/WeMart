@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import logo from '../images/logo.svg'
+import { withRouter } from "react-router-dom";
 
 class Header extends Component {
 	constructor() {
@@ -45,6 +47,10 @@ handleAccountClick = () => {
 	console.log("account button clicked");
 }
 
+handleZipClick = () => {
+	this.props.history.push('/')
+}
+
 
   render() {
   const  {width}  = this.state;
@@ -57,12 +63,17 @@ handleAccountClick = () => {
 	    background:'none',
 	    border:'none',
 	    margin:'0',
-	    padding:'0'
+	    padding:'0',
+	    marginTop: '14px',
+	    fontSize: '1.25em',
+		textAlign: 'center',
 	}
 
 	const pillsLi = {
-		margin: 'auto 15px',
-	  fontSize: '1em'
+		margin: 'auto 44px',
+	    fontSize: '1em',
+	    marginBottom: '8px',
+	    textAlign: 'center'
 	}
 
 	const searchBtn = {
@@ -93,8 +104,8 @@ handleAccountClick = () => {
 	}
 
 	const links = {
-		color: '#E6003D',
-	  fontSize: '1.25em',
+		color: 'red',
+	    fontSize: '1.25em',
 		textAlign: 'center'
 	}
 
@@ -138,31 +149,55 @@ handleAccountClick = () => {
     );
   } else {
     return (
-					<nav className="navbar navbar-light" style={{backgroundColor: '#F5F5F5'}}>
-						<div className="container-fluid" style={center}>
-                <div className="navbar-header" style={{width: '15%', paddingTop: '3px'}}>
-                    <a className="navbar-brand" style={center} href="/"><h3 style={links}>WeMart</h3></a>
-                </div>
-								<ul className="nav navbar-nav" style={{width: '55%'}} >
-										<form className="form-inline" onSubmit={this.handleSearch} style={{position: 'relative', margin: '15px 0'}}>
-											<input name="search" value={this.state.value} onChange={this.handleSearchChange} type="text" placeholder="Search" className="form-control" style={{width: '80%'}} />
-											<button type="submit" className="btn btn-danger btn-sm"><i className="fas fa-search" /></button>
-										</form>
-						    </ul>
-								<ul className="nav navbar-nav navbar-right" style={center, {width: '30%'}}>
-						      <li style={{width: '36%'}}><a style={links} href="#"><button style={astext}><i className="fas fa-map-marker" style={{marginRight: '5px'}}></i>95112</button></a></li>
-						      <li style={{width: '32%'}}><a style={links} href="#"><button onClick={this.handleAccountClick} style={astext}>Account</button></a></li>
-						      <li style={{width: '32%'}}><a href="#"><button type="button" className="btn btn-danger" onClick={this.showCart}><i className="fas fa-shopping-cart" /><span style={{ marginRight: '8px' }} />Cart</button></a></li>
-						    </ul>
-						  </div>
-							<ul id="pills" className="nav nav-pills" style={center}>
-							  <li role="navigation" style={pillsLi}><a style={links} href="#"><button style={astext}>Departments</button></a></li>
-							  <li role="navigation" style={pillsLi}><a style={links} href="#"><button style={astext}>Savings</button></a></li>
-							  <li role="navigation" style={pillsLi}><a style={links} href="#"><button style={astext}>History</button></a></li>
-							</ul>
-					</nav>
-    			);
-				}
+	<nav className="navbar navbar-light" style={{backgroundColor: '#F5F5F5'}}>
+		<div className="container-fluid" style={center}>
+			<div className="navbar-header" style={{width: '15%', paddingTop: '3px'}}>
+    			<a className="navbar-brand" style={center} href="/">
+    				<img src={logo} style={{height: '35px', backgroundColor: 'clear'}} />
+    			</a>
+			</div>
+
+			<ul className="nav navbar-nav" style={{width: '55%'}} >
+				<form className="form-inline" onSubmit={this.handleSearch} style={{position: 'relative', margin: '15px 0'}}>
+					<input name="search" value={this.state.value} onChange={this.handleSearchChange} type="text" placeholder="Search" className="form-control" style={{width: '80%'}} />
+					<button type="submit" className="primary" style={{height: '34px', width: '44px', borderRadius: '4px'}}><i className="fas fa-search" /></button>
+				</form>
+		    </ul>
+
+			<ul className="nav navbar-nav navbar-right" style={center, {width: '30%'}}>
+
+		    	<li style={{width: '36%'}}>
+		      		<button className="primaryRedWithHover" style={astext} onClick={this.handleZipClick}>
+		      			<i className="fas fa-map-marker" style={{marginRight: '5px'}} />
+		      			<span style={{ marginRight: '4px' }} />
+		      			95112
+		      		</button>
+		    	</li>
+		      
+		      <li style={{width: '32%'}}>
+		      	<button className="primaryRedWithHover" onClick={this.handleAccountClick} style={astext}>
+		      		Account
+		      	</button>
+		      </li>
+		      
+		      <li style={{width: '32%'}}>
+		      	<button type="button" className="primary" onClick={this.showCart} style={{ marginTop: '4px', height: '44px', width: '90px'}}>
+		      		<i className="fas fa-shopping-cart" />
+		      		<span style={{ marginRight: '8px' }} />
+		      		Cart
+		      	</button>
+		      </li>
+
+		    </ul>
+		</div>
+	    <ul id="pills" className="nav nav-pills" style={center}>
+			<li role="navigation" style={pillsLi}><button className="primaryRedWithHover" style={astext}>Departments</button></li>
+			<li role="navigation" style={pillsLi}><button className="primaryRedWithHover" style={astext}>Savings</button></li>
+			<li role="navigation" style={pillsLi}><button className="primaryRedWithHover" style={astext}>History</button></li>
+	    </ul>
+	</nav>
+	);
+	}
   	}
 }
-export default Header;
+export default withRouter(Header);
