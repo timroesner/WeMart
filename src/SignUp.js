@@ -14,8 +14,8 @@ class SignUp extends Component {
   handleFormSubmit = (model) => {
 
     var poolData = {
-        UserPoolId : process.env.Auth_UserPoolId,
-        ClientId : process.env.Auth_ClientId
+        UserPoolId : process.env.REACT_APP_Auth_UserPoolId,
+        ClientId : process.env.REACT_APP_Auth_ClientId
     };
     var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
 
