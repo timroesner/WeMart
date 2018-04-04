@@ -2,13 +2,31 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Button, LoadingBox} from 'ic-snacks';
 import {StyleRoot} from "radium";
-import '../stylesheets/ItemCard.css';
 import Counter from "./Counter";
+import onSaleBadge from '../images/onSaleBadge.png';
 
 // Style for the add to cart button
 let addToCart = {
 width: "100%", display: "inherit"
 };
+//Item Card Styles
+const itemCard = {background:'#ffffff', width:'20.8rem', height:'35.2rem'};
+const itemCard_cardContents = {cursor:'pointer', margin};
+const itemCard_badge = {position: 'absolute', top: '.8rem', left: '.8rem', height: '2rem', width:'10rem', zIndex: '1'};
+const itemCard_badge_onSale = {itemCard_badge,background: `url(${onSaleBadge})`, backgroundSize: 'auto 2rem'};
+const itemCard_media = {margin: '0 auto'};
+const itemCard_media_image = {margin:'0 auto 01rem auto', display:'block', maxHeight:'15.5rem', maxWidth: '15.5rem', paddingTop:'1rem'};
+const itemCard_itemInfo = {padding: '.5rem 0 0',fontSize:'1.3rem'};
+const itemCard_itemInfo_weight = {color: '#778899', fontSize:'1.1rem', margin:'0'};
+const itemCard_fullItemName = {marginTop:'0', paddingBottom:'0',color:'#393939', fontWeight:'400', height:'3.6rem',
+fontFamily: 'Open Sans", "Helvetica Neue", Helvetica, sans-serif'};
+const itemCard_price = {fontSize:'2rem', fontWeight:'700', fontFamily:'"Open Sans", "Helvetica Neue", Helvetica, sans-serif'};
+const itemCard_price_sale = {color: '#FF0000', fontSize:'2.1rem',fontWeight:'800',marginRight:'.5rem'};
+const itemCard_price_crossedOut = {textDecoration:'line-through'};
+const itemCard_buttonBar = {margin:'.5rem 2.5rem'};
+const itemCard_buttonBar_addToCard = {width:'100%',display:'inherit'};
+const itemCard_loadingBox = {maxHeight:'1.8rem'};
+
 
 export default class ItemCard extends React.Component{
 
@@ -23,13 +41,13 @@ export default class ItemCard extends React.Component{
     renderPrice(){
         if(this.props.salePrice !== "0") {
             return (
-                <div className="itemCard__price">
-                    <span className="itemCard__price--sale">${this.props.salePrice}</span>
-                    <span className="itemCard__price--crossed-out">${this.props.price}</span>
+                <div style={itemCard_price}>
+                    <span style={itemCard_price_sale}>${this.props.salePrice}</span>
+                    <span style={itemCard_price_crossedOut} >${this.props.price}</span>
                 </div>
             );
         } else {
-            return <span className="itemCard__price">${this.props.price}</span>;
+            return <span style={itemCard_price_sale}>${this.props.price}</span>;
         }
     }
 
@@ -38,7 +56,7 @@ export default class ItemCard extends React.Component{
     renderBadge(){
         if(this.props.salePrice !== "0"){
             return (
-                <div className="itemCard__badge itemCard__badge--on-sale">
+                <div style={itemCard_badge_onSale}>
                 </div>
             );
         }
@@ -47,13 +65,13 @@ export default class ItemCard extends React.Component{
     // Renders the items button bar. By default this includes the counter
     renderButtonBar(){
         if(!this.state.inCart){return(
-            <div className="itemCard__button-bar" >
+            <div style={itemCard_buttonBar}>
                 <Button style={addToCart} snacksStyle="secondary" size="small"
                          onClick={() => {this.handleAddToCart()}}>ADD</Button>
             </div>
         );} else {
             return(
-                <div className="itemCard__button-bar">
+                <div style={itemCard_buttonBar}>
                     <Counter quantity={this.state.quantity}
                              onIncrease={this.handleIncrease}
                              onDecrease={this.handleDecrease}
@@ -100,20 +118,20 @@ export default class ItemCard extends React.Component{
   render(){
       if(this.props.name){
           return (
-              <div className="itemCard">
+              <div style={itemCard}>
                   {this.renderBadge()}
-                  <div className="itemCard__card-contents" onClick={() => {this.handleItemClicked()}}>
-                      <div className="itemCard__media">
-                          <img src={this.props.image} alt={this.props.name} className="itemCard__media__image"/>
+                  <div style={itemCard_cardContents} onClick={() => {this.handleItemClicked()}}>
+                      <div style={itemCard_media}>
+                          <img src={this.props.image} alt={this.props.name} style={itemCard_media_image}/>
                       </div>
-                      <div className="itemCard__item-info">
-                          <div className="itemCard__full-item-name">
+                      <div style={itemCard_itemInfo}>
+                          <div style={itemCard_fullItemName}>
                     <span>
                         {this.props.name}
                     </span>
                           </div>
                           {this.renderPrice()}
-                          <p className="itemCard__item-info__weight">
+                          <p style={itemCard_itemInfo_weight}>
                               {this.props.weight}
                           </p>
                       </div>
@@ -122,7 +140,7 @@ export default class ItemCard extends React.Component{
               </div>);
       } else { // No attributes to the props. Render the loading box from IC Snacks
           return (
-              <div className="itemCard">
+              <div style={itemCard}>
                   <div style={{margin: '0 auto 1rem auto', width: "15.8rem", paddingTop:"1rem"}}>
                       <StyleRoot>
                           <div>

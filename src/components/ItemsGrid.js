@@ -1,7 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ItemCard from "./ItemCard";
-import '../stylesheets/ItemsGrid.css';
+
+//STYLES
+const itemGrid = {listStyle:'none',maxWidth:'104rem',display:'table-cell',padding:'0',margin:'0'};
+const itemGrid_itemCard = {display:'inline-block',position:'relative',width:'20.8rem',verticalAlign:'top'};
 
 export default class ItemsGrid extends React.Component{
     renderItems(){
@@ -9,12 +12,12 @@ export default class ItemsGrid extends React.Component{
             // Make an empty array of specified size to show the loading elements
             let empty = Array.apply(null,Array(this.props.size).map(() => {}));
             return (
-                empty.map(() => <li className="itemsGrid__itemsCard">
+                empty.map(() => <li style={itemGrid_itemCard}>
                     <ItemCard/>
                 </li>)
             );
         } else{
-            return this.props.items.map((item) => <li className="itemsGrid__itemsCard">
+            return this.props.items.map((item) => <li style={itemGrid_itemCard}>
                 <ItemCard
                     itemID={item.itemid} name={item.name} image={item.image} price={item.price}
                     weight={item.quantity} salePrice={item.sale} departmentid={item.departmentid}/>
@@ -24,7 +27,7 @@ export default class ItemsGrid extends React.Component{
 
     render(){
         return (
-            <ul className="itemsGrid">
+            <ul style={itemGrid}>
                 {this.renderItems()}
             </ul>
         );
