@@ -105,7 +105,7 @@ class LogIn extends Component {
         height: window.innerHeight+'px', 
         overflow: 'auto',  
         backgroundImage: `url(${background})`, 
-        backgroundRepeat: 'repeate', 
+        backgroundRepeat: 'repeat', 
         backgroundColor: 'red', 
         display: 'flex', 
         alignItems: 'center' 
