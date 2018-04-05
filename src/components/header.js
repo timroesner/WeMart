@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group'; // ES6
+import Cart from './Cart'
+import './header.css'
 
 class Header extends Component {
 	constructor() {
   		super();
   		this.state = {
    			width: window.innerWidth,
-				value: ''
+				value: '',
+				cartClicked: false
  	 	};
 		this.handleSearch = this.handleSearch.bind(this);
 		this.handleSearchChange = this.handleSearchChange.bind(this);
@@ -38,6 +42,8 @@ handleSearchChange(event) {
 showCart = () => {
 	//when cart button is clicked
 	console.log("cart is clicked");
+	const bool = !this.state.cartClicked
+	this.setState({cartClicked: bool});
 };
 
 handleAccountClick = () => {
@@ -138,6 +144,7 @@ handleAccountClick = () => {
     );
   } else {
     return (
+			<div>
 					<nav className="navbar navbar-light" style={{backgroundColor: '#F5F5F5'}}>
 						<div className="container-fluid" style={center}>
                 <div className="navbar-header" style={{width: '15%', paddingTop: '3px'}}>
@@ -152,15 +159,29 @@ handleAccountClick = () => {
 								<ul className="nav navbar-nav navbar-right" style={center, {width: '30%'}}>
 						      <li style={{width: '36%'}}><a style={links} href="#"><button style={astext}><i className="fas fa-map-marker" style={{marginRight: '5px'}}></i>95112</button></a></li>
 						      <li style={{width: '32%'}}><a style={links} href="#"><button onClick={this.handleAccountClick} style={astext}>Account</button></a></li>
-						      <li style={{width: '32%'}}><a href="#"><button type="button" className="btn btn-danger" onClick={this.showCart}><i className="fas fa-shopping-cart" /><span style={{ marginRight: '8px' }} />Cart</button></a></li>
+						      <li style={{width: '32%'}}><a><button type="button" className="btn btn-danger" onClick={this.showCart}><i className="fas fa-shopping-cart" /><span style={{ marginRight: '8px' }} />Cart</button></a></li>
 						    </ul>
-						  </div>
+						</div>
 							<ul id="pills" className="nav nav-pills" style={center}>
 							  <li role="navigation" style={pillsLi}><a style={links} href="#"><button style={astext}>Departments</button></a></li>
 							  <li role="navigation" style={pillsLi}><a style={links} href="#"><button style={astext}>Savings</button></a></li>
 							  <li role="navigation" style={pillsLi}><a style={links} href="#"><button style={astext}>History</button></a></li>
 							</ul>
 					</nav>
+					<div>
+						<ReactCSSTransitionGroup
+		          transitionName="slide"
+		          transitionEnterTimeout={500}
+		          transitionLeaveTimeout={300}>
+
+							{this.state.cartClicked ?
+							 <Cart
+							 onCloseClick={(cartClicked) => this.setState({cartClicked})} /> :
+							 null
+							}
+		        </ReactCSSTransitionGroup>
+					</div>
+				</div>
     			);
 				}
   	}
