@@ -96,7 +96,6 @@ export default class ItemCard extends React.Component{
     handleItemClicked = () => {
         // When the item card has been clicked.
         //TODO redirect to the item's product page.
-        console.log(this.props.name + "Item card clicked");
     };
 
     handleAddToCart = () => {

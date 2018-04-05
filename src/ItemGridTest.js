@@ -68,11 +68,9 @@ export default class ItemGridTest extends React.Component{
             }
         }
         cart.splice(olItem,1);
-        console.log(cart);
         this.setState({cart: cart});
     }
     updateItemQuantity(item,quantity){
-        console.log(item,quantity);
         if(quantity === 1){
             var items = this.state.items;
             for(var i = 0; i < items.length; i++)
@@ -98,10 +96,7 @@ export default class ItemGridTest extends React.Component{
                     cart[i].inCart = oldQuant-1;
                 }
             }
-            console.log(oldQuant);
-            console.log(cart);
             this.setState({cart: cart});
-            console.log(this.state.cart);
         } else if(quantity ===0){
             var items = this.state.items;
             for(var i = 0; i < items.length; i++)
