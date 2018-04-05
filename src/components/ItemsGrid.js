@@ -7,8 +7,34 @@ const itemGrid = {listStyle:'none',maxWidth:'104rem',display:'table-cell',paddin
 const itemGrid_itemCard = {display:'inline-block',position:'relative',width:'20.8rem',verticalAlign:'top'};
 
 export default class ItemsGrid extends React.Component{
+
+    constructor(){
+        super();
+        this.state = {
+            currentTabIndex: null
+        };
+    }
+
+    renderChildren() {
+        const { children, onSelect } = this.props;
+        const { currentTabIndex } = this.state;
+        let index = 0;
+
+        return React.Children.map(children, (child) => {
+            const component = React.cloneElement(child, {
+                index: index,
+                focus: currentTabIndex === index,
+                onClick: onSelect,
+                onMenuItemFocus: this.handleMenuItemFocus
+            });
+            index += 1;
+            return component
+        })
+    }
+
+    // Changed the way child elements render.
     renderItems(){
-        if(this.props.items.length === 0) {
+        if(this.props.children === null) {
             // Make an empty array of specified size to show the loading elements
             let empty = Array.apply(null,Array(this.props.size).map(() => {}));
             return (
@@ -17,28 +43,15 @@ export default class ItemsGrid extends React.Component{
                 </li>)
             );
         } else{
-            return this.props.items.map((item) => <li style={itemGrid_itemCard}>
-                <ItemCard
-                    itemID={item.itemid} name={item.name} image={item.image} price={item.price}
-                    weight={item.quantity} salePrice={item.sale} departmentid={item.departmentid}/>
-            </li>);
+            {this.renderChildren()}
         }
     }
 
     render(){
         return (
             <ul style={itemGrid}>
-                {this.renderItems()}
+                {this.renderChildren()};
             </ul>
         );
     }
 }
-
-ItemsGrid.defaultProps = {
-    size: 5
-};
-
-ItemsGrid.propTypes = {
-  items: PropTypes.array.isRequired,
-    size: PropTypes.number
-};

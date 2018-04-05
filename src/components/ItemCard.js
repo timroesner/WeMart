@@ -4,6 +4,7 @@ import {Button, LoadingBox} from 'ic-snacks';
 import {StyleRoot} from "radium";
 import Counter from "./Counter";
 import onSaleBadge from '../images/onSaleBadge.png';
+import {withRouter} from "react-router-dom";
 
 //STYLES
 //Add To cart button Style
@@ -29,11 +30,6 @@ const itemCard_loadingBox = {maxHeight:'1.8rem'};
 
 
 export default class ItemCard extends React.Component{
-
-    state = {
-        inCart: false,
-        quantity: 0
-    };
 
     // Renders the item price.
     // If sale price is zero then it renders normally, otherwise
@@ -64,7 +60,7 @@ export default class ItemCard extends React.Component{
 
     // Renders the items button bar. By default this includes the counter
     renderButtonBar(){
-        if(!this.state.inCart){return(
+        if(this.props.inCart === 0){return(
             <div style={itemCard_buttonBar}>
                 <Button style={addToCart} snacksStyle="secondary" size="small"
                          onClick={() => {this.handleAddToCart()}}>ADD</Button>
@@ -72,7 +68,7 @@ export default class ItemCard extends React.Component{
         );} else {
             return(
                 <div style={itemCard_buttonBar}>
-                    <Counter quantity={this.state.quantity}
+                    <Counter quantity={this.props.inCart}
                              onIncrease={this.handleIncrease}
                              onDecrease={this.handleDecrease}
                              onRemove={this.handleRemove}/>
@@ -83,36 +79,28 @@ export default class ItemCard extends React.Component{
 
     // Increases the quantity of this item in the cart
     handleIncrease = () => {
-        //TODO increase the quantity of the item in the cart
-        this.setState({quantity: this.state.quantity+1})
+        this.props.onQuantityIncrease();
     };
 
     // Decreases teh quantity of this item by 1 in the cart.
     handleDecrease = () => {
-        //TODO decrease the quantity of the item in the cart
-        this.setState({quantity: this.state.quantity-1})
+        this.props.onQuantityDecrease();
     };
 
     // Remove the item from the cart
     handleRemove = () => {
-        //TODO remove the item from the cart
-        this.setState({quantity: 0, inCart: false})
+        this.props.onQuantityRemove();
     };
 
     // Redirect to the item's product page.
     handleItemClicked = () => {
         // When the item card has been clicked.
         //TODO redirect to the item's product page.
-        console.log(this.props.name + "Item card clicked")
+        console.log(this.props.name + "Item card clicked");
     };
 
     handleAddToCart = () => {
-      //TODO add the product to cart
-        this.setState({
-            inCart: true,
-            quantity: 1
-        });
-        console.log(this.props.name.toString() + " Item added to cart")
+        this.props.onAddToCart();
     };
 
   render(){
@@ -163,9 +151,14 @@ export default class ItemCard extends React.Component{
 
 ItemCard.propTypes = {
     itemID: PropTypes.string.isRequired,
-    departmentID: PropTypes.string,
     image: PropTypes.string,
     name: PropTypes.string,
+    onSelect: PropTypes.func,
+    inCart: PropTypes.number, //The quantity of this item that is in the cart
+    onQuantityIncrease: PropTypes.func,
+    onQuantityDecrease: PropTypes.func,
+    onQuantityRemove: PropTypes.func,
+    onAddToCart: PropTypes.func,
     price: PropTypes.string,
     salePrice: PropTypes.string,
     weight: PropTypes.string
