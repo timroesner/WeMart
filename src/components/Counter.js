@@ -14,13 +14,13 @@ export default class Counter extends React.Component{
 
     render(){
         return(<div>
-            <Button size="small" type="button" onClick={this.props.onIncrease}>
-                <Icon name="plus"/>
-            </Button>
-            <span style={spanStyle}>{this.props.quantity}</span>
-            <Button style={{marginRight: '1rem'}} size="small" type="button" onClick={this.props.onDecrease}
+            <Button size="small" type="button" onClick={this.props.onDecrease}
                     disabled={this.props.quantity === 1}>
                 <Icon name="minus"/>
+            </Button>
+            <span style={spanStyle}>{this.props.quantity}</span>
+            <Button style={{marginRight: '1rem'}} size="small" type="button" onClick={this.props.onIncrease}>
+                <Icon name="plus"/>
             </Button>
             <Button size="small" type="button" onClick={this.props.onRemove}>
                 <Icon name="trash"/>

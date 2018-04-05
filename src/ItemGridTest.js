@@ -2,8 +2,7 @@ import React from 'react';
 import ItemsGrid from "./components/ItemsGrid";
 import {db} from './db';
 import ItemCard from "./components/ItemCard";
-
-const itemGrid_itemCard = {display:'inline-block',position:'relative',width:'20.8rem',verticalAlign:'top'};
+import {DynamoDB} from "aws-sdk/index";
 
 export default class ItemGridTest extends React.Component{
 
@@ -15,7 +14,17 @@ export default class ItemGridTest extends React.Component{
         };
 
         // Get the dynamoDB database
-        var dynamodb = db;
+        var dynamodb = null;
+        if(process.env.NODE_ENV === 'development'){
+            dynamodb = db;
+        }else{
+            dynamodb = new DynamoDB({
+                region: "us-west-1",
+                credentials: {
+                    accessKeyId: process.env.REACT_APP_DB_accessKeyId,
+                    secretAccessKey: process.env.REACT_APP_DB_secretAccessKey},
+            });
+        }
 
         // Get the table whose name is "item"
         var params = {
@@ -113,7 +122,6 @@ export default class ItemGridTest extends React.Component{
 
     createItemCards(){
         return(this.state.items.map((item)=>
-            <li style={itemGrid_itemCard}>
                 <ItemCard
                     itemID={item.itemid} name={item.name} image={item.image} price={item.price} inCart={item.inCart}
                     weight={item.quantity} salePrice={item.sale} departmentid={item.departmentid} onAddToCart={()=>{
@@ -121,7 +129,6 @@ export default class ItemGridTest extends React.Component{
                 }} onQuantityIncrease={()=>{this.updateItemQuantity(item,1)}}
                     onQuantityDecrease={()=>{this.updateItemQuantity(item,-1)}}
                 onQuantityRemove={()=>{this.removeFromCart(item)}}/>
-            </li>
         ))
     }
 

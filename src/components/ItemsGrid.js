@@ -1,6 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import ItemCard from "./ItemCard";
 
 //STYLES
 const itemGrid = {listStyle:'none',maxWidth:'104rem',display:'table-cell',padding:'0',margin:'0'};
@@ -25,26 +23,10 @@ export default class ItemsGrid extends React.Component{
                 index: index,
                 focus: currentTabIndex === index,
                 onClick: onSelect,
-                onMenuItemFocus: this.handleMenuItemFocus
             });
             index += 1;
-            return component
+            return <li style={itemGrid_itemCard}>{component}</li>;
         })
-    }
-
-    // Changed the way child elements render.
-    renderItems(){
-        if(this.props.children === null) {
-            // Make an empty array of specified size to show the loading elements
-            let empty = Array.apply(null,Array(this.props.size).map(() => {}));
-            return (
-                empty.map(() => <li style={itemGrid_itemCard}>
-                    <ItemCard/>
-                </li>)
-            );
-        } else{
-            {this.renderChildren()}
-        }
     }
 
     render(){
