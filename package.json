@@ -11,6 +11,7 @@
     "radium": "^0.22.1",
     "react": "^16.3.0",
     "react-bootstrap": "^0.32.1",
+    "react-addons-css-transition-group": "^15.6.2",
     "react-dom": "^16.3.0",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",

@@ -21,8 +21,8 @@ class LogIn extends Component {
     };
     var authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails(authenticationData);
     var poolData = {
-        UserPoolId : 'us-west-2_e6QP6fklc',
-        ClientId : '2eoha404fgulrmtqc0ac4pmde5'
+        UserPoolId : process.env.REACT_APP_Auth_UserPoolId,
+        ClientId : process.env.REACT_APP_Auth_ClientId
     };
     var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
     var userData = {
@@ -39,9 +39,10 @@ class LogIn extends Component {
             console.log('access token + ' + result.getAccessToken().getJwtToken());
 
             // Should be home page which then checks if user is logged in
-            console.log(nestedProp);
-            console.log(cognitoUser.pool);
-            nestedProp.history.push('/accountsettings',);
+            nestedProp.history.push({
+              pathname: '/home',
+              state: { user: cognitoUser }
+            })
         },
 
         onFailure: function(err) {
@@ -102,25 +103,27 @@ class LogIn extends Component {
 
   render() {
     const txtStyle = {
-      margin: '6%', 
-      marginBottom: '0%', 
+      margin: '6%',
+      marginBottom: '0%',
       width: '88%'
     }
 
     return (
+
       <div style={{ 
         height: window.innerHeight+'px', 
         overflow: 'auto',  
         backgroundImage: `url(${background})`, 
-        backgroundRepeat: 'repeate', 
+        backgroundRepeat: 'repeat', 
         backgroundColor: 'red', 
         display: 'flex', 
         alignItems: 'center' 
+     
       }} >
 
         <div style={{
           margin: 'auto',
-          backgroundColor: 'white', 
+          backgroundColor: 'white',
           borderRadius: '15px',
           maxWidth: `${0.5*window.innerWidth}px`,
           minWidth: '250px'
@@ -151,8 +154,8 @@ class LogIn extends Component {
               required
               style={txtStyle}
             />
-            <button class="primary" type="submit" style={{margin: '6% 15% 3% 15%', width: '70%', height:'2.2em'}} > 
-              Log In 
+            <button class="primary" type="submit" style={{margin: '6% 15% 3% 15%', width: '70%', height:'2.2em'}} >
+              Log In
             </button>
           </Form>
           <p style={{
@@ -160,7 +163,7 @@ class LogIn extends Component {
               textAlign: 'center',
               width: '100%',
               color: '#696969',
-            }}> 
+            }}>
             Don't have an Account? <a href="/signup">Sign Up</a> <br /><br />
             Forgot your password? <a href="#" onClick={this.handlePasswordReset}>Reset It</a>
             </p>
