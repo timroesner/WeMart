@@ -18,8 +18,13 @@ var AmazonCognitoIdentity = require('amazon-cognito-identity-js');
 let newAddressStyle = {textAlign: "center", fontSize: "1.6rem", paddingBottom: ".6rem", paddingTop: ".6rem"};
 let stripeAPIKey = 'pk_test_ccBJoXsCQn6kn5dkF098Xywl'; //TODO change this to our API key
 let cognitoUser = null;
+
+//STYLES
 const noSession = {textAlign:'center', marginBottom: '2rem'};
 const noSessionButton = {marginLeft: '40%', marginRight:'40%', textAlign:'center', marginBottom:'3rem'};
+const accountSettings = {fontFamily:'"Open Sans", "Helvetica Neue", Helvetica, sans-serif', maxWidth:'109.2rem',
+height:'auto !important', margin:'auto'};
+const h4 = {fontSize:'1.8rem'};
 
 class AccountSettings extends React.Component{
 
@@ -48,7 +53,6 @@ class AccountSettings extends React.Component{
                     alert(err);
                     return;
                 }
-                console.log('session validity: ' + session.isValid());
                 loggedIn = session.isValid();
             });
         }
@@ -68,7 +72,7 @@ class AccountSettings extends React.Component{
             // For testing purposes only
             // TODO use AWS CognitoUser attributes for these.
             user: {
-                email: "johndoe@mail.com",
+                email: null,
                 password: "●●●●●●", // For demo purposes only
                 phoneNumber: 555555555,
                 firstName: "John",
@@ -77,17 +81,24 @@ class AccountSettings extends React.Component{
                 deliveryAddresses: [{id: "1", street: "1 Washington Square", city: "San Jose", state: "CA", zipCode: 95112,
                     instructions: "Как Деля"}],
                 orderHistory: []},
+            userAttributes: {email: ''},
         };
-
-        // cognitoUser.getUserAttributes(function(err, result) {
-        //     if (err) {
-        //         alert(err);
-        //         return;
-        //     }
-        //     for (var i = 0; i < result.length; i++) {
-        //         console.log('attribute ' + result[i].getName() + ' has value ' + result[i].getValue());
-        //     }
-        // });
+        var emails = this.state.user.email;
+        cognitoUser.getUserAttributes(function(err, result) {
+            if (err) {
+                alert(err);
+                return;
+            }
+            for (var i = 0; i < result.length; i++) {
+                var attribute = result[i].getName();
+                console.log(attribute);
+                var value = result[i].getValue();
+                if(attribute === 'email'){
+                    emails = value;
+                    console.log(emails)
+                }
+            }
+        });
         //
         // // //ACCOUNT TEST
         // // var authenticationData = {
@@ -118,6 +129,11 @@ class AccountSettings extends React.Component{
         //     }
         //     console.log('call result: ' + result);
         // });
+    }
+
+    componentDidUpdate(){
+        cognitoUser
+        console.log(this.state);
     }
 
     // This should Close all modals
@@ -526,10 +542,9 @@ class AccountSettings extends React.Component{
     render(){
         if(this.state.isLogedIn){
             return (
-                // Leave space for header
                 <StyleRoot>
                     <Header/>
-                    <div className="account-settings">
+                    <div style={accountSettings}>
                         <Row maxColumns={11} style={{maxWidth: "109.2rem"}}>
                             <Column sizes={{ sm: 6, md: 5, lg: 8, xl: 8}}>
                                 <ProfilePanel title="Account Information" content={
@@ -587,7 +602,7 @@ class AccountSettings extends React.Component{
                 //TODO implement react-router-dom
                 <div>
                     <Header/>
-                    <div className="account-settings">
+                    <div style={accountSettings}>
                         <ProfilePanel title='Account Settings'>
                             <div style={noSession}>
                                 <h2>
