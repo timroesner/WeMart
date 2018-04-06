@@ -1,8 +1,8 @@
 import React from 'react';
 import ItemsGrid from "./components/ItemsGrid";
-import {db} from './db';
 import ItemCard from "./components/ItemCard";
 import {DynamoDB} from "aws-sdk/index";
+import AWS from "aws-sdk/index";
 
 export default class ItemGridTest extends React.Component{
 
@@ -16,7 +16,7 @@ export default class ItemGridTest extends React.Component{
         // Get the dynamoDB database
         var dynamodb = null;
         if(process.env.NODE_ENV === 'development'){
-            dynamodb = db;
+            dynamodb = new AWS.DynamoDB(require('./db').db);
         }else{
             dynamodb = new DynamoDB({
                 region: "us-west-1",
