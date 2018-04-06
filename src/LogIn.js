@@ -21,8 +21,8 @@ class LogIn extends Component {
     };
     var authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails(authenticationData);
     var poolData = {
-        UserPoolId : 'us-west-2_e6QP6fklc',
-        ClientId : '2eoha404fgulrmtqc0ac4pmde5'
+        UserPoolId : process.env.REACT_APP_Auth_UserPoolId,
+        ClientId : process.env.REACT_APP_Auth_ClientId
     };
     var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
     var userData = {
@@ -101,14 +101,16 @@ class LogIn extends Component {
     }
 
     return (
-      <div style={{
-        height: window.innerHeight+'px',
-        overflow: 'auto',
-        backgroundImage: `url(${background})`,
-        backgroundRepeat: 'repeate',
-        backgroundColor: 'red',
-        display: 'flex',
-        alignItems: 'center'
+
+      <div style={{ 
+        height: window.innerHeight+'px', 
+        overflow: 'auto',  
+        backgroundImage: `url(${background})`, 
+        backgroundRepeat: 'repeat', 
+        backgroundColor: 'red', 
+        display: 'flex', 
+        alignItems: 'center' 
+     
       }} >
 
         <div style={{

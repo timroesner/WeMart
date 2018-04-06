@@ -4,6 +4,7 @@ import Header from './header';
 import { withRouter } from 'react-router-dom';
 import {db} from '../db'
 
+
 class Home extends Component {
   constructor(props) {
     super(props);
@@ -57,6 +58,7 @@ class Home extends Component {
           <HorizontalScroll items={this.state.savingsItems} title="History"/>
           <HorizontalScroll items={this.state.savingsItems} title="Savings"/>
       </div>
+      <Footer />
       </div>
     );
   }
