@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import HorizontalScroll from './HorizontalScroll';
 import Header from './header';
 import { withRouter } from 'react-router-dom';
-import {db} from '../db'
+import AWS from "aws-sdk/index";
+import {DynamoDB} from "aws-sdk/index";
 
 
 class Home extends Component {
@@ -14,7 +15,6 @@ class Home extends Component {
       savingsItems: [],
       historyItems: []
     }
-    //this.getItemsFromDB();
   }
 
   componentDidMount = () =>  {
@@ -22,7 +22,7 @@ class Home extends Component {
     // Get the dynamoDB database
     var dynamodb = null;
     if(process.env.NODE_ENV === 'development'){
-        dynamodb = db;
+        dynamodb = require('./db').db;
     } else {
         dynamodb = new DynamoDB({
             region: "us-west-1",

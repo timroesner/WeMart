@@ -13,10 +13,16 @@ class SignUp extends Component {
 
   handleFormSubmit = (model) => {
 
-    var poolData = {
+    var poolData;
+    if(process.env.NODE_ENV === 'development'){
+        poolData = require('./poolData').poolData;
+    } else {
+      var poolData = {
         UserPoolId : process.env.REACT_APP_Auth_UserPoolId,
         ClientId : process.env.REACT_APP_Auth_ClientId
-    };
+      };
+    }
+
     var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
 
     var attributeList = [];
@@ -39,7 +45,8 @@ class SignUp extends Component {
 
         nestedProp.history.push({
           pathname: '/confirm',
-          search: '?email='+model.email
+          search: '?email='+model.email,
+          state: {password: model.password}
         })
     });
   }
