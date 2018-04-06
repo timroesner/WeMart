@@ -58,7 +58,6 @@ class Home extends Component {
           <HorizontalScroll items={this.state.savingsItems} title="History"/>
           <HorizontalScroll items={this.state.savingsItems} title="Savings"/>
       </div>
-      <Footer />
       </div>
     );
   }
