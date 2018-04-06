@@ -1,13 +1,17 @@
 import React, { Component } from 'react';
 import logo from '../images/logo.svg'
 import { withRouter } from "react-router-dom";
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group'; // ES6
+import Cart from './Cart'
+import './header.css'
 
 class Header extends Component {
 	constructor() {
   		super();
   		this.state = {
    			width: window.innerWidth,
-				value: ''
+				value: '',
+				cartClicked: false
  	 	};
 		this.handleSearch = this.handleSearch.bind(this);
 		this.handleSearchChange = this.handleSearchChange.bind(this);
@@ -40,6 +44,8 @@ handleSearchChange(event) {
 showCart = () => {
 	//when cart button is clicked
 	console.log("cart is clicked");
+	const bool = !this.state.cartClicked
+	this.setState({cartClicked: bool});
 };
 
 handleAccountClick = () => {
@@ -225,9 +231,22 @@ handleZipClick = () => {
 			<li role="navigation" style={pillsLi}><button className="primaryRedWithHover" style={astext}>History</button></li>
 	    </ul>
 	</nav>
-	</div>
-	);
-	}
-  	}
+      	<div>
+						<ReactCSSTransitionGroup
+		          transitionName="slide"
+		          transitionEnterTimeout={500}
+		          transitionLeaveTimeout={300}>
+
+							{this.state.cartClicked ?
+							 <Cart
+							 onCloseClick={(cartClicked) => this.setState({cartClicked})} /> :
+							 null
+							}
+		        </ReactCSSTransitionGroup>
+					</div>
+	    </div>
+	    );
+	  }
+  }
 }
 export default withRouter(Header);

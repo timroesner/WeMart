@@ -40,7 +40,7 @@ class LogIn extends Component {
 
             // Should be home page which then checks if user is logged in
             nestedProp.history.push({
-              pathname: '/',
+              pathname: '/home',
               state: { user: cognitoUser }
             })
         },
@@ -95,12 +95,13 @@ class LogIn extends Component {
 
   render() {
     const txtStyle = {
-      margin: '6%', 
-      marginBottom: '0%', 
+      margin: '6%',
+      marginBottom: '0%',
       width: '88%'
     }
 
     return (
+
       <div style={{ 
         height: window.innerHeight+'px', 
         overflow: 'auto',  
@@ -109,11 +110,12 @@ class LogIn extends Component {
         backgroundColor: 'red', 
         display: 'flex', 
         alignItems: 'center' 
+     
       }} >
 
         <div style={{
           margin: 'auto',
-          backgroundColor: 'white', 
+          backgroundColor: 'white',
           borderRadius: '15px',
           maxWidth: `${0.5*window.innerWidth}px`,
           minWidth: '250px'
@@ -144,8 +146,8 @@ class LogIn extends Component {
               required
               style={txtStyle}
             />
-            <button class="primary" type="submit" style={{margin: '6% 15% 3% 15%', width: '70%', height:'2.2em'}} > 
-              Log In 
+            <button class="primary" type="submit" style={{margin: '6% 15% 3% 15%', width: '70%', height:'2.2em'}} >
+              Log In
             </button>
           </Form>
           <p style={{
@@ -153,7 +155,7 @@ class LogIn extends Component {
               textAlign: 'center',
               width: '100%',
               color: '#696969',
-            }}> 
+            }}>
             Don't have an Account? <a href="/signup">Sign Up</a> <br /><br />
             Forgot your password? <a href="#" onClick={this.handlePasswordReset}>Reset It</a>
             </p>
