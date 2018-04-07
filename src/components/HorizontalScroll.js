@@ -19,11 +19,15 @@ const HorizontalScroll = (props) => {
   }
 
   const scrollerTitle = {
-    color: '#E6003D',
+    color: 'red',
+    position: 'relative',
     height: '20%',
-    paddingLeft: '30px',
-    marginLeft:'12px',
-    marginBotton: '20px'
+    backgroundColor: 'white',
+    padding: '0',
+    paddingTop: '30px',
+    borderRadius: '0',
+    paddingLeft : '60px',
+    margin: '0'
   }
 
   const wrapper = {
@@ -49,8 +53,8 @@ const HorizontalScroll = (props) => {
 
   return (
     <div style={scrollWrapper}>
-      <div style={scrollerTitle}>
-        <h4 style={{fontSize: '2em'}}>{props.title}</h4>
+      <div className="jumbotron jumbotron-fluid" style={scrollerTitle}>
+        <h4 className="lead">{props.title}</h4>
       </div>
       <div style={wrapper}>
         <ul className="nav" style={list}>
