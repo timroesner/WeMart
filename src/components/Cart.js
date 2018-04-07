@@ -64,7 +64,6 @@ class Cart extends Component {
       height: '100vh',
       background: '#FFFFFF',
       boxShadow: '1px 2px 3px 0px rgba(0,0,0,0.10)',
-      borderRadius: '6px',
       display: 'flex',
       flexDirection: 'column',
       border: '1px solid #a9a9a9',

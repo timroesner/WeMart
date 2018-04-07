@@ -39,9 +39,6 @@ const CartItem = ({item}) => {
   return (
       <li className="list-group-item">
         <div style={itemStyle}>
-          <div style={{position: 'relative', paddingTop: '30px'}}>
-            <button style={deleteButton} ><i className="far fa-trash-alt" style={{color: 'red'}}></i></button>
-          </div>
           <div style={{marginRight: '50px'}}>
             <img style={{width: '100%', height: '100%'}} className="img-responsive" src={item.image} />
           </div>
