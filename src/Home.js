@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import HorizontalScroll from './HorizontalScroll';
-import Header from './header';
+import HorizontalScroll from './components/HorizontalScroll';
+import Header from './components/header';
 import { withRouter } from 'react-router-dom';
 import AWS from "aws-sdk/index";
 import {DynamoDB} from "aws-sdk/index";

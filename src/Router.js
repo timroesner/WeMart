@@ -8,7 +8,7 @@ import LogIn from './LogIn'
 import Confirm from './Confirm'
 import PasswordReset from './PasswordReset'
 import ZipCodeCheck from './ZipCodeCheck'
-import Home from './components/Home'
+import Home from './Home'
 
 const Router = () => (
   <main>
