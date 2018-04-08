@@ -31,6 +31,7 @@ export default class ItemGridTest extends React.Component{
             TableName: "item"
         };
 
+        // Scan the DB and get the items
         dynamodb.scan(params, (err, data) => {
             if (err) {console.log(err, err.stack)} // an error occurred
             else{
@@ -120,6 +121,7 @@ export default class ItemGridTest extends React.Component{
         }
     }
 
+    //First Way to Render the item cards int the item grid
     createItemCards(){
         return(this.state.items.map((item)=>
                 <ItemCard
@@ -132,11 +134,20 @@ export default class ItemGridTest extends React.Component{
         ))
     }
 
+    // Second way to render the item cards in the item grid.
+    // Pass ItemsGrid a array of items and set the functions that each child should have.
     render(){
         return (
             <div id="root">
-                <ItemsGrid>
-                    {this.createItemCards()}
+                <ItemsGrid
+                    items={this.state.items}
+                    onAddToCart={(item)=>{
+                        this.addToCart(item);
+                    }}
+                    onQuantityIncrease={(item)=>{this.updateItemQuantity(item,1)}}
+                    onQuantityDecrease={(item)=>{this.updateItemQuantity(item,-1)}}
+                    onQuantityRemove={(item)=>{this.removeFromCart(item)}}>
+                    {/*{this.createItemCards()}*/}
                 </ItemsGrid>
             </div>
         );
