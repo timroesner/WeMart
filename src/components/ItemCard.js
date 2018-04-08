@@ -18,15 +18,13 @@ const itemCard_badge_onSale = {...itemCard_badge,  backgroundImage: `url(${onSal
 const itemCard_media = {margin: '0 auto'};
 const itemCard_media_image = {margin:'0 auto 01rem auto', display:'block', maxHeight:'15.5rem', maxWidth: '15.5rem', paddingTop:'1rem'};
 const itemCard_itemInfo = {padding: '.5rem 0 0',fontSize:'1.3rem'};
-const itemCard_itemInfo_weight = {color: '#778899', fontSize:'1.1rem', margin:'0'};
+const itemCard_itemInfo_weight = {color: '#808080', fontSize:'1.1rem', margin:'0'};
 const itemCard_fullItemName = {marginTop:'0', paddingBottom:'0',color:'#393939', fontWeight:'400', height:'3.6rem',
 fontFamily: 'Open Sans", "Helvetica Neue", Helvetica, sans-serif'};
-const itemCard_price = {fontSize:'2rem', fontWeight:'700', fontFamily:'"Open Sans", "Helvetica Neue", Helvetica, sans-serif'};
-const itemCard_price_sale = {color: '#FF0000', fontSize:'2.1rem',fontWeight:'800',marginRight:'.5rem'};
-const itemCard_price_crossedOut = {textDecoration:'line-through'};
+const itemCard_price = {fontSize:'2rem', fontWeight:'400', fontFamily:'"Open Sans", "Helvetica Neue", Helvetica, sans-serif'};
+const itemCard_price_sale = {color: '#FF0000', fontSize:'2.1rem',fontWeight:'600',marginRight:'.5rem'};
+const itemCard_price_crossedOut = {textDecoration:'line-through',color:'#808080'};
 const itemCard_buttonBar = {margin:'.5rem 2.5rem'};
-const itemCard_buttonBar_addToCard = {width:'100%',display:'inherit'};
-const itemCard_loadingBox = {maxHeight:'1.8rem'};
 
 
 export default class ItemCard extends React.Component{
@@ -63,7 +61,7 @@ export default class ItemCard extends React.Component{
         if(this.props.inCart === 0){return(
             <div style={itemCard_buttonBar}>
                 <Button style={addToCart} snacksStyle="secondary" size="small"
-                         onClick={() => {this.handleAddToCart()}}>ADD</Button>
+                         onClick={() => {this.handleAddToCart()}}>Add To Cart</Button>
             </div>
         );} else {
             return(
