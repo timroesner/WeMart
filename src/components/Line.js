@@ -1,17 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types'
 import {Link} from "ic-snacks";
-import '../stylesheets/line.css'
+
+//STYLES
+const line = {fontSize:'1.4rem',lineHeight:'2.1rem',paddingRight:'3rem',paddingLeft:'3rem',paddingBottom:'1rem'}
+const line_title = {width:'23.333%',display:'inline-block',marginBottom:'1.5rem',padding:'0 1.5rem 0 1.5rem'}
+const line_value = {width:'50%',display:'inline-block',marginBottom:'1.5rem',padding:'0 1.5rem 0 1.5rem'}
+const line_change = {width:'10%',display:'inline-block',marginBottom:'1.5rem',padding:'0 1.5rem 0 1.5rem', textAlign:'right'}
+
 
 //TODO change the columns to IC Snacks columns.
 
 export default class Line extends React.Component{
     render(){
         return(
-            <div className="line">
-                <span className="line_title">{this.props.title}</span>
-                <span className="line_value">{this.props.value}</span>
-                <span className="line_change">
+            <div style={line}>
+                <span style={line_title}>{this.props.title}</span>
+                <span style={line_value}>{this.props.value}</span>
+                <span style={line_change}>
                     <Link onClick={(e, props) => { e.preventDefault();this.props.onChange() }}>Change</Link>
                 </span>
             </div>

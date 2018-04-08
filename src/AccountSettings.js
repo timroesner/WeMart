@@ -38,7 +38,7 @@ class AccountSettings extends React.Component{
         this.handleNewAddressModal = this.handleNewAddressModal.bind(this);
         this.handleClose = this.handleClose.bind(this);
 
-        // Check if there is an existing session open
+        // Check if there is an existing cognito session open
         var loggedIn = false;
         var poolData = {
             UserPoolId : 'us-west-2_e6QP6fklc',
@@ -70,9 +70,9 @@ class AccountSettings extends React.Component{
             cognitoUser: cognitoUser,
             isLogedIn: loggedIn,
             // For testing purposes only
-            // TODO use AWS CognitoUser attributes for these.
+            // TODO get data from AWS once API is complete
             user: {
-                email: null,
+                email: 'JohnDoe@gmail.com',
                 password: "●●●●●●", // For demo purposes only
                 phoneNumber: 555555555,
                 firstName: "John",
@@ -99,41 +99,6 @@ class AccountSettings extends React.Component{
                 }
             }
         });
-        //
-        // // //ACCOUNT TEST
-        // // var authenticationData = {
-        // //     Username : 'r3congtx@gmai.com',
-        // //     Password : 'cookies-11',
-        // // };
-        // // var authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails(authenticationData);
-        // // var poolData = {
-        // //     UserPoolId : 'us-west-2_e6QP6fklc',
-        // //     ClientId : '2eoha404fgulrmtqc0ac4pmde5'
-        // // };
-        // // var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
-        // // var userData = {
-        // //     Username : 'r3congtx@gmail.com',
-        // //     Pool : userPool
-        // // };
-        // var attributeList = [];
-        // var dataFirstName = {
-        //     Name : 'firstName',
-        //     Value : 'john'
-        // };
-        // var attributeFirstName = new CognitoUserAttribute(dataFirstName);
-        // attributeList.push(attributeFirstName);
-        // cognitoUser.updateAttributes(attributeList, function(err, result) {
-        //     if (err) {
-        //         alert(err);
-        //         return;
-        //     }
-        //     console.log('call result: ' + result);
-        // });
-    }
-
-    componentDidUpdate(){
-        cognitoUser
-        console.log(this.state);
     }
 
     // This should Close all modals
@@ -176,7 +141,7 @@ class AccountSettings extends React.Component{
         //TODO validate password
         this.setState(prevState => ({
             user: [...prevState.user, {email: model.newEmail}]
-        }))
+        }));
         console.log(model.newEmail)
     };
 

@@ -14,16 +14,21 @@ class LogIn extends Component {
   }
 
   handleFormSubmit = (model) => {
-
-    var authenticationData = {
-        Username : model.email,
-        Password : model.password,
-    };
-    var authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails(authenticationData);
-    var poolData = {
-        UserPoolId : 'us-west-2_e6QP6fklc',
-        ClientId : '2eoha404fgulrmtqc0ac4pmde5'
-    };
+      var authenticationData = {
+          Username : model.email,
+          Password : model.password,
+      };
+      var authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails(authenticationData);
+      var poolData;
+        if(process.env.NODE_ENV === 'development'){
+        poolData = require('./poolData').poolData;
+        } else {
+          var poolData = {
+              UserPoolId : process.env.REACT_APP_Auth_UserPoolId,
+              ClientId : process.env.REACT_APP_Auth_ClientId
+          };
+        }
+        
     var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
     var userData = {
         Username : model.email,
