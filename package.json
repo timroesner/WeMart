@@ -6,7 +6,7 @@
     "amazon-cognito-identity-js": "^2.0.3",
     "aws-amplify": "^0.2.14",
     "aws-sdk": "^2.218.1",
-    "ic-snacks": "0.0.72",
+    "ic-snacks": "github:instacart/Snacks#master",
     "prop-types": "^15.6.1",
     "radium": "^0.22.1",
     "react": "^16.3.0",
