@@ -75,10 +75,16 @@ class LogIn extends Component {
       return
     }
 
-    var poolData = {
-        UserPoolId : 'us-west-2_e6QP6fklc',
-        ClientId : '2eoha404fgulrmtqc0ac4pmde5'
-    };
+    var poolData;
+    if(process.env.NODE_ENV === 'development'){
+        poolData = require('./poolData').poolData;
+    } else {
+      var poolData = {
+        UserPoolId : process.env.REACT_APP_Auth_UserPoolId,
+        ClientId : process.env.REACT_APP_Auth_ClientId
+      };
+    }
+    
     var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
     var userData = {
         Username : email,
@@ -130,7 +136,7 @@ class LogIn extends Component {
         <div style={{
           margin: 'auto',
           backgroundColor: 'white',
-          borderRadius: '15px',
+          borderRadius: '10px',
           maxWidth: `${0.5*window.innerWidth}px`,
           minWidth: '250px'
         }} >

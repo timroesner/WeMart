@@ -118,7 +118,7 @@ class Confirm extends Component {
         <div style={{
           margin: 'auto',
           backgroundColor: 'white', 
-          borderRadius: '15px',
+          borderRadius: '10px',
           maxWidth: `${0.5*window.innerWidth}px`,
           minWidth: '250px'
         }} >
