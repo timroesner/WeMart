@@ -3,6 +3,7 @@ import { Button, Form, TextField } from 'ic-snacks';
 import background from './images/background.svg';
 import './App.css';
 import { withRouter } from "react-router-dom";
+import {DynamoDB} from "aws-sdk/index";
 
 var AmazonCognitoIdentity = require('amazon-cognito-identity-js');
 
@@ -16,7 +17,7 @@ class SignUp extends Component {
     // Get the dynamoDB database
     var dynamodb;
     if(process.env.NODE_ENV === 'development'){
-        dynamodb = require('./db').db;
+        dynamodb = require('./components/db').db;
     } else {
         dynamodb = new DynamoDB({
             region: "us-west-1",
@@ -58,18 +59,21 @@ class SignUp extends Component {
 
         var params = {
           Item: {
-           "Username": {
+            "userid": {
+              S: (+new Date).toString(36)
+            },
+           "username": {
             S: model.email
-           } 
-           "FirstName": {
+           }, 
+           "firstName": {
              S: model.firstName
             }, 
-           "LastName": {
+           "lastName": {
              S: model.lastName
-            },
+            }
           }, 
           ReturnConsumedCapacity: "TOTAL", 
-          TableName: "User"
+          TableName: "user"
         };
 
         dynamodb.putItem(params, function(err, data) {
