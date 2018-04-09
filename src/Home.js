@@ -20,7 +20,7 @@ class Home extends Component {
   componentDidMount = () =>  {
 
     // Get the dynamoDB database
-    var dynamodb = null;
+    var dynamodb;
     if(process.env.NODE_ENV === 'development'){
         dynamodb = require('./db').db;
     } else {

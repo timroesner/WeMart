@@ -13,6 +13,20 @@ class SignUp extends Component {
 
   handleFormSubmit = (model) => {
 
+    // Get the dynamoDB database
+    var dynamodb;
+    if(process.env.NODE_ENV === 'development'){
+        dynamodb = require('./db').db;
+    } else {
+        dynamodb = new DynamoDB({
+            region: "us-west-1",
+            credentials: {
+                accessKeyId: process.env.REACT_APP_DB_accessKeyId,
+                secretAccessKey: process.env.REACT_APP_DB_secretAccessKey},
+        });
+    }
+
+    // Get poolData
     var poolData;
     if(process.env.NODE_ENV === 'development'){
         poolData = require('./poolData').poolData;
@@ -22,7 +36,6 @@ class SignUp extends Component {
         ClientId : process.env.REACT_APP_Auth_ClientId
       };
     }
-
     var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
 
     var attributeList = [];
@@ -43,11 +56,35 @@ class SignUp extends Component {
             return;
         }
 
-        nestedProp.history.push({
-          pathname: '/confirm',
-          search: '?email='+model.email,
-          state: {password: model.password}
-        })
+        var params = {
+          Item: {
+           "Username": {
+            S: model.email
+           } 
+           "FirstName": {
+             S: model.firstName
+            }, 
+           "LastName": {
+             S: model.lastName
+            },
+          }, 
+          ReturnConsumedCapacity: "TOTAL", 
+          TableName: "User"
+        };
+
+        dynamodb.putItem(params, function(err, data) {
+          if (err) {
+            alert(err.message || JSON.stringify(err));
+          } else {
+            console.log(data);
+
+            nestedProp.history.push({
+              pathname: '/confirm',
+              search: '?email='+model.email,
+              state: {password: model.password}
+            })
+          }
+        });
     });
   }
 
