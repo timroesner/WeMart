@@ -37,19 +37,6 @@ class Confirm extends Component {
 
   handleFormSubmit = (model) => {
 
-    // cognitoUser.deleteUser(function(err, result) {
-    //     if (err) {
-    //         alert(err.message);
-    //         return;
-    //     }
-
-    //     if (result) {
-    //       alert(result.message)
-    //     } else {
-    //       alert("Success")
-    //     }
-    // });
-
     cognitoUser.confirmRegistration(model.confcode, true, function(err, result) {
 
       if (err) {
