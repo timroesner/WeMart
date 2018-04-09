@@ -40,17 +40,14 @@ class AccountSettings extends React.Component{
 
         // Check if there is an existing cognito session open
         var loggedIn = false;
-        var poolData = {
-            UserPoolId : 'us-west-2_e6QP6fklc',
-            ClientId : '2eoha404fgulrmtqc0ac4pmde5'
-        };
+        var poolData =require('./poolData').poolData;
         var userPool = new CognitoUserPool(poolData);
         var cognitoUser = userPool.getCurrentUser();
 
         if (cognitoUser != null) {
             cognitoUser.getSession(function(err, session) {
                 if (err) {
-                    alert(err);
+                    loggedIn = false;
                     return;
                 }
                 loggedIn = session.isValid();
@@ -69,6 +66,7 @@ class AccountSettings extends React.Component{
             newAddressModal: false,
             cognitoUser: cognitoUser,
             isLogedIn: loggedIn,
+
             // For testing purposes only
             // TODO get data from AWS once API is complete
             user: {
@@ -77,11 +75,7 @@ class AccountSettings extends React.Component{
                 phoneNumber: 555555555,
                 firstName: "John",
                 lastName: "Doe",
-                paymentMethods: [{id: "card_1", brand: "Visa", last4: "4242", label: "Visa 4242" , isDefault: true}],
-                deliveryAddresses: [{id: "1", street: "1 Washington Square", city: "San Jose", state: "CA", zipCode: 95112,
-                    instructions: "Как Деля"}],
-                orderHistory: []},
-            userAttributes: {email: ''},
+            }
         };
         var emails = this.state.user.email;
         cognitoUser.getUserAttributes(function(err, result) {
@@ -125,8 +119,9 @@ class AccountSettings extends React.Component{
         this.setState({personalInfoModal: true})
     }
 
-    handleEditAddressModal(){
-        this.setState({editAddressModal: true})
+    handleEditAddressModal(address){
+        this.setState({editAddressModal: true,
+        selectedAddress: address})
     }
 
     handleNewAddressModal(){
@@ -140,186 +135,23 @@ class AccountSettings extends React.Component{
     handleEmailChange = (model) => {
         //TODO validate password
         this.setState(prevState => ({
-            user: [...prevState.user, {email: model.newEmail}]
-        }));
-        console.log(model.newEmail)
+            user: {...prevState.user, email: model.newEmail}
+        }))
+        console.log(this.state.user.email) //TODO Remove this line
+        this.handleClose()
     };
 
     handlePasswordChange = (model) => {
+        //TODO validate old password
         console.log(model)
     };
 
     handlePersonalInfoChange = (model) => {
-        console.log(model)
+        this.setState(prevState => ({
+            user: {...prevState.user, firstName: model.firstName, lastName: model.lastName, phoneNumber: model.phone}
+        }))
+        this.handleClose();
     };
-
-    handleNewAddress = (model) => {
-      console.log(model)
-    };
-
-    handleEditAddress = (model) => {
-        console.log(model)
-    };
-
-    // Renders a list of all the delivery addresses.
-    renderAddress(){
-        return this.state.user.deliveryAddresses.map((address) =>
-                <AddressCard street={address.street} city={address.city} state={address.state} zipCode={address.zipCode}
-                onClick={() => {this.handleEditAddressModal(); this.setState({selectedAddressID: address})}}/>
-        );
-    }
-
-    // Renders a list of all the credit cards.
-    renderCards(){
-        return this.state.user.paymentMethods.map((card) =>
-            <CreditCard
-                brand={card.brand}
-                label={card.label}
-                last4={card.last4}
-                isDefault={card.isDefault}
-            />)
-    }
-
-    newAddressModal(){
-        return(
-            <div>
-                <Modal show={this.state.newAddressModal} onHide={this.handleClose}>
-                    <Modal.Header>
-                        <h1>New Address</h1>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <Form onSubmit={this.handleNewAddress}>
-                            <div>
-                                <TextField
-                                    name="addressLine1"
-                                    type="text"
-                                    floatingLabelText="Address"
-                                    hintText="Enter Your Address"
-                                    fullWidth
-                                    required
-                                />
-                            </div>
-                            <div>
-                                <TextField
-                                    name="city"
-                                    type="text"
-                                    floatingLabelText="City"
-                                    hintText="Enter Your City"
-                                    halfWidth
-                                    required
-                                />
-                            </div>
-                            <div>
-                                <Select
-                                    name="state"
-                                    floatingLabelText="State"
-                                    hintText="Select a State"
-                                    halfWidth
-                                    required
-                                >
-                                    <MenuItem label="California" value="CA"/>
-                                </Select>
-                            </div>
-                            <div>
-                                <TextField
-                                    name="zipCode"
-                                    type="text"
-                                    floatingLabelText="Zip Code"
-                                    hintText="Enter Your Zip Code"
-                                    halfWidth
-                                    required
-                                />
-                            </div>
-                            <div>
-                                <textarea
-                                    name="instructions"
-                                    placeholder="Delivery Instructions"
-                                    rows= "5"
-                                    wrap="soft"
-                                    style={{height: "10rem", width: "100%", resize: "none"}}
-                                />
-                            </div>
-                            <Button snacksStyle="secondary" onClick={this.handleClose}>Cancel</Button>
-                            <Button type="submit">Accept</Button>
-                        </Form>
-                    </Modal.Body>
-                </Modal>
-            </div>
-        )
-    }
-
-    editAddressModal(){
-        return(
-            <div>
-                <Modal show={this.state.editAddressModal} onHide={this.handleClose}>
-                    <Modal.Header>
-                        <h1>Edit Address</h1>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <Form onSubmit={this.handleEditAddress}>
-                            <div>
-                                <TextField
-                                    name="addressLine1"
-                                    type="text"
-                                    floatingLabelText="Address"
-                                    hintText="Enter Your Address"
-                                    defaultValue={this.state.user.deliveryAddresses[0].street}
-                                    fullWidth
-                                    required
-                                />
-                            </div>
-                            <div>
-                                <TextField
-                                    name="city"
-                                    type="text"
-                                    floatingLabelText="City"
-                                    hintText="Enter Your City"
-                                    defaultValue={this.state.user.deliveryAddresses[0].city}
-                                    halfWidth
-                                    required
-                                />
-                            </div>
-                            <div>
-                                <Select
-                                    name="state"
-                                    floatingLabelText="State"
-                                    hintText="Select a State"
-                                    halfWidth
-                                    defaultOption={{label: "California", value: "CA"}}
-                                    required
-                                >
-                                    <MenuItem label="California" value="CA"/>
-                                </Select>
-                            </div>
-                            <div>
-                                <TextField
-                                    name="zipCode"
-                                    type="text"
-                                    floatingLabelText="Zip Code"
-                                    hintText="Enter Your Zip Code"
-                                    defaultValue={this.state.user.deliveryAddresses[0].zipCode}
-                                    halfWidth
-                                    required
-                                />
-                            </div>
-                            <div>
-                                <textarea
-                                    name="instructions"
-                                    placeholder="Delivery Instructions"
-                                    defaultValue={this.state.user.deliveryAddresses[0].instructions}
-                                    rows= "5"
-                                    wrap="soft"
-                                    style={{height: "10rem", width: "100%", resize: "none"}}
-                                />
-                            </div>
-                            <Button snacksStyle="secondary" onClick={this.handleClose}>Cancel</Button>
-                            <Button type="submit">Accept</Button>
-                        </Form>
-                    </Modal.Body>
-                </Modal>
-            </div>
-        );
-    }
 
     editPerInfoModal(){
         return(
@@ -333,7 +165,7 @@ class AccountSettings extends React.Component{
                             <div style={{marginBottom: '10px'}}>
                             <TextField
                                 style={{marginRight: '5px'}}
-                                name="first_name"
+                                name="firstName"
                                 type="text"
                                 floatingLabelText="First Name"
                                 defaultValue={this.state.user.firstName}
@@ -342,7 +174,7 @@ class AccountSettings extends React.Component{
                             />
                             <TextField
                                 style={{marginLeft: '5px'}}
-                                name="last_name"
+                                name="lastName"
                                 type="text"
                                 floatingLabelText="Last Name"
                                 defaultValue={this.state.user.lastName}
@@ -357,6 +189,8 @@ class AccountSettings extends React.Component{
                                     floatingLabelText="Phone Number"
                                     fullWidth
                                     type="tel"
+                                    validationErrorText={'Incorrect Phone Number'}
+                                    validations={{isMobilePhone: {locale:'en-US'}}}
                                 />
                             </div>
                             <Button snacksStyle="secondary" onClick={this.handleClose}>Cancel</Button>
@@ -481,37 +315,12 @@ class AccountSettings extends React.Component{
         );
     }
 
-    addCardModal(){
-        return(
-            <div>
-                <Modal show={this.state.newCardModal} onHide={this.handleClose}>
-                    <Modal.Header>
-                        <h1>Add Card</h1>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <StripeProvider apiKey={stripeAPIKey}>
-                            <Elements>
-                                <NewCardForm user={this.state.user}/>
-                            </Elements>
-                        </StripeProvider>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button snacksStyle="secondary" onClick={this.handleClose} >Cancel</Button>
-                        <Button elementAttributes={{form:"newCard"}} type="submit">Add Card</Button>
-                    </Modal.Footer>
-                </Modal>
-            </div>
-        );
-    }
-
     render(){
         if(this.state.isLogedIn){
             return (
                 <StyleRoot>
                     <Header/>
                     <div style={accountSettings}>
-                        <Row maxColumns={11} style={{maxWidth: "109.2rem"}}>
-                            <Column sizes={{ sm: 6, md: 5, lg: 8, xl: 8}}>
                                 <ProfilePanel title="Account Information" content={
                                     <div>
                                         <Line title="Email" value={this.state.user.email} onChange={this.handleShowEmailModal}/>
@@ -523,43 +332,11 @@ class AccountSettings extends React.Component{
                                         <Line title="Last Name" value={this.state.user.lastName} onChange={this.handleShowPersonalInfoModal}/>
                                         <Line title="Phone" value={this.state.user.phoneNumber} onChange={this.handleShowPersonalInfoModal}/>
                                     </div>}/>
-                                <ProfilePanel title="Delivery Addresses" content={
-                                    <div>
-                                        {this.renderAddress()}
-                                        <div style={newAddressStyle}>
-                                            <Link onClick={(e, props) => {
-                                                e.preventDefault();
-                                                this.handleNewAddressModal();
-                                            }} style={{width: "100%"}}>
-                                                <Icon name="plusBold"/> Add New Delivery Address
-                                            </Link>
-                                        </div>
-                                    </div>}/>
                                 <ProfilePanel title="Accessibility"/>
-                            </Column>
-                            <Column sizes={{ sm: 6, md: 3, lg: 3, xl: 3 }}>
-                                <ProfilePanel title="Payment Methods">
-                                    <ul style={{listStyleType: "none"}}>
-                                        {this.renderCards()}
-                                    </ul>
-                                    <div style={newAddressStyle}>
-                                        <Link onClick={(e, props) => {
-                                            e.preventDefault();
-                                            this.handleNewCardModal();
-                                        }} style={{width: "100%"}}>
-                                            <Icon name="plusBold"/> Add New Payment Method
-                                        </Link>
-                                    </div>
-                                </ProfilePanel>
-                            </Column>
-                        </Row>
                     </div>
                     {this.emailModal()}
                     {this.passwordModal()}
                     {this.editPerInfoModal()}
-                    {this.newAddressModal()}
-                    {this.addCardModal()}
-                    {this.editAddressModal()}
                 </StyleRoot>
             );
         } else {
@@ -580,12 +357,6 @@ class AccountSettings extends React.Component{
                             </div>
                         </ProfilePanel>
                     </div>
-                    {this.emailModal()}
-                    {this.passwordModal()}
-                    {this.editPerInfoModal()}
-                    {this.newAddressModal()}
-                    {this.addCardModal()}
-                    {this.editAddressModal()}
                 </div>
             );
         }
