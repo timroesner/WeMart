@@ -9,16 +9,12 @@ import Confirm from './Confirm'
 import PasswordReset from './PasswordReset'
 import ZipCodeCheck from './ZipCodeCheck'
 import Home from './components/Home'
+import Checkout from "./Checkout";
 
 const Router = () => (
   <main>
     <Switch>
-      <Route exact path='/signup' component={SignUp}/>
-      <Route path='/login' component={LogIn}/>
-      <Route path='/confirm' component={Confirm}/>
-      <Route path='/passwordreset' component={PasswordReset}/>
-      <Route path='/home' component={Home} />
-      <Route path='/' component={ZipCodeCheck}/>
+        <Route path={'/checkout'} component={Checkout}/>
     </Switch>
   </main>
 )

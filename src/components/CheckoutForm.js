@@ -4,6 +4,7 @@ import {
     CardCVCElement, CardExpiryElement, CardNumberElement, injectStripe,
     PostalCodeElement
 } from 'react-stripe-elements';
+import {Button} from "ic-snacks";
 
 const handleBlur = () => {
     console.log('[blur]');
@@ -84,7 +85,9 @@ class CheckoutForm extends React.Component {
                         onReady={handleReady}
                     />
                 </label>
-                <button>Pay</button>
+                <div>
+                    <Button>Place Order</Button>
+                </div>
             </form>
         );
     }
