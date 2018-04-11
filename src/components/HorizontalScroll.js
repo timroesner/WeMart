@@ -14,7 +14,8 @@ const HorizontalScroll = (props) => {
   const scrollWrapper = {
         border: '2px solid #efefef',
         height: '275px',
-        margin: '30px',
+        marginTop: '5%',
+        marginBottom: '5%',
         borderRadius: '5px', /* 5px rounded corners */
         boxShadow: '0 4px 8px 0 rgba(0,0,0,0.2)'
   }

@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import { Button, Form, TextField } from 'ic-snacks';
+import { Form, TextField } from 'ic-snacks';
 import background from './images/background.svg';
 import './App.css';
-import registerServiceWorker from './registerServiceWorker';
 import { withRouter } from "react-router-dom";
 
 var AmazonCognitoIdentity = require('amazon-cognito-identity-js');
