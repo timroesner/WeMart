@@ -3,6 +3,7 @@ import { Button, Form, TextField } from 'ic-snacks';
 import background from './images/background.svg';
 import './App.css';
 import { withRouter } from "react-router-dom";
+import {DynamoDB} from "aws-sdk/index";
 
 var AmazonCognitoIdentity = require('amazon-cognito-identity-js');
 
@@ -13,10 +14,29 @@ class SignUp extends Component {
 
   handleFormSubmit = (model) => {
 
-    var poolData = {
+    // Get the dynamoDB database
+    var dynamodb;
+    if(process.env.NODE_ENV === 'development'){
+        dynamodb = require('./components/db').db;
+    } else {
+        dynamodb = new DynamoDB({
+            region: "us-west-1",
+            credentials: {
+                accessKeyId: process.env.REACT_APP_DB_accessKeyId,
+                secretAccessKey: process.env.REACT_APP_DB_secretAccessKey},
+        });
+    }
+
+    // Get poolData
+    var poolData;
+    if(process.env.NODE_ENV === 'development'){
+        poolData = require('./poolData').poolData;
+    } else {
+      var poolData = {
         UserPoolId : process.env.REACT_APP_Auth_UserPoolId,
         ClientId : process.env.REACT_APP_Auth_ClientId
-    };
+      };
+    }
     var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
 
     var attributeList = [];
@@ -37,10 +57,38 @@ class SignUp extends Component {
             return;
         }
 
-        nestedProp.history.push({
-          pathname: '/confirm',
-          search: '?email='+model.email
-        })
+        var params = {
+          Item: {
+            "userid": {
+              S: (+new Date).toString(36)
+            },
+           "username": {
+            S: model.email
+           }, 
+           "firstName": {
+             S: model.firstName
+            }, 
+           "lastName": {
+             S: model.lastName
+            }
+          }, 
+          ReturnConsumedCapacity: "TOTAL", 
+          TableName: "user"
+        };
+
+        dynamodb.putItem(params, function(err, data) {
+          if (err) {
+            alert(err.message || JSON.stringify(err));
+          } else {
+            console.log(data);
+
+            nestedProp.history.push({
+              pathname: '/confirm',
+              search: '?email='+model.email,
+              state: {password: model.password}
+            })
+          }
+        });
     });
   }
 
@@ -56,7 +104,7 @@ class SignUp extends Component {
         height: window.innerHeight+'px', 
         overflow: 'auto',  
         backgroundImage: `url(${background})`, 
-        backgroundRepeat: 'repeate', 
+        backgroundRepeat: 'repeat', 
         backgroundColor: 'red', 
         display: 'flex', 
         alignItems: 'center' 
@@ -65,7 +113,7 @@ class SignUp extends Component {
         <div style={{
           margin: 'auto',
           backgroundColor: 'white', 
-          borderRadius: '15px',
+          borderRadius: '10px',
           maxWidth: `${0.5*window.innerWidth}px`,
           minWidth: '250px'
         }} >

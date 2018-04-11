@@ -20,6 +20,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Authentication credentials
+# Credentials for development
 db.js
 poolData.js
+
+
+\.idea/

@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
-import logo from '../images/logo.svg'
+import logo from '../images/logo.png'
 import { withRouter } from "react-router-dom";
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group'; // ES6
+import './header.css'
 
 class Header extends Component {
 	constructor() {
   		super();
   		this.state = {
    			width: window.innerWidth,
-				value: ''
+				value: '',
+				cartClicked: false
  	 	};
 		this.handleSearch = this.handleSearch.bind(this);
 		this.handleSearchChange = this.handleSearchChange.bind(this);
@@ -40,6 +43,8 @@ handleSearchChange(event) {
 showCart = () => {
 	//when cart button is clicked
 	console.log("cart is clicked");
+	const bool = !this.state.cartClicked
+	this.setState({cartClicked: bool});
 };
 
 handleAccountClick = () => {
@@ -115,7 +120,7 @@ handleZipClick = () => {
     return (
     <div className="container" style={{backgroundColor: '#F5F5F5'}}>
 
-		<div className="row">
+		<div className="row" style={{marginTop: '3%'}}>
 			<div className="container-fluid" style={center} >
 
 				<div style={{paddingLeft: '0'}} className="col-xs-2">
@@ -125,7 +130,7 @@ handleZipClick = () => {
 				</div>
 
 				<div className="col-xs-8" style={{textAlign: 'center', color: '#E6003D'}}>
-					<h3>WeMart</h3>
+					<img src={logo} style={{height: '35px', backgroundColor: 'clear'}} />
 				</div>
 
 				<div style={{paddingRight: '0'}} className="col-xs-2">
@@ -226,8 +231,8 @@ handleZipClick = () => {
 	    </ul>
 	</nav>
 	</div>
-	);
-	}
-  	}
+	    );
+	  }
+  }
 }
 export default withRouter(Header);

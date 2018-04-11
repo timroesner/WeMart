@@ -16,10 +16,16 @@ class PasswordReset extends Component {
     const queryParams = new URLSearchParams(this.props.location.search);
     let email = queryParams.get('email')
 
-    var poolData = {
+    var poolData;
+    if(process.env.NODE_ENV === 'development'){
+        poolData = require('./poolData').poolData;
+    } else {
+      var poolData = {
         UserPoolId : process.env.REACT_APP_Auth_UserPoolId,
         ClientId : process.env.REACT_APP_Auth_ClientId
-    };
+      };
+    }
+    
     var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
     var userData = {
         Username : email,
@@ -56,7 +62,7 @@ class PasswordReset extends Component {
         height: window.innerHeight+'px', 
         overflow: 'auto',  
         backgroundImage: `url(${background})`, 
-        backgroundRepeat: 'repeate', 
+        backgroundRepeat: 'repeat', 
         backgroundColor: 'red', 
         display: 'flex', 
         alignItems: 'center' 
