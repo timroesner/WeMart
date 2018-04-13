@@ -6,6 +6,23 @@ import {
 } from 'react-stripe-elements';
 import {Button} from "ic-snacks";
 
+//STYLES
+const checkoutForm = {padding:'3rem'};
+const label = {display: 'block', fontSize:'2rem', color:'#808080', borderRadius:'.6rem'}
+const cardElement = {
+    base: {
+        fontSize:'2.4rem',
+        color: '#424770',
+        letterSpacing: '0.025em',
+        fontFamily: 'Source Code Pro, monospace',
+        '::placeholder': {
+            color: '#aab7c4',
+        }}, invalid: {
+        color: '#9e2146',
+    }};
+const cardElementDiv = {border:'1px solid', padding:'1rem', borderRadius:'.6rem',
+    maxHeight:'6rem'};
+
 const handleBlur = () => {
     console.log('[blur]');
 };
@@ -48,45 +65,58 @@ class CheckoutForm extends React.Component {
 
     render() {
         return (
-            <form onSubmit={this.handleSubmit}>
-                <label>
+            <form onSubmit={this.handleSubmit} style={checkoutForm}>
+                <label style={label}>
                     Card number
+                    <div style={cardElementDiv}>
                     <CardNumberElement
+                        style={cardElement}
                         onBlur={handleBlur}
                         onChange={handleChange}
                         onFocus={handleFocus}
                         onReady={handleReady}
                     />
+                    </div>
                 </label>
-                <label>
+                <label style={label}>
                     Expiration date
-                    <CardExpiryElement
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                        onFocus={handleFocus}
-                        onReady={handleReady}
-                    />
+                    <div style={cardElementDiv}>
+                        <CardExpiryElement
+                            style={cardElement}
+                            onBlur={handleBlur}
+                            onChange={handleChange}
+                            onFocus={handleFocus}
+                            onReady={handleReady}
+                        />
+                    </div>
                 </label>
-                <label>
+                <label style={label}>
                     CVC
+                    <div style={cardElementDiv}>
                     <CardCVCElement
+                        style={cardElement}
                         onBlur={handleBlur}
                         onChange={handleChange}
                         onFocus={handleFocus}
                         onReady={handleReady}
                     />
+                    </div>
                 </label>
-                <label>
+                <label style={label}>
                     Postal code
+                    <div style={cardElementDiv}>
                     <PostalCodeElement
+                        style={{cardElement}}
                         onBlur={handleBlur}
                         onChange={handleChange}
                         onFocus={handleFocus}
                         onReady={handleReady}
                     />
+                    </div>
                 </label>
                 <div>
-                    <Button>Place Order</Button>
+                    <Button snacksStyle={'secondary'}>Cancel</Button>
+                    <Button>Continue</Button>
                 </div>
             </form>
         );
