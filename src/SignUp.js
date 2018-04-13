@@ -60,7 +60,7 @@ class SignUp extends Component {
         var params = {
           Item: {
             "userid": {
-              S: (+new Date).toString(36)
+              S: model.email
             },
            "username": {
             S: model.email
