@@ -29,3 +29,5 @@ src/Tester\.js
 src/App\.js
 
 src/poolData\.js
+
+src/components/db\.js
