@@ -6,7 +6,7 @@ import registerServiceWorker from './registerServiceWorker';
 import { withRouter } from "react-router-dom";
 
 var AmazonCognitoIdentity = require('amazon-cognito-identity-js');
-var email = ""
+var email
 var cognitoUser
 
 class Confirm extends Component {
@@ -17,10 +17,16 @@ class Confirm extends Component {
     const queryParams = new URLSearchParams(this.props.location.search);
     email = queryParams.get('email')
 
-    var poolData = {
-        UserPoolId : 'us-west-2_e6QP6fklc',
-        ClientId : '2eoha404fgulrmtqc0ac4pmde5'
-    };
+    var poolData;
+    if(process.env.NODE_ENV === 'development'){
+        poolData = require('./poolData').poolData;
+    } else {
+      var poolData = {
+        UserPoolId : process.env.REACT_APP_Auth_UserPoolId,
+        ClientId : process.env.REACT_APP_Auth_ClientId
+      };
+    }
+
     var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
 
     var userData = {
@@ -37,18 +43,8 @@ class Confirm extends Component {
 
   handleFormSubmit = (model) => {
 
-    // cognitoUser.deleteUser(function(err, result) {
-    //     if (err) {
-    //         alert(err.message);
-    //         return;
-    //     }
-
-    //     if (result) {
-    //       alert(result.message)
-    //     } else {
-    //       alert("Success")
-    //     }
-    // });
+    // Necessary becuase the closure has no access to this.props
+    let nestedProp = this.props;
 
     cognitoUser.confirmRegistration(model.confcode, true, function(err, result) {
 
@@ -58,7 +54,32 @@ class Confirm extends Component {
       }
 
       alert("Confirmed user")
-      // Ideally we will then log in and redirect to home page
+      
+      if(nestedProp.location.state.password) {
+
+        var authenticationData = {
+          Username : email,
+          Password : nestedProp.location.state.password,
+        };
+        var authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails(authenticationData);
+
+        cognitoUser.authenticateUser(authenticationDetails, {
+          onSuccess: function (result) {
+              console.log('access token + ' + result.getAccessToken().getJwtToken());
+
+              // Should be home page which then checks if user is logged in
+              nestedProp.history.push('/home')
+          },
+
+          onFailure: function(err) {
+              alert(err.message);
+          },
+
+        });
+
+      } else {
+        nestedProp.history.push('/login')
+      }
       
     });
   }
@@ -88,7 +109,7 @@ class Confirm extends Component {
         height: window.innerHeight+'px', 
         overflow: 'auto',  
         backgroundImage: `url(${background})`, 
-        backgroundRepeat: 'repeate', 
+        backgroundRepeat: 'repeat', 
         backgroundColor: 'red', 
         display: 'flex', 
         alignItems: 'center' 
@@ -97,7 +118,7 @@ class Confirm extends Component {
         <div style={{
           margin: 'auto',
           backgroundColor: 'white', 
-          borderRadius: '15px',
+          borderRadius: '10px',
           maxWidth: `${0.5*window.innerWidth}px`,
           minWidth: '250px'
         }} >

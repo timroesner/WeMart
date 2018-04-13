@@ -21,6 +21,13 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# Credentials for development
+db.js
+poolData.js
+
+
+\.idea/
+
 # aws secret keys
 src/db\.js
 
