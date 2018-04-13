@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import logo from '../images/logo.svg'
+import logo from '../images/logo.png'
 import { withRouter } from "react-router-dom";
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'; // ES6
-import Cart from './Cart'
 import './header.css'
 
 class Header extends Component {
@@ -119,6 +118,7 @@ handleZipClick = () => {
   const isMobile = width <= 500;
   if (isMobile) {
     return (
+<<<<<<< HEAD
 			<div style={{paddingBottom: '200px'}}>
 		    <div className="container" style={{width: '100%', backgroundColor: '#F5F5F5',position: 'fixed', zIndex:'10'}}>
 					<div className="row">
@@ -142,6 +142,28 @@ handleZipClick = () => {
 
 						</div>
 					</div>
+=======
+    <div className="container" style={{backgroundColor: '#F5F5F5'}}>
+
+		<div className="row" style={{marginTop: '3%'}}>
+			<div className="container-fluid" style={center} >
+
+				<div style={{paddingLeft: '0'}} className="col-xs-2">
+					<button onClick={this.handleAccountClick} className="btn btn-danger btn-sm" style={{backgroundColor: 'red'}} >
+						<i className="far fa-user" />
+					</button>
+				</div>
+
+				<div className="col-xs-8" style={{textAlign: 'center', color: '#E6003D'}}>
+					<img src={logo} style={{height: '35px', backgroundColor: 'clear'}} />
+				</div>
+
+				<div style={{paddingRight: '0'}} className="col-xs-2">
+					<button onClick={this.showCart} style={{float: 'right', backgroundColor: 'red'}} className="btn btn-danger btn-sm">
+						<i className="fas fa-shopping-cart" />
+					</button>
+				</div>
+>>>>>>> master
 
 					<div className="row">
 						<div className="container-fluid">
@@ -244,20 +266,7 @@ handleZipClick = () => {
 			<li role="navigation" style={pillsLi}><button className="primaryRedWithHover" style={astext}>History</button></li>
 	    </ul>
 	</nav>
-      	<div>
-						<ReactCSSTransitionGroup
-		          transitionName="slide"
-		          transitionEnterTimeout={500}
-		          transitionLeaveTimeout={300}>
-
-							{this.state.cartClicked ?
-							 <Cart
-							 onCloseClick={(cartClicked) => this.setState({cartClicked})} /> :
-							 null
-							}
-		        </ReactCSSTransitionGroup>
-					</div>
-	    </div>
+	</div>
 	    );
 	  }
   }

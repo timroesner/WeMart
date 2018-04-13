@@ -8,8 +8,13 @@ import LogIn from './LogIn'
 import Confirm from './Confirm'
 import PasswordReset from './PasswordReset'
 import ZipCodeCheck from './ZipCodeCheck'
+<<<<<<< HEAD
 import Home from './components/Home'
 import ItemGridTest from "./ItemGridTest";
+=======
+import Home from './Home'
+import Item from './Item'
+>>>>>>> master
 
 const Router = () => (
   <main>
@@ -20,6 +25,7 @@ const Router = () => (
       <Route path='/confirm' component={Confirm}/>
       <Route path='/passwordreset' component={PasswordReset}/>
       <Route path='/home' component={Home} />
+      <Route path='/item' component={Item} />
       <Route path='/' component={ZipCodeCheck}/>
     </Switch>
   </main>

@@ -13,7 +13,13 @@ const HorizontalScroll = (props) => {
   const scrollWrapper = {
         backgroundColor: 'white',
         border: '2px solid #efefef',
+<<<<<<< HEAD
         margin: '30px',
+=======
+        height: '275px',
+        marginTop: '5%',
+        marginBottom: '5%',
+>>>>>>> master
         borderRadius: '5px', /* 5px rounded corners */
         boxShadow: '0 4px 8px 0 rgba(0,0,0,0.2)'
   }
