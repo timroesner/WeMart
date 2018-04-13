@@ -5,9 +5,12 @@ import SampleImage from './images/canned-goods.jpg'
 import HorizontalScroll from './components/HorizontalScroll';
 import {DynamoDB} from "aws-sdk/index";
 
+var AmazonCognitoIdentity = require('amazon-cognito-identity-js');
+
 var id;
 var cognitoUser;
 var email;
+var dynamoDB;
 
 class Item extends Component {
 
@@ -22,6 +25,19 @@ class Item extends Component {
 
     	this.getItem()
     	this.getCurrentUser()
+	}
+
+	initializeDB() {
+		if(process.env.NODE_ENV === 'development'){
+	        dynamodb = require('./db').db;
+	    } else {
+	        dynamodb = new DynamoDB({
+	            region: "us-west-1",
+	            credentials: {
+	                accessKeyId: process.env.REACT_APP_DB_accessKeyId,
+	                secretAccessKey: process.env.REACT_APP_DB_secretAccessKey},
+	        });
+	    }
 	}
 
 	getCurrentUser() {
@@ -50,9 +66,13 @@ class Item extends Component {
 	            // NOTE: getSession must be called to authenticate user before calling getUserAttributes
 	            cognitoUser.getUserAttributes(function(err, attributes) {
 	                if (err) {
-	                    // Handle error
+	                    console.log(err)
 	                } else {
-	                    alert(JSON.stringify(attributes))
+	                	attributes.forEach(function(att){
+	                		if(att.Name == 'email') {
+	                			email = att.Value
+	                		}
+	                	});
 	                }
 	            });
 	        });
@@ -60,20 +80,7 @@ class Item extends Component {
 	}
 
 	getItem() {
-
-		// Get the dynamoDB database
-	    var dynamodb;
-	    if(process.env.NODE_ENV === 'development'){
-	        dynamodb = require('./db').db;
-	    } else {
-	        dynamodb = new DynamoDB({
-	            region: "us-west-1",
-	            credentials: {
-	                accessKeyId: process.env.REACT_APP_DB_accessKeyId,
-	                secretAccessKey: process.env.REACT_APP_DB_secretAccessKey},
-	        });
-	    }
-
+	    
 		var params = {
 		  Key: {
 		   "itemid": {
@@ -94,7 +101,11 @@ class Item extends Component {
 	}
 
 	addToList() {
-		alert("Success")
+		if(cognitoUser == null) {
+			alert("You need to Sign Up for an Account first.")
+		} else {
+			alert("Logged in")
+		}
 	}
 
 	renderPrice() {
