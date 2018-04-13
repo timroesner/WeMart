@@ -11,6 +11,8 @@ import {Elements, StripeProvider} from "react-stripe-elements";
 import Header from "./components/header";
 import { withRouter } from "react-router-dom";
 import { CognitoUserPool, CognitoUser, AuthenticationDetails, CognitoUserAttribute } from 'amazon-cognito-identity-js';
+import {DynamoDB} from "aws-sdk/index";
+import AWS from "aws-sdk/index";
 import NewCardForm from "./components/NewCardForm";
 
 var AmazonCognitoIdentity = require('amazon-cognito-identity-js');
@@ -39,65 +41,98 @@ class AccountSettings extends React.Component{
         this.handleClose = this.handleClose.bind(this);
 
         // Check if there is an existing cognito session open
-        var loggedIn = false;
         var poolData =require('./poolData').poolData;
         var userPool = new CognitoUserPool(poolData);
         var cognitoUser = userPool.getCurrentUser();
 
+        //If there is a cognito user then get his data from the DB otherwise do nothing
         if (cognitoUser != null) {
             cognitoUser.getSession(function(err, session) {
                 if (err) {
                     alert(err);
                     return;
                 }
-                loggedIn = session.isValid();
+            });
+            
+            this.state = {
+                //Input Validators
+                emailInput: null,
+                passwordInput: null,
+
+                emailModal: false,
+                passwordModal: false,
+                personalInfoModal: false,
+                editAddressModal: false,
+                newAddressModal: false,
+                cognitoUser: cognitoUser,
+                // For testing purposes only
+                // TODO get data from AWS once API is complete
+                user: {
+                    userId: '',
+                    email: '',
+                    password: "●●●●●●", // For demo purposes only
+                    phoneNumber: 555555555,
+                    firstName: '',
+                    lastName: '',
+                    paymentMethods: [{id: "card_1", brand: "Visa", last4: "4242", label: "Visa 4242" , isDefault: true}],
+                    deliveryAddresses: [{id:1, street: "1 Washington Square", city: "San Jose", state: "CA", zipCode: 95112,
+                        instructions: "Как Деля"}],
+                    orderHistory: []},
+            };
+            // Necessary becuase the closure has no access to this.state
+            let self = this;
+            cognitoUser.getUserAttributes(function(err, result) {
+                if (err) {
+                    alert(err);
+                    //TODO remove these alerts
+                    return;
+                }
+                result.forEach((attribute) => {
+                    if(attribute.Name === 'email'){
+                        self.setState({user: {...self.state.user , email: attribute.Value}}) // set the email
+                        self.setState({user: {...self.state.user , userId: attribute.Value}}) //set the userId
+                    }
+                })
+                self.getUserDetails()
+            });
+        }
+    }
+
+    getUserDetails(){
+        // Get the dynamoDB database
+        var dynamodb;
+        if(process.env.NODE_ENV === 'development'){
+            dynamodb = new AWS.DynamoDB(require('./db').db);
+        }else{
+            dynamodb = new DynamoDB({
+                region: "us-west-1",
+                credentials: {
+                    accessKeyId: process.env.REACT_APP_DB_accessKeyId,
+                    secretAccessKey: process.env.REACT_APP_DB_secretAccessKey},
             });
         }
 
-
-        this.state = {
-            //Input Validators
-            emailInput: null,
-            passwordInput: null,
-
-            emailModal: false,
-            passwordModal: false,
-            personalInfoModal: false,
-            editAddressModal: false,
-            newAddressModal: false,
-            cognitoUser: cognitoUser,
-            isLogedIn: loggedIn,
-            // For testing purposes only
-            // TODO get data from AWS once API is complete
-            user: {
-                email: '',
-                password: "●●●●●●", // For demo purposes only
-                phoneNumber: 555555555,
-                firstName: "John",
-                lastName: "Doe",
-                paymentMethods: [{id: "card_1", brand: "Visa", last4: "4242", label: "Visa 4242" , isDefault: true}],
-                deliveryAddresses: [{id:1, street: "1 Washington Square", city: "San Jose", state: "CA", zipCode: 95112,
-                    instructions: "Как Деля"}],
-                orderHistory: []},
+        // Get the user based on their userId from the user table
+        var userParams = {
+            Key: {
+                'userid': {S: this.state.user.userId}
+            },
+            TableName: "user"
         };
-        // Necessary becuase the closure has no access to this.state
-        let self = this;
-        cognitoUser.getUserAttributes(function(err, result) {
-            if (err) {
-                alert(err);
-                //TODO remove these alerts
-                return;
+
+        let state = this.state;
+        // Scan the DB and get the user
+        dynamodb.getItem(userParams, (err, data) => {
+            if(err) {console.log(err, err.stack)}
+            else{
+                let firstName = data.Item.firstName.S;
+                let lastName = data.Item.lastName.S;
+                this.setState({
+                    user: {...this.state.user, firstName: firstName, lastName:lastName}
+                })
+                console.log(data)
             }
-            for (var i = 0; i < result.length; i++) {
-                var attribute = result[i].getName();
-                console.log(attribute);
-                var value = result[i].getValue();
-                if(attribute === 'email'){
-                    self.setState({user: {...self.state.user , email: value}})
-                }
-                console.log(value)
-            }
-        });
+        })
     }
 
     // This should Close all modals
@@ -552,7 +587,7 @@ class AccountSettings extends React.Component{
     }
 
     render(){
-        if(this.state.isLogedIn){
+        if(this.state.cognitoUser){
             return (
                 <StyleRoot>
                     <Header/>
