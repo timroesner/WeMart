@@ -582,7 +582,6 @@ class AccountSettings extends React.Component{
                                             </Link>
                                         </div>
                                     </div>}/>
-                                <ProfilePanel title="Accessibility"/>
                             </Column>
                             <Column sizes={{ sm: 6, md: 3, lg: 3, xl: 3 }}>
                                 <ProfilePanel title="Payment Methods">
