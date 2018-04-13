@@ -27,3 +27,5 @@ src/db\.js
 src/Tester\.js
 
 src/poolData\.js
+
+src/App\.js
