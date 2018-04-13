@@ -6,6 +6,8 @@ import HorizontalScroll from './components/HorizontalScroll';
 import {DynamoDB} from "aws-sdk/index";
 
 var id;
+var cognitoUser;
+var email;
 
 class Item extends Component {
 
@@ -19,6 +21,42 @@ class Item extends Component {
     	id = queryParams.get('id')
 
     	this.getItem()
+    	this.getCurrentUser()
+	}
+
+	getCurrentUser() {
+		// Get poolData
+	    var poolData;
+	    if(process.env.NODE_ENV === 'development'){
+	        poolData = require('./poolData').poolData;
+	    } else {
+	      var poolData = {
+	        UserPoolId : process.env.REACT_APP_Auth_UserPoolId,
+	        ClientId : process.env.REACT_APP_Auth_ClientId
+	      };
+	    }
+	    var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+
+	    cognitoUser = userPool.getCurrentUser();
+
+	    if (cognitoUser != null) {
+	        cognitoUser.getSession(function(err, session) {
+	            if (err) {
+	                alert(err.message || JSON.stringify(err));
+	                return;
+	            }
+	            console.log('session validity: ' + session.isValid());
+
+	            // NOTE: getSession must be called to authenticate user before calling getUserAttributes
+	            cognitoUser.getUserAttributes(function(err, attributes) {
+	                if (err) {
+	                    // Handle error
+	                } else {
+	                    alert(JSON.stringify(attributes))
+	                }
+	            });
+	        });
+    	}
 	}
 
 	getItem() {
@@ -53,6 +91,10 @@ class Item extends Component {
 		   		image: data.Item.image.S, price: data.Item.price.N, quantity: data.Item.quantity.S, sale: data.Item.sale.N } })
 		   	}
 		 }.bind(this));
+	}
+
+	addToList() {
+		alert("Success")
 	}
 
 	renderPrice() {
@@ -116,7 +158,7 @@ class Item extends Component {
 						<option value="8">8</option>
 						<option value="9">9</option>
 					</select>
-					<button className="primaryRedWithHover" style={astext}>
+					<button className="primaryRedWithHover" style={astext} onClick={this.addToList} >
 						<i class="fa fa-th-list" style={{width: '20%'}}/>
 						Add to List
 					</button>
@@ -170,7 +212,7 @@ class Item extends Component {
 						<option value="9">9</option>
 					</select>
 					<button className="primary" style={{marginLeft: '5%', height:'46px', width: '40%'}}>Add to Cart</button>
-					<button className="primaryRedWithHover" style={astext}>
+					<button className="primaryRedWithHover" style={astext} onClick={this.addToList} >
 						<i class="fa fa-th-list fa-2x" style={{width: '80px'}}/>
 						Add to List
 					</button>
