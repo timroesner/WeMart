@@ -8,10 +8,10 @@ import Line from "./components/Line";
 import {Modal} from "react-bootstrap";
 import CreditCard from "./components/CreditCard";
 import {Elements, StripeProvider} from "react-stripe-elements";
-import {NewCardForm} from "./components/NewCardForm";
 import Header from "./components/header";
 import { withRouter } from "react-router-dom";
 import { CognitoUserPool, CognitoUser, AuthenticationDetails, CognitoUserAttribute } from 'amazon-cognito-identity-js';
+import NewCardForm from "./components/NewCardForm";
 
 var AmazonCognitoIdentity = require('amazon-cognito-identity-js');
 
@@ -47,7 +47,7 @@ class AccountSettings extends React.Component{
         if (cognitoUser != null) {
             cognitoUser.getSession(function(err, session) {
                 if (err) {
-                    loggedIn = false;
+                    alert(err);
                     return;
                 }
                 loggedIn = session.isValid();
@@ -58,6 +58,7 @@ class AccountSettings extends React.Component{
         this.state = {
             //Input Validators
             emailInput: null,
+            passwordInput: null,
 
             emailModal: false,
             passwordModal: false,
@@ -66,21 +67,25 @@ class AccountSettings extends React.Component{
             newAddressModal: false,
             cognitoUser: cognitoUser,
             isLogedIn: loggedIn,
-
             // For testing purposes only
             // TODO get data from AWS once API is complete
             user: {
-                email: 'JohnDoe@gmail.com',
+                email: '',
                 password: "●●●●●●", // For demo purposes only
                 phoneNumber: 555555555,
                 firstName: "John",
                 lastName: "Doe",
-            }
+                paymentMethods: [{id: "card_1", brand: "Visa", last4: "4242", label: "Visa 4242" , isDefault: true}],
+                deliveryAddresses: [{id:1, street: "1 Washington Square", city: "San Jose", state: "CA", zipCode: 95112,
+                    instructions: "Как Деля"}],
+                orderHistory: []},
         };
-        var emails = this.state.user.email;
+        // Necessary becuase the closure has no access to this.state
+        let self = this;
         cognitoUser.getUserAttributes(function(err, result) {
             if (err) {
                 alert(err);
+                //TODO remove these alerts
                 return;
             }
             for (var i = 0; i < result.length; i++) {
@@ -88,9 +93,9 @@ class AccountSettings extends React.Component{
                 console.log(attribute);
                 var value = result[i].getValue();
                 if(attribute === 'email'){
-                    emails = value;
-                    console.log(emails)
+                    self.setState({user: {...self.state.user , email: value}})
                 }
+                console.log(value)
             }
         });
     }
@@ -119,9 +124,8 @@ class AccountSettings extends React.Component{
         this.setState({personalInfoModal: true})
     }
 
-    handleEditAddressModal(address){
-        this.setState({editAddressModal: true,
-        selectedAddress: address})
+    handleEditAddressModal(){
+        this.setState({editAddressModal: true})
     }
 
     handleNewAddressModal(){
@@ -135,23 +139,226 @@ class AccountSettings extends React.Component{
     handleEmailChange = (model) => {
         //TODO validate password
         this.setState(prevState => ({
-            user: {...prevState.user, email: model.newEmail}
-        }))
-        console.log(this.state.user.email) //TODO Remove this line
-        this.handleClose()
+            user: [...prevState.user, {email: model.newEmail}]
+        }));
+        console.log(model.newEmail)
     };
 
     handlePasswordChange = (model) => {
-        //TODO validate old password
+        //TODO validate password
         console.log(model)
     };
 
     handlePersonalInfoChange = (model) => {
-        this.setState(prevState => ({
-            user: {...prevState.user, firstName: model.firstName, lastName: model.lastName, phoneNumber: model.phone}
-        }))
+        this.setState({
+            user: {...this.state.user, firstName:model.first_name, lastName:model.last_name, phoneNumber:model.phone}
+        })
         this.handleClose();
+        console.log(model)
     };
+
+    handleNewAddress = (model) => {
+        let id = this.state.user.deliveryAddresses.length + 2;
+        this.setState({
+            user: {...this.state.user, deliveryAddresses: [...this.state.user.deliveryAddresses, {
+                street:model.addressLine1, city:model.city, zipCode:model.zipCode, state:model.state, id:id
+                }]}
+        })
+        this.handleClose()
+      console.log(this.state.user.deliveryAddresses)
+    };
+
+    handleEditAddress = (model, address) => {
+        console.log('address:', address)
+        console.log('model', model)
+        let addresses = this.state.user.deliveryAddresses
+        let item = {city:model.city, street:model.addressLine1, state:model.state, zipCode:model.zipCode, id:address.id}
+        for(var i = 0; i < addresses.length; i++){
+            if(addresses[i].id === address.id){
+                console.log('found ')
+                addresses[i] = item;
+            }
+        }
+
+        // item = {street:model.addressLine1, city:'city', zipCode:92222, state:'CA', id:item.id}
+
+        // this.setState({
+        //     user: {...this.state.user, delli}
+        // })
+        this.handleClose()
+        console.log(model)
+    };
+
+    // Renders a list of all the delivery addresses.
+    renderAddress(){
+        if(this.state.user.deliveryAddresses){
+            let delivAddress = this.state.user.deliveryAddresses[0];
+            return <div>
+                {this.state.user.deliveryAddresses.map((address) =>
+                <AddressCard street={address.street} city={address.city} state={address.state} zipCode={address.zipCode}
+                             onClick={() => {this.handleEditAddressModal(); delivAddress=address}}/>
+                )}
+                {this.editAddressModal(delivAddress)}
+            </div>
+        } else {
+            return(
+                <div><h4>No delivery addresses add one below</h4></div>
+            )
+        }
+    }
+
+    // Renders a list of all the credit cards.
+    renderCards(){
+        return this.state.user.paymentMethods.map((card) =>
+            <CreditCard
+                brand={card.brand}
+                label={card.label}
+                last4={card.last4}
+                isDefault={card.isDefault}
+            />)
+    }
+
+    newAddressModal(){
+        return(
+            <div>
+                <Modal show={this.state.newAddressModal} onHide={this.handleClose}>
+                    <Modal.Header>
+                        <h1>New Address</h1>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Form onSubmit={this.handleNewAddress}>
+                            <div>
+                                <TextField
+                                    name="addressLine1"
+                                    type="text"
+                                    floatingLabelText="Address"
+                                    hintText="Enter Your Address"
+                                    fullWidth
+                                    required
+                                />
+                            </div>
+                            <div>
+                                <TextField
+                                    name="city"
+                                    type="text"
+                                    floatingLabelText="City"
+                                    hintText="Enter Your City"
+                                    halfWidth
+                                    required
+                                />
+                            </div>
+                            <div>
+                                <Select
+                                    name="state"
+                                    floatingLabelText="State"
+                                    hintText="Select a State"
+                                    halfWidth
+                                    required
+                                >
+                                    <MenuItem label="California" value="CA"/>
+                                </Select>
+                            </div>
+                            <div>
+                                <TextField
+                                    name="zipCode"
+                                    type="text"
+                                    floatingLabelText="Zip Code"
+                                    hintText="Enter Your Zip Code"
+                                    halfWidth
+                                    required
+                                />
+                            </div>
+                            <div>
+                                <textarea
+                                    name="instructions"
+                                    placeholder="Delivery Instructions"
+                                    rows= "5"
+                                    wrap="soft"
+                                    style={{height: "10rem", width: "100%", resize: "none"}}
+                                />
+                            </div>
+                            <Button snacksStyle="secondary" onClick={this.handleClose}>Cancel</Button>
+                            <Button type="submit">Accept</Button>
+                        </Form>
+                    </Modal.Body>
+                </Modal>
+            </div>
+        )
+    }
+
+    editAddressModal(address){
+        console.log(address)
+        return(
+            <div>
+                <Modal show={this.state.editAddressModal} onHide={this.handleClose}>
+                    <Modal.Header>
+                        <h1>Edit Address</h1>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Form onSubmit={(model)=>{this.handleEditAddress(model,address)}}>
+                            <div>
+                                <TextField
+                                    name="addressLine1"
+                                    type="text"
+                                    floatingLabelText="Address"
+                                    hintText="Enter Your Address"
+                                    defaultValue={address.street}
+                                    fullWidth
+                                    required
+                                />
+                            </div>
+                            <div>
+                                <TextField
+                                    name="city"
+                                    type="text"
+                                    floatingLabelText="City"
+                                    hintText="Enter Your City"
+                                    defaultValue={address.city}
+                                    halfWidth
+                                    required
+                                />
+                            </div>
+                            <div>
+                                <Select
+                                    name="state"
+                                    floatingLabelText="State"
+                                    hintText="Select a State"
+                                    halfWidth
+                                    defaultOption={{label: "California", value: "CA"}}
+                                    required
+                                >
+                                    <MenuItem label="California" value="CA"/>
+                                </Select>
+                            </div>
+                            <div>
+                                <TextField
+                                    name="zipCode"
+                                    type="text"
+                                    floatingLabelText="Zip Code"
+                                    hintText="Enter Your Zip Code"
+                                    defaultValue={address.zipCode}
+                                    halfWidth
+                                    required
+                                />
+                            </div>
+                            <div>
+                                <textarea
+                                    name="instructions"
+                                    placeholder="Delivery Instructions"
+                                    defaultValue={address.instructions}
+                                    rows= "5"
+                                    wrap="soft"
+                                    style={{height: "10rem", width: "100%", resize: "none"}}
+                                />
+                            </div>
+                            <Button snacksStyle="secondary" onClick={this.handleClose}>Cancel</Button>
+                            <Button type="submit">Accept</Button>
+                        </Form>
+                    </Modal.Body>
+                </Modal>
+            </div>
+        );
+    }
 
     editPerInfoModal(){
         return(
@@ -165,7 +372,7 @@ class AccountSettings extends React.Component{
                             <div style={{marginBottom: '10px'}}>
                             <TextField
                                 style={{marginRight: '5px'}}
-                                name="firstName"
+                                name="first_name"
                                 type="text"
                                 floatingLabelText="First Name"
                                 defaultValue={this.state.user.firstName}
@@ -174,7 +381,7 @@ class AccountSettings extends React.Component{
                             />
                             <TextField
                                 style={{marginLeft: '5px'}}
-                                name="lastName"
+                                name="last_name"
                                 type="text"
                                 floatingLabelText="Last Name"
                                 defaultValue={this.state.user.lastName}
@@ -189,8 +396,6 @@ class AccountSettings extends React.Component{
                                     floatingLabelText="Phone Number"
                                     fullWidth
                                     type="tel"
-                                    validationErrorText={'Incorrect Phone Number'}
-                                    validations={{isMobilePhone: {locale:'en-US'}}}
                                 />
                             </div>
                             <Button snacksStyle="secondary" onClick={this.handleClose}>Cancel</Button>
@@ -221,6 +426,7 @@ class AccountSettings extends React.Component{
                                     validationErrorText="Password must be at least 6 characters"
                                     fullWidth
                                     required
+                                    onChange={(model)=>{this.setState({passwordInput: model.target.value})}}
                                 />
                             </div>
                             <div style={{marginBottom: "1rem"}}>
@@ -229,8 +435,8 @@ class AccountSettings extends React.Component{
                                     type="password"
                                     floatingLabelText="New Password Confirm"
                                     hintText="Enter New Password again"
-                                    validations={{isLength: {min: 6}}}
-                                    validationErrorText="Password must be at least 6 characters"
+                                    validations={{isLength: {min: 6}, equals: this.state.passwordInput}}
+                                    validationErrorText="Passwords do not match"
                                     fullWidth
                                     required
                                 />
@@ -242,7 +448,7 @@ class AccountSettings extends React.Component{
                                     floatingLabelText="Current Password"
                                     hintText="Enter Current Password"
                                     validations={{isLength: {min: 6}}}
-                                    validationErrorText="Password must be at least 6 characters"
+                                    validationErrorText="Incorrect Password"
                                     fullWidth
                                     required
                                 />
@@ -315,12 +521,44 @@ class AccountSettings extends React.Component{
         );
     }
 
+    addCardModal(){
+        return(
+            <div>
+                <Modal show={this.state.newCardModal} onHide={this.handleClose}>
+                    <Modal.Header>
+                        <h1>Add Card</h1>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <StripeProvider apiKey={stripeAPIKey}>
+                            <Elements>
+                                <NewCardForm onSubmit={()=>{
+                                    this.handleClose();
+                                    this.setState({
+                                        user: {...this.state.user, paymentMethods: [...this.state.user.paymentMethods,
+                                                {id: "card_2", brand: "Visa", last4: "4241", label: "Visa 4241" , isDefault: false
+                                            }]}
+                                    })
+                                }}/>
+                            </Elements>
+                        </StripeProvider>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button snacksStyle="secondary" onClick={this.handleClose} >Cancel</Button>
+                        <Button elementAttributes={{form:"newcard"}} type="submit">Add Card</Button>
+                    </Modal.Footer>
+                </Modal>
+            </div>
+        );
+    }
+
     render(){
         if(this.state.isLogedIn){
             return (
                 <StyleRoot>
                     <Header/>
                     <div style={accountSettings}>
+                        <Row maxColumns={11} style={{maxWidth: "109.2rem"}}>
+                            <Column sizes={{ sm: 6, md: 5, lg: 8, xl: 8}}>
                                 <ProfilePanel title="Account Information" content={
                                     <div>
                                         <Line title="Email" value={this.state.user.email} onChange={this.handleShowEmailModal}/>
@@ -332,11 +570,42 @@ class AccountSettings extends React.Component{
                                         <Line title="Last Name" value={this.state.user.lastName} onChange={this.handleShowPersonalInfoModal}/>
                                         <Line title="Phone" value={this.state.user.phoneNumber} onChange={this.handleShowPersonalInfoModal}/>
                                     </div>}/>
+                                <ProfilePanel title="Delivery Addresses" content={
+                                    <div>
+                                        {this.renderAddress()}
+                                        <div style={newAddressStyle}>
+                                            <Link onClick={(e, props) => {
+                                                e.preventDefault();
+                                                this.handleNewAddressModal();
+                                            }} style={{width: "100%"}}>
+                                                <Icon name="plusBold"/> Add New Delivery Address
+                                            </Link>
+                                        </div>
+                                    </div>}/>
                                 <ProfilePanel title="Accessibility"/>
+                            </Column>
+                            <Column sizes={{ sm: 6, md: 3, lg: 3, xl: 3 }}>
+                                <ProfilePanel title="Payment Methods">
+                                    <ul style={{listStyleType: "none"}}>
+                                        {this.renderCards()}
+                                    </ul>
+                                    <div style={newAddressStyle}>
+                                        <Link onClick={(e, props) => {
+                                            e.preventDefault();
+                                            this.handleNewCardModal();
+                                        }} style={{width: "100%"}}>
+                                            <Icon name="plusBold"/> Add New Payment Method
+                                        </Link>
+                                    </div>
+                                </ProfilePanel>
+                            </Column>
+                        </Row>
                     </div>
                     {this.emailModal()}
                     {this.passwordModal()}
                     {this.editPerInfoModal()}
+                    {this.newAddressModal()}
+                    {this.addCardModal()}
                 </StyleRoot>
             );
         } else {
@@ -344,7 +613,9 @@ class AccountSettings extends React.Component{
                 //TODO implement react-router-dom
                 <div>
                     <Header/>
+
                     <div style={accountSettings}>
+
                         <ProfilePanel title='Account Settings'>
                             <div style={noSession}>
                                 <h2>
