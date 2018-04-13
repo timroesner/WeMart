@@ -10,12 +10,12 @@ const CartItem = ({item}) => {
             <div className="col-xs-2">
               <img className="img-responsive" src={item.image} />
             </div>
-            <div className="col-xs-3">
+            <div className="col-xs-2">
               <span>{item.name}</span>
               <br />
               <span style={{color: 'gray'}}>{item.quantity}</span>
             </div>
-            <div className="col-xs-5">
+            <div className="col-xs-6" style={{paddingRight: '0'}}>
               <Counter quantity={cartQuantity} />
             </div>
             <div className="col-xs-2">
