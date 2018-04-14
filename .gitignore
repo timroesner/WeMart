@@ -31,3 +31,10 @@ src/App\.js
 src/poolData\.js
 
 src/components/db\.js
+
+# Credentials for development
+db.js
+poolData.js
+
+
+\.idea/
