@@ -10,6 +10,7 @@ import {StyleRoot} from "radium";
 import CreditCard from "./components/CreditCard";
 import OrderItems from "./components/OrderItems";
 import {DynamoDB} from "aws-sdk/index";
+import PropTypes from 'prop-types';
 import AWS from "aws-sdk/index";
 //
 
@@ -22,6 +23,7 @@ let days = [
     {text:'Friday'},
     {text:'Saturday'},
 ];
+let cart = [{id: 1, quantity:2},{id:4,quantity:1}]
 
 //STYLES
 const checkout = {margin:' 1rem auto', maxWidth:'70rem', overflow: 'hidden', borderTopLeftRadius:'.6rem',
@@ -36,13 +38,18 @@ export default class Checkout extends React.Component {
             isGuest:true,
             deliveryAddress: null,
             paymentMethod: {id: "card_1", brand: "Visa", last4: "4242", label: "Visa 4242" , isDefault: true},
-            cart: []
+            cart: [],
+            deliveryFee: 3.99,
+            serviceFee: 2.98,
+            credit: 2.99,
+            subtotal: 0,
+            total:0,
         }
 
         // Get the dynamoDB database
-        var dynamodb = null;
+        var dynamodb;
         if(process.env.NODE_ENV === 'development'){
-            dynamodb = new AWS.DynamoDB(require('./db').db);
+            dynamodb = require('./db').db;
         }else{
             dynamodb = new DynamoDB({
                 region: "us-west-1",
@@ -52,35 +59,45 @@ export default class Checkout extends React.Component {
             });
         }
 
-        // Get the table whose name is "item"
-        var params = {
-            TableName: "item"
-        };
+        console.log(this.props)
 
-        // Scan the DB and get the items
-        dynamodb.scan(params, (err, data) => {
-            if (err) {console.log(err, err.stack)} // an error occurred
-            else{
-                data.Items.forEach((element) => {
-
-                    //TODO Clean this up into a one liner.
-                    let departmentid = element.departmentid.N;
-                    let image = element.image.S;
-                    let itemid = (element.itemid.S);
-                    let name = (element.name.S);
-                    let price = (element.price.N);
-                    let quantity = (element.quantity.S);
-                    let sale = (element.sale.N);
-
-                    let testItem = {
-                        itemid: itemid, name: name, departmentid: departmentid, image: image, price: price,
-                        quantity: quantity, sale: sale, inCart: 0};
-                    this.setState({
-                        cart: [...this.state.cart, testItem]
-                    });
-                });
+        cart.forEach((item)=> {
+            console.log(item);
+            var itemParams  = {
+                Key: {'itemid': {S:item.id.toString()}},
+                TableName: 'item'
             }
-        });
+            dynamodb.getItem(itemParams,(err, data)=>{
+                if(err) console.log(err, err.stack)
+                else {
+                    let departmentid = data.Item.departmentid.N;
+                    let image = data.Item.image.S;
+                    let itemid = (data.Item.itemid.S);
+                    let name = (data.Item.name.S);
+                    let price = (data.Item.price.N);
+                    let quantity = (data.Item.quantity.S);
+                    let sale = (data.Item.sale.N);
+                    let testItem = {
+                                    itemid: itemid, name: name, departmentid: departmentid, image: image, price: price,
+                                    quantity: quantity, sale: sale, inCart: 0};
+
+                    this.setState({
+                        cart: [...this.state.cart, {item: testItem, quantity: item.quantity}]
+                    })
+                    var itemTotalPrice = (item.quantity * price);
+                    this.setState({
+                        subtotal: (this.state.subtotal + itemTotalPrice)
+                    })
+                }
+            })
+        })
+    }
+
+    componentDidMount(){
+        console.log(this.state.subtotal);
+        this.setState({
+            total: this.state.subtotal + this.state.credit + this.state.serviceFee + this.state.deliveryFee
+        })
     }
 
     handleNewAddress = (model) =>{
@@ -97,7 +114,7 @@ export default class Checkout extends React.Component {
                                 zipCode={this.state.deliveryAddress.zipCode}/>)
         } else {
             return(<Form onSubmit={this.handleNewAddress}>
-                <div>
+                <div style={{margin:'1.5rem 1.5rem'}}>
                     <TextField
                         name="addressLine"
                         type="text"
@@ -107,8 +124,9 @@ export default class Checkout extends React.Component {
                         required
                     />
                 </div>
-                <div>
+                <div style={{minWidth:'30%',marginLeft:'1.5rem', display:'inline-block', marginBottom:'1.5rem'}}>
                     <TextField
+                        style={{width:'100%'}}
                         name="city"
                         type="text"
                         floatingLabelText="City"
@@ -117,7 +135,7 @@ export default class Checkout extends React.Component {
                         required
                     />
                 </div>
-                <div>
+                <div style={{display:'inline-block', marginLeft:'1.5rem', marginBottom:'1.5rem'}}>
                     <Select
                         name="state"
                         floatingLabelText="State"
@@ -128,7 +146,7 @@ export default class Checkout extends React.Component {
                         <MenuItem label="California" value="CA"/>
                     </Select>
                 </div>
-                <div>
+                <div style={{display:'inline-block', marginLeft:'1.5rem', marginBottom:'1.5rem'}}>
                     <TextField
                         name="zipCode"
                         type="text"
@@ -138,7 +156,9 @@ export default class Checkout extends React.Component {
                         required
                     />
                 </div>
-                <Button type="submit">Accept</Button>
+                <div style={{marginLeft:'1.5rem'}}>
+                    <Button style={{paddingLeft:'3rem', paddingRight:'3rem'}} type="submit">Accept</Button>
+                </div>
             </Form>)
         }
     }
@@ -146,7 +166,7 @@ export default class Checkout extends React.Component {
     renderPaymentMethods(){
         if(this.state.paymentMethod){
             return(
-                <ul style={{listStyleType: "none"}}>
+                <ul style={{listStyleType: "none",marginBottom:'3rem'}}>
                     <CreditCard brand={'visa'} label={'visa2333'} last4={'4242'} isDefault={false}/>
                 </ul>)
         } else{return(<StripeProvider apiKey={key}>
@@ -168,7 +188,7 @@ export default class Checkout extends React.Component {
                     <CheckoutPanel icon={"clock"} title='Choose delivery time'>
                         <div>
                             <StyleRoot>
-                                <Select
+                                <Select style={{margin:'1.5rem'}}
                                     name="deliveryDay"
                                     floatingLabelText="Day"
                                     hintText="Select a Day"
@@ -185,7 +205,7 @@ export default class Checkout extends React.Component {
                                     <MenuItem label="Monday" value="monday"/>
                                     <MenuItem label="Monday" value="monday"/>
                                 </Select>
-                                <Select
+                                <Select style={{margin:'1.5rem'}}
                                     name="deliveryTime"
                                     floatingLabelText="Time"
                                     hintText="Select a Time"
@@ -207,47 +227,64 @@ export default class Checkout extends React.Component {
                         </div>
                     </CheckoutPanel>
                     <CheckoutPanel icon={"phone"} title='Contact number'>
-                        <TextField
-                            style={{marginRight: '5px'}}
-                            name="phone"
-                            type="tel"
-                            floatingLabelText="Phone number"
-                            fullWidth
-                            required
-                        />
+                        <div style={{margin: '1.5rem'}}>
+                            <TextField
+
+                                name="phone"
+                                type="tel"
+                                floatingLabelText="Phone number"
+                                fullWidth
+                                required
+                            />
+                        </div>
+                        <div style={{marginLeft:'1.5rem'}}>
+                            <Button style={{paddingLeft:'3rem', paddingRight:'3rem'}} type="submit">Accept</Button>
+                        </div>
                     </CheckoutPanel>
                     <CheckoutPanel icon={"creditCard"} title='Select payment method'>
                         {this.renderPaymentMethods()}
                     </CheckoutPanel>
-                    <CheckoutPanel icon={"orderReview"} title='N items'>
+                    <CheckoutPanel icon={"orderReview"} title={this.state.cart.length + ' Items'}>
                         <OrderItems items={this.state.cart}/>
                     </CheckoutPanel>
                     <CheckoutPanel title={'Order Total'} icon={'note'}>
                         <div>
                             <div style={{overflow:'hidden', lineHeight:'2.rem', display:'flex', alignItems:'center'}}>
-                                Subtotal <div style={{flexGrow:'1', textAlign:'end'}}>$54.99</div>
+                                Subtotal <div style={{flexGrow:'1', textAlign:'end'}}>${this.state.subtotal}</div>
                             </div>
                             <div style={{overflow:'hidden', lineHeight:'2.rem', display:'flex', alignItems:'center'}}>
-                                Delivery <div style={{flexGrow:'1', textAlign:'end'}}>$4.99</div>
+                                Delivery <div style={{flexGrow:'1', textAlign:'end'}}>${this.state.deliveryFee}</div>
                             </div>
                             <div style={{overflow:'hidden', lineHeight:'2.rem', display:'flex', alignItems:'center'}}>
-                                Service Fee <div style={{flexGrow:'1', textAlign:'end'}}>$4.99</div>
+                                Service Fee <div style={{flexGrow:'1', textAlign:'end'}}>${this.state.serviceFee}</div>
                             </div>
                             <div style={{overflow:'hidden', lineHeight:'2.rem', display:'flex', alignItems:'center'}}>
-                                Credit/Discount Applied <div style={{flexGrow:'1', textAlign:'end'}}>$4.99</div>
+                                Credit/Discount Applied <div style={{flexGrow:'1', textAlign:'end'}}>${this.state.credit}</div>
                             </div>
                             <hr></hr>
                             <div style={{fontWeight:'600',overflow:'hidden', lineHeight:'2.rem', display:'flex', alignItems:'center'}}>
-                                Total <div style={{flexGrow:'1', textAlign:'end'}}>$54.99</div>
+                                Total <div style={{flexGrow:'1', textAlign:'end'}}>${this.state.total}</div>
                             </div>
                         </div>
                     </CheckoutPanel>
                     <div style={{background:'#FFFFFF', width:'100%', marginTop:'2rem', padding:'1rem'}}>
-                        <span>Done? Place your order and enjoy your day.</span>
-                        <Button style={{}}>Place order</Button>
+                        <div><span style={{display:'inline-block'}}>Done? Place your order and enjoy your day.</span></div>
+
+                        <div style={{display:'inline-block', marginTop:'1.5rem', marginRight:'0', marginLeft:'auto'}}>
+                            <Button style={{paddingLeft:'3rem', paddingRight:'3rem', marginLeft:'auto', marginRight:'0'}}>Place order</Button>
+                        </div>
+
                     </div>
                 </div>
             </diV>
         );
     }
+}
+
+Checkout.defaultProps = {
+    cart: [{id: 1, quantity:2},{id:4,quantity:1}],
+}
+
+Checkout.propTypes = {
+    cart: PropTypes.array
 }
