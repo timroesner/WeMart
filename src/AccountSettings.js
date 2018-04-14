@@ -101,7 +101,7 @@ class AccountSettings extends React.Component{
         // Get the dynamoDB database
 
         if(process.env.NODE_ENV === 'development'){
-            dynamodb = new AWS.DynamoDB(require('./db').db);
+            dynamodb = require('./db').db;
         }else{
             dynamodb = new DynamoDB({
                 region: "us-west-1",
