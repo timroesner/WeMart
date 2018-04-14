@@ -3,6 +3,7 @@ import logo from '../images/logo.png'
 import { withRouter } from "react-router-dom";
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'; // ES6
 import './header.css'
+import Cart from './Cart'
 
 class Header extends Component {
 	constructor() {
