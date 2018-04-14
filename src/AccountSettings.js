@@ -10,16 +10,13 @@ import CreditCard from "./components/CreditCard";
 import {Elements, StripeProvider} from "react-stripe-elements";
 import Header from "./components/header";
 import { withRouter } from "react-router-dom";
-import { CognitoUserPool, CognitoUser, AuthenticationDetails, CognitoUserAttribute } from 'amazon-cognito-identity-js';
+import { CognitoUserPool} from 'amazon-cognito-identity-js';
 import {DynamoDB} from "aws-sdk/index";
 import AWS from "aws-sdk/index";
 import NewCardForm from "./components/NewCardForm";
 
-var AmazonCognitoIdentity = require('amazon-cognito-identity-js');
-
 let newAddressStyle = {textAlign: "center", fontSize: "1.6rem", paddingBottom: ".6rem", paddingTop: ".6rem"};
 let stripeAPIKey = 'pk_test_ccBJoXsCQn6kn5dkF098Xywl'; //TODO change this to our API key
-let cognitoUser = null;
 
 //STYLES
 const noSession = {textAlign:'center', marginBottom: '2rem'};
@@ -27,6 +24,7 @@ const noSessionButton = {marginLeft: '40%', marginRight:'40%', textAlign:'center
 const accountSettings = {fontFamily:'"Open Sans", "Helvetica Neue", Helvetica, sans-serif', maxWidth:'109.2rem',
 height:'auto !important', margin:'auto'};
 const h4 = {fontSize:'1.8rem'};
+var dynamodb;
 
 class AccountSettings extends React.Component{
 
@@ -53,11 +51,12 @@ class AccountSettings extends React.Component{
                     return;
                 }
             });
-            
+
             this.state = {
                 //Input Validators
                 emailInput: null,
                 passwordInput: null,
+                isPasswordValid: true,
 
                 emailModal: false,
                 passwordModal: false,
@@ -71,7 +70,7 @@ class AccountSettings extends React.Component{
                     userId: '',
                     email: '',
                     password: "●●●●●●", // For demo purposes only
-                    phoneNumber: 555555555,
+                    phoneNumber: null,
                     firstName: '',
                     lastName: '',
                     paymentMethods: [{id: "card_1", brand: "Visa", last4: "4242", label: "Visa 4242" , isDefault: true}],
@@ -100,7 +99,7 @@ class AccountSettings extends React.Component{
 
     getUserDetails(){
         // Get the dynamoDB database
-        var dynamodb;
+
         if(process.env.NODE_ENV === 'development'){
             dynamodb = new AWS.DynamoDB(require('./db').db);
         }else{
@@ -111,7 +110,6 @@ class AccountSettings extends React.Component{
                     secretAccessKey: process.env.REACT_APP_DB_secretAccessKey},
             });
         }
-
         // Get the user based on their userId from the user table
         var userParams = {
             Key: {
@@ -119,16 +117,15 @@ class AccountSettings extends React.Component{
             },
             TableName: "user"
         };
-
-        let state = this.state;
         // Scan the DB and get the user
         dynamodb.getItem(userParams, (err, data) => {
             if(err) {console.log(err, err.stack)}
             else{
                 let firstName = data.Item.firstName.S;
                 let lastName = data.Item.lastName.S;
+                let phone = data.Item.phone.N;
                 this.setState({
-                    user: {...this.state.user, firstName: firstName, lastName:lastName}
+                    user: {...this.state.user, firstName: firstName, lastName:lastName, phoneNumber:phone}
                 })
                 console.log(data)
             }
@@ -180,11 +177,46 @@ class AccountSettings extends React.Component{
     };
 
     handlePasswordChange = (model) => {
-        //TODO validate password
+        this.state.cognitoUser.changePassword(model.password ,model.newPassword,(err,data)=>{
+            if(err){console.log(err, err.stack); this.setState({isPasswordValid:false})}
+            else{this.handleClose();}}
+            )
         console.log(model)
     };
 
     handlePersonalInfoChange = (model) => {
+
+        var params = {
+            ExpressionAttributeNames: {
+                "#FN": "firstName",
+                "#LN": "lastName",
+                "#PN": 'phone',
+            },
+            ExpressionAttributeValues: {
+                ":f": {
+                    S: model.first_name
+                },
+                ":l": {
+                    S: model.last_name
+                },
+                ":p": {
+                    N: model.phone
+                }
+            },
+            Key: {
+                'userid': {S: this.state.user.userId}
+            },
+            TableName: "user",
+            ReturnValues: "ALL_NEW",
+            UpdateExpression: 'SET #FN = :f, #LN = :l, #PN = :p',
+        }
+
+        dynamodb.updateItem(params, (err, data) => {
+            if(err) console.log(err, err.stack);
+            else {
+                console.log(data)
+            }
+        })
         this.setState({
             user: {...this.state.user, firstName:model.first_name, lastName:model.last_name, phoneNumber:model.phone}
         })
@@ -230,7 +262,7 @@ class AccountSettings extends React.Component{
             let delivAddress = this.state.user.deliveryAddresses[0];
             return <div>
                 {this.state.user.deliveryAddresses.map((address) =>
-                <AddressCard street={address.street} city={address.city} state={address.state} zipCode={address.zipCode}
+                <AddressCard key={address.id} street={address.street} city={address.city} state={address.state} zipCode={address.zipCode}
                              onClick={() => {this.handleEditAddressModal(); delivAddress=address}}/>
                 )}
                 {this.editAddressModal(delivAddress)}
@@ -246,6 +278,7 @@ class AccountSettings extends React.Component{
     renderCards(){
         return this.state.user.paymentMethods.map((card) =>
             <CreditCard
+                key={card.id}
                 brand={card.brand}
                 label={card.label}
                 last4={card.last4}
@@ -486,6 +519,8 @@ class AccountSettings extends React.Component{
                                     validationErrorText="Incorrect Password"
                                     fullWidth
                                     required
+                                    serverError='Incorrect Password'
+                                    isValid={this.state.isPasswordValid}
                                 />
                             </div>
                             <Button snacksStyle="secondary" onClick={this.handleClose}>Cancel</Button>

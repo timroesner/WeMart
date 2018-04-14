@@ -25,6 +25,6 @@ export default class CreditCard extends React.Component{
 CreditCard.propTypes = {
     brand: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
-    last4: PropTypes.number.isRequired,
+    last4: PropTypes.string.isRequired,
     isDefault: PropTypes.bool.isRequired
 };

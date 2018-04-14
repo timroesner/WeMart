@@ -8,27 +8,6 @@ const profilePanel_h4 = {fontWeight:'800',fontSize:'1.8rem',lineHeight:'1.8rem',
 
 export default class ProfilePanel extends React.Component{
 
-    state = {
-        currentTabIndex: null
-    };
-
-    renderChildren() {
-        const { children, onSelect } = this.props;
-        const { currentTabIndex } = this.state;
-        let index = 0;
-
-        return React.Children.map(children, (child) => {
-                const component = React.cloneElement(child, {
-                    index: index,
-                    focus: currentTabIndex === index,
-                    onClick: onSelect,
-                    onMenuItemFocus: this.handleMenuItemFocus
-                });
-                index += 1;
-                return component
-        })
-    }
-
     render(){
         return(
             <div style={profilePanel}>
@@ -36,7 +15,7 @@ export default class ProfilePanel extends React.Component{
                 <h4 style={profilePanel_h4}>{this.props.title}</h4>
                 {/*Profile Panel Content*/}
                 {this.props.content}
-                {this.renderChildren()}
+                {this.props.children}
             </div>
         );
     }

@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Button, Form, Icon, MenuItem, Select, TextField} from "ic-snacks";
+import {Icon} from "ic-snacks";
 
 //STYLES
 const addressCard = {border:'.1rem solid #E5EDEC',fontSize:'1.6rem',padding:'1.5rem',cursor:'pointer'}
