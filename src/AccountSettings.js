@@ -10,9 +10,8 @@ import CreditCard from "./components/CreditCard";
 import {Elements, StripeProvider} from "react-stripe-elements";
 import Header from "./components/header";
 import { withRouter } from "react-router-dom";
-import { CognitoUserPool} from 'amazon-cognito-identity-js';
+import {CognitoUserAttribute, CognitoUserPool} from 'amazon-cognito-identity-js';
 import {DynamoDB} from "aws-sdk/index";
-import AWS from "aws-sdk/index";
 import NewCardForm from "./components/NewCardForm";
 
 let newAddressStyle = {textAlign: "center", fontSize: "1.6rem", paddingBottom: ".6rem", paddingTop: ".6rem"};
@@ -22,9 +21,11 @@ let stripeAPIKey = 'pk_test_ccBJoXsCQn6kn5dkF098Xywl'; //TODO change this to our
 const noSession = {textAlign:'center', marginBottom: '2rem'};
 const noSessionButton = {marginLeft: '40%', marginRight:'40%', textAlign:'center', marginBottom:'3rem'};
 const accountSettings = {fontFamily:'"Open Sans", "Helvetica Neue", Helvetica, sans-serif', maxWidth:'109.2rem',
-height:'auto !important', margin:'auto'};
+height:'auto !important', margin:'3rem auto'};
 const h4 = {fontSize:'1.8rem'};
 var dynamodb;
+const modalButton_Accept = {margin:'1.8rem 0 1rem 1rem', paddingRight:'3rem', paddingLeft:'3rem'}
+const modalButton_Cancel = {margin:'1.8rem 1rem 1rem 0', paddingRight:'2rem', paddingLeft:'2rem'}
 
 class AccountSettings extends React.Component{
 
@@ -86,6 +87,7 @@ class AccountSettings extends React.Component{
                     //TODO remove these alerts
                     return;
                 }
+                console.log(result) //Logs user attributes
                 result.forEach((attribute) => {
                     if(attribute.Name === 'email'){
                         self.setState({user: {...self.state.user , email: attribute.Value}}) // set the email
@@ -169,10 +171,62 @@ class AccountSettings extends React.Component{
     }
 
     handleEmailChange = (model) => {
-        //TODO validate password
-        this.setState(prevState => ({
-            user: [...prevState.user, {email: model.newEmail}]
-        }));
+        var email = model.newEmail;
+        this.state.cognitoUser.changePassword(model.password ,model.password,(err,data)=>{
+            if(err){console.log(err, err.stack); this.setState({isPasswordValid:false})}
+            else{
+                console.log(data)
+                var userAttributes = {
+                    Name:'email',
+                    Value: email
+                }
+                var attribues = CognitoUserAttribute(userAttributes);
+                this.state.cognitoUser.updateAttributes(attribues,(err, data)=>{if(err) console.log(err, err.stack)
+                else{
+                    console.log(data)
+                    console.log(model)
+                    var params = {
+                        ExpressionAttributeNames: {
+                            "#UI": "userid",
+                            "#UN": "username",
+                        },
+                        ExpressionAttributeValues: {
+                            ":i": {
+                                S: email
+                            },
+                            ":n": {
+                                S: email
+                            },
+                        },
+                        Key: {
+                            'userid': {S: this.state.userId}
+                        },
+                        TableName: 'user',
+                        ReturnValues: "ALL_NEW",
+                        UpdateExpression: 'SET #UI = :i, #UN = :n',
+                    }
+
+                    // Scan the DB and get the user
+                    dynamodb.updateItem(params, (err, data) => {
+                        if(err) {console.log(err, err.stack)}
+                        else{
+                            let firstName = data.Item.firstName.S;
+                            let lastName = data.Item.lastName.S;
+                            let phone = data.Item.phone.N;
+                            this.setState({
+                                user: {...this.state.user, firstName: firstName, lastName:lastName, phoneNumber:phone}
+                            })
+                            console.log(data)
+                        }
+                    })
+                }})
+                this.setState(prevState => ({
+                    user: {...prevState.user, email: model.newEmail, userId:email}
+                }));
+                this.handleClose();
+            }
+        }
+        )
         console.log(model.newEmail)
     };
 
@@ -345,8 +399,8 @@ class AccountSettings extends React.Component{
                                     style={{height: "10rem", width: "100%", resize: "none"}}
                                 />
                             </div>
-                            <Button snacksStyle="secondary" onClick={this.handleClose}>Cancel</Button>
-                            <Button type="submit">Accept</Button>
+                            <Button style={modalButton_Cancel} snacksStyle="secondary" onClick={this.handleClose}>Cancel</Button>
+                            <Button style={modalButton_Accept} type="submit">Accept</Button>
                         </Form>
                     </Modal.Body>
                 </Modal>
@@ -419,8 +473,8 @@ class AccountSettings extends React.Component{
                                     style={{height: "10rem", width: "100%", resize: "none"}}
                                 />
                             </div>
-                            <Button snacksStyle="secondary" onClick={this.handleClose}>Cancel</Button>
-                            <Button type="submit">Accept</Button>
+                            <Button style={modalButton_Cancel} snacksStyle="secondary" onClick={this.handleClose}>Cancel</Button>
+                            <Button style={modalButton_Accept} type="submit">Accept</Button>
                         </Form>
                     </Modal.Body>
                 </Modal>
@@ -466,8 +520,8 @@ class AccountSettings extends React.Component{
                                     type="tel"
                                 />
                             </div>
-                            <Button snacksStyle="secondary" onClick={this.handleClose}>Cancel</Button>
-                            <Button type="submit">Accept</Button>
+                            <Button style={modalButton_Cancel} snacksStyle="secondary" onClick={this.handleClose}>Cancel</Button>
+                            <Button style={modalButton_Accept} type="submit">Accept</Button>
                         </Form>
                     </Modal.Body>
                 </Modal>
@@ -523,8 +577,8 @@ class AccountSettings extends React.Component{
                                     isValid={this.state.isPasswordValid}
                                 />
                             </div>
-                            <Button snacksStyle="secondary" onClick={this.handleClose}>Cancel</Button>
-                            <Button type="submit">Accept</Button>
+                            <Button style={modalButton_Cancel} snacksStyle="secondary" onClick={this.handleClose}>Cancel</Button>
+                            <Button style={modalButton_Accept} type="submit">Accept</Button>
                         </Form>
                     </Modal.Body>
                 </Modal>
@@ -541,8 +595,8 @@ class AccountSettings extends React.Component{
                             Edit Account Information
                         </h1>
                     </Modal.Header>
-                    <Modal.Body>
-                        <Form onSubmit={this.handleEmailChange}>
+                    <Modal.Body >
+                        <Form onSubmit={this.handleEmailChange} >
                             <div style={{marginBottom: "1rem"}}>
                                 <TextField
                                     style={{marginRight: '5px'}}
@@ -582,8 +636,10 @@ class AccountSettings extends React.Component{
                                     required
                                 />
                             </div>
-                            <Button snacksStyle="secondary" onClick={this.handleClose}>Cancel</Button>
-                            <Button type="submit">Accept</Button>
+                            <div>
+                                <Button snacksStyle="secondary" style={modalButton_Cancel} onClick={this.handleClose}>Cancel</Button>
+                                <Button type="submit" style={modalButton_Accept}>Accept</Button>
+                            </div>
                         </Form>
                     </Modal.Body>
                 </Modal>
@@ -613,8 +669,8 @@ class AccountSettings extends React.Component{
                         </StripeProvider>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button snacksStyle="secondary" onClick={this.handleClose} >Cancel</Button>
-                        <Button elementAttributes={{form:"newcard"}} type="submit">Add Card</Button>
+                        <Button style={modalButton_Cancel} snacksStyle="secondary" onClick={this.handleClose} >Cancel</Button>
+                        <Button style={modalButton_Accept} elementAttributes={{form:"newcard"}} type="submit">Add Card</Button>
                     </Modal.Footer>
                 </Modal>
             </div>
@@ -627,6 +683,7 @@ class AccountSettings extends React.Component{
                 <StyleRoot>
                     <Header/>
                     <div style={accountSettings}>
+                        <h2>Account Settings</h2>
                         <Row maxColumns={11} style={{maxWidth: "109.2rem"}}>
                             <Column sizes={{ sm: 6, md: 5, lg: 8, xl: 8}}>
                                 <ProfilePanel title="Account Information" content={
@@ -682,9 +739,8 @@ class AccountSettings extends React.Component{
                 //TODO implement react-router-dom
                 <div>
                     <Header/>
-
                     <div style={accountSettings}>
-
+                        <h2>Account Settings</h2>
                         <ProfilePanel title='Account Settings'>
                             <div style={noSession}>
                                 <h2>

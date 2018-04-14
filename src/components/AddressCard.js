@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {Icon} from "ic-snacks";
 
 //STYLES
-const addressCard = {border:'.1rem solid #E5EDEC',fontSize:'1.6rem',padding:'1.5rem',cursor:'pointer'}
+const addressCard = {fontSize:'1.6rem',padding:'1.5rem',cursor:'pointer'}
 const addressCard_addressLabel = {fontWeight:'600',width:'30rem',display:'inline-block',paddingRight:'.8rem'}
 const addressCard_addressIcon = {display:'inline-block',paddingRight:'.6rem',verticalAlign:'top'}
 
