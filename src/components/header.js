@@ -244,6 +244,19 @@ handleZipClick = () => {
 			<li role="navigation" style={pillsLi}><button className="primaryRedWithHover" style={astext}>History</button></li>
 	    </ul>
 	</nav>
+		<div>
+			<ReactCSSTransitionGroup
+				transitionName="slide"
+				transitionEnterTimeout={500}
+				transitionLeaveTimeout={300}>
+
+				{this.state.cartClicked ?
+				 <Cart
+				 onCloseClick={(cartClicked) => this.setState({cartClicked})} /> :
+				 null
+				}
+			</ReactCSSTransitionGroup>
+		</div>
 	</div>
 	    );
 	  }
