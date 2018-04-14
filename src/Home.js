@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import HorizontalScroll from './HorizontalScroll';
-import Header from './header';
+import HorizontalScroll from './components/HorizontalScroll';
+import Header from './components/header';
 import { withRouter } from 'react-router-dom';
 import {DynamoDB} from 'aws-sdk/index';
 import AWS from 'aws-sdk/index';
-import db from '../db';
+import db from './db';
 
 
 class Home extends Component {
