@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import logo from '../images/logo.svg'
+import logo from '../images/logo.png'
 import { withRouter } from "react-router-dom";
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'; // ES6
 import Cart from './Cart'

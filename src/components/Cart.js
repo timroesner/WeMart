@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
 import CartList from './cart_list'
-import db from '../db';
 import './header.css'
 import {DynamoDB} from 'aws-sdk/index'
 import AWS from 'aws-sdk/index'
@@ -16,7 +15,7 @@ class Cart extends Component {
 
     var dynamodb = null;
     if(process.env.NODE_ENV === 'development'){
-        dynamodb = db;
+        dynamodb = require('../db').db
     }else{
         dynamodb = new DynamoDB({
             region: "us-west-1",
