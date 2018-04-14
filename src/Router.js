@@ -15,6 +15,7 @@ import AccountSettings from "./AccountSettings";
 const Router = () => (
   <main>
     <Switch>
+        <Route path={'/accountsettings'} component={AccountSettings}/>
       <Route exact path='/signup' component={SignUp}/>
       <Route path='/login' component={LogIn}/>
       <Route path='/confirm' component={Confirm}/>
@@ -22,7 +23,7 @@ const Router = () => (
       <Route path='/home' component={Home} />
       <Route path='/item' component={Item} />
       <Route path='/' component={ZipCodeCheck}/>
-      <Route path={'/accountsettings'} component={AccountSettings}/>
+
     </Switch>
   </main>
 )
