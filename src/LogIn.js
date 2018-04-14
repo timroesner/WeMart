@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import { Button, Form, TextField } from 'ic-snacks';
+import { Form, TextField } from 'ic-snacks';
 import background from './images/background.svg';
 import './App.css';
-import registerServiceWorker from './registerServiceWorker';
 import { withRouter } from "react-router-dom";
 
 var AmazonCognitoIdentity = require('amazon-cognito-identity-js');
@@ -20,10 +19,17 @@ class LogIn extends Component {
         Password : model.password,
     };
     var authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails(authenticationData);
-    var poolData = {
+
+    var poolData;
+    if(process.env.NODE_ENV === 'development'){
+        poolData = require('./poolData').poolData;
+    } else {
+      var poolData = {
         UserPoolId : process.env.REACT_APP_Auth_UserPoolId,
         ClientId : process.env.REACT_APP_Auth_ClientId
-    };
+      };
+    }
+
     var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
     var userData = {
         Username : model.email,
@@ -39,10 +45,17 @@ class LogIn extends Component {
             console.log('access token + ' + result.getAccessToken().getJwtToken());
 
             // Should be home page which then checks if user is logged in
-            nestedProp.history.push({
-              pathname: '/home',
-              state: { user: cognitoUser }
-            })
+            nestedProp.history.push('/home')
+
+            // If we want to delete users use this snippet
+            // cognitoUser.deleteUser(function(err, result) {
+            //     if (err) {
+            //         alert(err.message);
+            //         return;
+            //     }
+
+            //     alert("Deleted User")
+            // });
         },
 
         onFailure: function(err) {
@@ -61,10 +74,16 @@ class LogIn extends Component {
       return
     }
 
-    var poolData = {
-        UserPoolId : 'us-west-2_e6QP6fklc',
-        ClientId : '2eoha404fgulrmtqc0ac4pmde5'
-    };
+    var poolData;
+    if(process.env.NODE_ENV === 'development'){
+        poolData = require('./poolData').poolData;
+    } else {
+      var poolData = {
+        UserPoolId : process.env.REACT_APP_Auth_UserPoolId,
+        ClientId : process.env.REACT_APP_Auth_ClientId
+      };
+    }
+    
     var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
     var userData = {
         Username : email,
@@ -124,7 +143,7 @@ class LogIn extends Component {
         <div style={{
           margin: 'auto',
           backgroundColor: 'white',
-          borderRadius: '15px',
+          borderRadius: '10px',
           maxWidth: `${0.5*window.innerWidth}px`,
           minWidth: '250px'
         }} >

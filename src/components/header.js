@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import logo from '../images/logo.png'
 import { withRouter } from "react-router-dom";
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'; // ES6
-import Cart from './Cart'
 import './header.css'
 
 class Header extends Component {
@@ -121,7 +120,7 @@ handleZipClick = () => {
     return (
 			<div style={{paddingBottom: '200px'}}>
 		    <div className="container" style={{width: '100%', backgroundColor: '#F5F5F5',position: 'fixed', zIndex:'10'}}>
-					<div className="row">
+					<div className="row" style={{marginTop: '3%'}}>
 						<div className="container-fluid" style={center} >
 
 							<div style={{paddingLeft: '0'}} className="col-xs-2">
@@ -131,7 +130,7 @@ handleZipClick = () => {
 							</div>
 
 							<div className="col-xs-8" style={{textAlign: 'center', color: '#E6003D'}}>
-								<h3>WeMart</h3>
+								<img src={logo} style={{height: '35px', backgroundColor: 'clear'}} />
 							</div>
 
 							<div style={{paddingRight: '0'}} className="col-xs-2">
@@ -244,20 +243,7 @@ handleZipClick = () => {
 			<li role="navigation" style={pillsLi}><button className="primaryRedWithHover" style={astext}>History</button></li>
 	    </ul>
 	</nav>
-      	<div>
-						<ReactCSSTransitionGroup
-		          transitionName="slide"
-		          transitionEnterTimeout={500}
-		          transitionLeaveTimeout={300}>
-
-							{this.state.cartClicked ?
-							 <Cart
-							 onCloseClick={(cartClicked) => this.setState({cartClicked})} /> :
-							 null
-							}
-		        </ReactCSSTransitionGroup>
-					</div>
-	    </div>
+	</div>
 	    );
 	  }
   }

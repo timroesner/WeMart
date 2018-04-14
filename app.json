@@ -1,0 +1,32 @@
+{
+  "name": "WeMart",
+  "scripts": {
+  },
+  "env": {
+    "REACT_APP_Auth_ClientId": {
+      "required": true
+    },
+    "REACT_APP_Auth_UserPoolId": {
+      "required": true
+    },
+    "REACT_APP_DB_accessKeyId": {
+      "required": true
+    },
+    "REACT_APP_DB_secretAccessKey": {
+      "required": true
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1
+    }
+  },
+  "addons": [
+
+  ],
+  "buildpacks": [
+    {
+      "url": "https://github.com/mars/create-react-app-buildpack"
+    }
+  ]
+}

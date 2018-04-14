@@ -15,11 +15,14 @@ class Home extends Component {
       savingsItems: [],
       historyItems: []
     }
+  }
 
+  componentDidMount = () =>  {
+
+    // Get the dynamoDB database
     var dynamodb;
     if(process.env.NODE_ENV === 'development'){
         dynamodb = require('./db').db;
-        console.log(dynamodb);
     } else {
         dynamodb = new DynamoDB({
             region: "us-west-1",
