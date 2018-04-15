@@ -10,7 +10,9 @@ var AmazonCognitoIdentity = require('amazon-cognito-identity-js');
 var id;
 var cognitoUser;
 var email;
-var dynamoDB;
+var dynamodb;
+var itemsInList = [];
+var selectValue = 1;
 
 class Item extends Component {
 
@@ -18,13 +20,15 @@ class Item extends Component {
     	super(props);
 
     	this.state = {
-    		item: {}
+    		item: {},
+    		similarItems: []
     	}
     	const queryParams = new URLSearchParams(this.props.location.search);
     	id = queryParams.get('id')
 
-    	this.getItem()
+    	this.initializeDB()
     	this.getCurrentUser()
+    	this.getItem()
 	}
 
 	initializeDB() {
@@ -96,6 +100,7 @@ class Item extends Component {
 		   	} else { 
 		   		this.setState({ item: { itemid: data.Item.itemid.S, name: data.Item.name.S, departmentid: data.Item.departmentid.N, 
 		   		image: data.Item.image.S, price: data.Item.price.N, quantity: data.Item.quantity.S, sale: data.Item.sale.N } })
+		   		this.getSimilarItems()
 		   	}
 		 }.bind(this));
 	}
@@ -104,8 +109,97 @@ class Item extends Component {
 		if(cognitoUser == null) {
 			alert("You need to Sign Up for an Account first.")
 		} else {
-			alert("Logged in")
+			var params = {
+			  Key: {
+			   "userid": {
+			     S: email
+			    }
+			  }, 
+			  TableName: "user"
+			};
+
+			dynamodb.getItem(params, function(err, data) {
+				if (err) {
+			   		console.log(err, err.stack)	
+			   	} else { 
+			   		try {
+			   			itemsInList = data.Item.lists.M.shoppingList.SS
+			   			this.updateList()
+			   		} catch(error) {
+			   			alert("shoppingList not yet created  "+error.message)
+			   		}
+			   	}
+			}.bind(this));
 		}
+	}
+
+	updateList() {
+		if(!itemsInList.includes(id)) {
+			itemsInList.push(id)
+			var params = {
+			    TableName: 'user',
+			    Key:{
+			        "userid": {
+			        	S: email
+			        }
+			    },
+			    UpdateExpression: "SET lists = :lists",
+			    ExpressionAttributeValues:{
+			        ":lists": { M: {
+			        		"shoppingList": {
+			        			SS: itemsInList
+			        		}
+			        	}
+			        }
+			    },
+			    ReturnValues:"UPDATED_NEW"
+			};
+
+			dynamodb.updateItem(params, function(err, data) {
+				if(err) {
+			   		alert(JSON.stringify(err))
+			   	} else {
+			   		console.log("Added to Shopping List: "+data)
+				} 
+			});
+		} else {
+			alert("Already in List")
+		}
+	}
+
+	addToCart() {
+		// TODO implement actual add to cart method
+		alert("Add "+selectValue+" to cart")
+	}
+
+	amountChanged = (e) => {
+		selectValue = e.target.value
+	}
+
+	getSimilarItems() {
+		var params = { 
+		  ExpressionAttributeValues: {
+		   ":d": {
+		     N: this.state.item.departmentid
+		    }
+		  }, 
+		  FilterExpression: "departmentid = :d",  
+		  TableName: "item"
+		 };
+
+		 var similarItems = []
+		 dynamodb.scan(params, function(err, data) {
+		 	if(err) {
+				alert(JSON.stringify(err))
+		 	} else {
+		 		data.Items.forEach((element) => {
+		 			let tempItem = { itemid: element.itemid.S, name: element.name.S, departmentid: element.departmentid.N, 
+		   		image: element.image.S, price: element.price.N, quantity: element.quantity.S, sale: element.sale.N }
+		   			similarItems.push(tempItem)
+		 		});
+		 		this.setState({similarItems: similarItems})
+		 	}
+		 }.bind(this));
 	}
 
 	renderPrice() {
@@ -173,8 +267,8 @@ class Item extends Component {
 						<i class="fa fa-th-list" style={{width: '20%'}}/>
 						Add to List
 					</button>
-					<button className="primary" style={{marginTop: '3%', height:'46px', width: '100%'}}>Add to Cart</button>
-					<HorizontalScroll items={[this.state.item]} title="Similar Items"/>
+					<button className="primary" style={{marginTop: '3%', height:'46px', width: '100%'}} onClick={this.addToCart} >Add to Cart</button>
+					<HorizontalScroll items={this.state.similarItems} title="Similar Items"/>
 			    </div>
 			  </div>
 			);
@@ -211,7 +305,7 @@ class Item extends Component {
 					<h1 style={{marginTop: '0', fontSize: '2em'}}>{this.state.item.name}</h1>
 					<p style={{marginTop: '5%', color: 'grey', fontSize: '1.4em'}} >{this.state.item.quantity}</p>
 					{this.renderPrice()}
-					<select style={{marginTop: '5%', borderColor: '#CCCCCC', webkitAppearance: 'menulist-button', height: '44px', width: '64px'}}>
+					<select onChange={this.amountChanged} style={{marginTop: '5%', borderColor: '#CCCCCC', webkitAppearance: 'menulist-button', height: '44px', width: '64px'}}>
 						<option value="1">1</option>
 						<option value="2">2</option>
 						<option value="3">3</option>
@@ -222,12 +316,12 @@ class Item extends Component {
 						<option value="8">8</option>
 						<option value="9">9</option>
 					</select>
-					<button className="primary" style={{marginLeft: '5%', height:'46px', width: '40%'}}>Add to Cart</button>
-					<button className="primaryRedWithHover" style={astext} onClick={this.addToList} >
+					<button className="primary" style={{marginLeft: '5%', height:'46px', width: '40%'}}  onClick={this.addToCart} >Add to Cart</button>
+					<button className="primaryRedWithHover" style={astext} onClick={this.addToList.bind(this)} >
 						<i class="fa fa-th-list fa-2x" style={{width: '80px'}}/>
 						Add to List
 					</button>
-					<HorizontalScroll items={[this.state.item]} title="Similar Items"/>
+					<HorizontalScroll items={this.state.similarItems} title="Similar Items"/>
 			    </div>
 			  </div>
 		);
