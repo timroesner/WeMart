@@ -1,9 +1,9 @@
-// CheckoutForm.js
 import React from 'react';
 import {
     CardCVCElement, CardExpiryElement, CardNumberElement, injectStripe,
     PostalCodeElement
 } from 'react-stripe-elements';
+import PropTypes from 'prop-types'
 import {Button} from "ic-snacks";
 
 //STYLES
@@ -11,7 +11,7 @@ const checkoutForm = {padding:'3rem'};
 const label = {display: 'block', fontSize:'2rem', color:'#808080', borderRadius:'.6rem'}
 const cardElement = {
     base: {
-        fontSize:'2rem',
+        fontSize:'2.4rem',
         color: '#424770',
         letterSpacing: '0.025em',
         fontFamily: 'Source Code Pro, monospace',
@@ -39,7 +39,7 @@ const handleReady = () => {
     console.log('[ready]');
 };
 
-class CheckoutForm extends React.Component {
+class NewCardForm extends React.Component {
     handleSubmit = (ev) => {
         // We don't want to let default form submission happen here, which would refresh the page.
         ev.preventDefault();
@@ -51,8 +51,9 @@ class CheckoutForm extends React.Component {
         // });
 
         if (this.props.stripe) {
+            this.props.onSubmit();
             this.props.stripe
-                .createToken('pii', {personal_id_number: '12312311'})
+                .createToken()
                 .then(payload => console.log('[token]', payload));
         } else {
             console.log("Stripe.js hasn't loaded yet.");
@@ -65,17 +66,17 @@ class CheckoutForm extends React.Component {
 
     render() {
         return (
-            <form onSubmit={this.handleSubmit} style={checkoutForm}>
+            <form onSubmit={this.handleSubmit} style={checkoutForm} id={'newcard'}>
                 <label style={label}>
                     Card number
                     <div style={cardElementDiv}>
-                    <CardNumberElement
-                        style={cardElement}
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                        onFocus={handleFocus}
-                        onReady={handleReady}
-                    />
+                        <CardNumberElement
+                            style={cardElement}
+                            onBlur={handleBlur}
+                            onChange={handleChange}
+                            onFocus={handleFocus}
+                            onReady={handleReady}
+                        />
                     </div>
                 </label>
                 <label style={label}>
@@ -93,34 +94,36 @@ class CheckoutForm extends React.Component {
                 <label style={label}>
                     CVC
                     <div style={cardElementDiv}>
-                    <CardCVCElement
-                        style={cardElement}
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                        onFocus={handleFocus}
-                        onReady={handleReady}
-                    />
+                        <CardCVCElement
+                            style={cardElement}
+                            onBlur={handleBlur}
+                            onChange={handleChange}
+                            onFocus={handleFocus}
+                            onReady={handleReady}
+                        />
                     </div>
                 </label>
                 <label style={label}>
                     Postal code
                     <div style={cardElementDiv}>
-                    <PostalCodeElement
-                        style={{cardElement}}
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                        onFocus={handleFocus}
-                        onReady={handleReady}
-                    />
+                        <PostalCodeElement
+                            style={{cardElement}}
+                            onBlur={handleBlur}
+                            onChange={handleChange}
+                            onFocus={handleFocus}
+                            onReady={handleReady}
+                        />
                     </div>
                 </label>
                 <div>
-                    <Button snacksStyle={'secondary'}>Cancel</Button>
-                    <Button type='submit'>Continue</Button>
                 </div>
             </form>
         );
     }
 }
 
-export default injectStripe(CheckoutForm);
+NewCardForm.propTypes = {
+    onSubmit: PropTypes.func
+}
+
+export default injectStripe(NewCardForm);

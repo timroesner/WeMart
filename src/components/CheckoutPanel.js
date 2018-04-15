@@ -10,26 +10,38 @@ const dropdownArrow = {float:'right'}
 
 export default class CheckoutPanel extends React.Component{
 
-
     render(){
-        return(
+        if(this.props.valid){
+            return(
+                <div style={checkoutPanel}>
+                <span style={icon}>
+                     <Icon name={this.props.icon} style={{fontSize:'2.4rem', color:'red'}}/>
+                </span>
+                    <h2 style={title}>{this.props.onValidTitle}</h2>
+                    <div>
+                        {this.props.children}
+                    </div>
+                </div>
+            )
+        } else{
+            return (
                 <div style={checkoutPanel}>
                 <span style={icon}>
                      <Icon name={this.props.icon} style={{fontSize:'2.4rem', color:'red'}}/>
                 </span>
                     <h2 style={title}>{this.props.title}</h2>
-                    <span style={dropdownArrow}>
-                    <Icon name={"arrowUpSmallBold"} style={{fontSize:'2.4rem',color:'red', cursor:'pointer'}}/>
-                    </span>
                     <div>
                         {this.props.children}
                     </div>
                 </div>
-        )
+            )
+        }
     }
 }
 
 CheckoutPanel.propTypes = {
     icon: PropTypes.string,
-    title: PropTypes.string
+    title: PropTypes.string,
+    onValidTitle: PropTypes.string,
+    valid: PropTypes.bool
 }
