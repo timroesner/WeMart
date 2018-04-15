@@ -1,7 +1,6 @@
 import Header from './components/header';
 import React, { Component } from 'react';
 import { withRouter } from "react-router-dom";
-import SampleImage from './images/canned-goods.jpg'
 import HorizontalScroll from './components/HorizontalScroll';
 import {DynamoDB} from "aws-sdk/index";
 
