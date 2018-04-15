@@ -22,7 +22,6 @@ const noSession = {textAlign:'center', marginBottom: '2rem'};
 const noSessionButton = {marginLeft: '40%', marginRight:'40%', textAlign:'center', marginBottom:'3rem'};
 const accountSettings = {fontFamily:'"Open Sans", "Helvetica Neue", Helvetica, sans-serif', maxWidth:'109.2rem',
 height:'auto !important', margin:'3rem auto'};
-const h4 = {fontSize:'1.8rem'};
 var dynamodb;
 const modalButton_Accept = {margin:'1.8rem 0 1rem 1rem', paddingRight:'3rem', paddingLeft:'3rem'}
 const modalButton_Cancel = {margin:'1.8rem 1rem 1rem 0', paddingRight:'2rem', paddingLeft:'2rem'}
@@ -44,6 +43,34 @@ class AccountSettings extends React.Component{
         var userPool = new CognitoUserPool(poolData);
         var cognitoUser = userPool.getCurrentUser();
 
+        this.state = {
+            //Input Validators
+            emailInput: null,
+            passwordInput: null,
+            isPasswordValid: true,
+
+            emailModal: false,
+            passwordModal: false,
+            personalInfoModal: false,
+            editAddressModal: false,
+            newAddressModal: false,
+            cognitoUser: cognitoUser,
+            isLoggedIn: false,
+            // For testing purposes only
+            // TODO get data from AWS once API is complete
+            user: {
+                userId: '',
+                email: '',
+                password: "●●●●●●", // For demo purposes only
+                phoneNumber: null,
+                firstName: '',
+                lastName: '',
+                paymentMethods: [{id: "card_1", brand: "Visa", last4: "4242", label: "Visa 4242" , isDefault: true}],
+                deliveryAddresses: [{id:1, street: "1 Washington Square", city: "San Jose", state: "CA", zipCode: 95112,
+                    instructions: "Как Деля"}],
+                orderHistory: []},
+        };
+
         //If there is a cognito user then get his data from the DB otherwise do nothing
         if (cognitoUser != null) {
             cognitoUser.getSession(function(err, session) {
@@ -52,34 +79,6 @@ class AccountSettings extends React.Component{
                     return;
                 }
             });
-
-            this.state = {
-                //Input Validators
-                emailInput: null,
-                passwordInput: null,
-                isPasswordValid: true,
-
-                emailModal: false,
-                passwordModal: false,
-                personalInfoModal: false,
-                editAddressModal: false,
-                newAddressModal: false,
-                cognitoUser: cognitoUser,
-                isLoggedIn: false,
-                // For testing purposes only
-                // TODO get data from AWS once API is complete
-                user: {
-                    userId: '',
-                    email: '',
-                    password: "●●●●●●", // For demo purposes only
-                    phoneNumber: null,
-                    firstName: '',
-                    lastName: '',
-                    paymentMethods: [{id: "card_1", brand: "Visa", last4: "4242", label: "Visa 4242" , isDefault: true}],
-                    deliveryAddresses: [{id:1, street: "1 Washington Square", city: "San Jose", state: "CA", zipCode: 95112,
-                        instructions: "Как Деля"}],
-                    orderHistory: []},
-            };
             // Necessary becuase the closure has no access to this.state
             let self = this;
             cognitoUser.getUserAttributes(function(err, result) {
