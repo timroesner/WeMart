@@ -45,12 +45,14 @@ export default class Checkout extends React.Component {
             serviceFee: 2.98,
             credit: 2.99,
             subtotal: 0,
-            total:0,
+
 
             //Order Details
             deliveryTime: null,
             deliveryDay: null,
             phoneNumber: null,
+            total:0,
+            token: null,
         }
 
         // Get the dynamoDB database
@@ -130,6 +132,12 @@ export default class Checkout extends React.Component {
         })
     }
 
+    handlePaymentMethod = (token) => {
+        var label = token.token.card.brand + ' ' + token.token.card.last4
+        this.setState({token: token, paymentPanel: true,
+        paymentMethod: {brand: token.token.card.brand, last4:token.token.card.last4, label:label}});
+    }
+
     renderAddress(){
         if(this.state.addressPanel && this.state.deliveryAddress){
             return(
@@ -190,7 +198,7 @@ export default class Checkout extends React.Component {
                     />
                 </div>
                 <div style={{marginLeft:'1.5rem'}}>
-                    <Button style={{paddingLeft:'3rem', paddingRight:'3rem'}} type="submit">Accept</Button>
+                    <Button style={{paddingLeft:'3rem', paddingRight:'3rem'}} type="submit">Save</Button>
                 </div>
             </Form>)
         }
@@ -221,7 +229,7 @@ export default class Checkout extends React.Component {
                         />
                     </div>
                     <div style={{marginLeft:'1.5rem'}}>
-                        <Button style={{paddingLeft:'3rem', paddingRight:'3rem'}} type="submit" >Accept</Button>
+                        <Button style={{paddingLeft:'3rem', paddingRight:'3rem'}} type="submit" >Save</Button>
                     </div>
                 </Form>
             )
@@ -231,14 +239,30 @@ export default class Checkout extends React.Component {
     renderPaymentMethods(){
         if(this.state.paymentMethod){
             return(
-                <ul style={{listStyleType: "none",marginBottom:'3rem'}}>
-                    <CreditCard brand={'visa'} label={'visa2333'} last4={'4242'} isDefault={false}/>
-                </ul>)
-        } else{return(<StripeProvider apiKey={key}>
-            <Elements>
-                <NewCardForm></NewCardForm>
-            </Elements>
-        </StripeProvider>)}
+                <div>
+                    <ul style={{listStyleType: "none",marginBottom:'3rem'}}>
+                        <CreditCard brand={this.state.paymentMethod.brand} label={this.state.paymentMethod.label}
+                                    last4={this.state.paymentMethod.last4} isDefault={false}/>
+                    </ul>
+                    <div style={{marginLeft:'1.5rem'}}>
+                        <Button style={{paddingLeft:'3rem', paddingRight:'3rem', marginTop:'2rem'}}
+                                snacksStyle={'secondary'} onClick={()=>{this.setState({paymentPanel: false})}}>Change</Button>
+                    </div>
+                </div>
+                )
+        } else{return(
+            <div>
+                <StripeProvider apiKey={key}>
+                    <Elements>
+                        <NewCardForm onSubmit={this.handlePaymentMethod}/>
+                    </Elements>
+                </StripeProvider>
+                <div style={{marginLeft:'1.5rem'}}>
+                    <Button style={{paddingLeft:'3rem', paddingRight:'3rem', marginTop:'2rem'}}
+                            type="submit" elementAttributes={{form:'newcard'}}>Save</Button>
+                </div>
+            </div>
+            )}
     }
 
     renderDeliveryTime(){
@@ -317,7 +341,10 @@ export default class Checkout extends React.Component {
                         onValidTitle={'Mobile number'}>
                             {this.renderContactDetails()}
                         </CheckoutPanel>
-                        <CheckoutPanel icon={"creditCard"} title='Select payment method'>
+                        <CheckoutPanel
+                            valid={this.state.paymentPanel}
+                            icon={"creditCard"}
+                            title='Select payment method' onValidTitle={'Payment'}>
                             {this.renderPaymentMethods()}
                         </CheckoutPanel>
                         <CheckoutPanel icon={"orderReview"} title={this.state.cart.length + ' Items'}>

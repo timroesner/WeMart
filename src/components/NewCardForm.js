@@ -51,10 +51,8 @@ class NewCardForm extends React.Component {
         // });
 
         if (this.props.stripe) {
-            this.props.onSubmit();
-            this.props.stripe
-                .createToken()
-                .then(payload => console.log('[token]', payload));
+            this.props.stripe.createSource()
+                .then(payload => {this.props.onSubmit(payload); console.log(payload.token.card.last4)} );
         } else {
             console.log("Stripe.js hasn't loaded yet.");
         }
