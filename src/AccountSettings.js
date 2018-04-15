@@ -65,6 +65,7 @@ class AccountSettings extends React.Component{
                 editAddressModal: false,
                 newAddressModal: false,
                 cognitoUser: cognitoUser,
+                isLoggedIn: false,
                 // For testing purposes only
                 // TODO get data from AWS once API is complete
                 user: {
@@ -87,6 +88,7 @@ class AccountSettings extends React.Component{
                     //TODO remove these alerts
                     return;
                 }
+                self.setState({isLoggedIn: true})
                 console.log(result) //Logs user attributes
                 result.forEach((attribute) => {
                     if(attribute.Name === 'email'){
@@ -678,7 +680,7 @@ class AccountSettings extends React.Component{
     }
 
     render(){
-        if(this.state.cognitoUser){
+        if(this.state.isLoggedIn){
             return (
                 <StyleRoot>
                     <Header/>
