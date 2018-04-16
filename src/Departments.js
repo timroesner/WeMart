@@ -3,8 +3,6 @@ import { withRouter } from "react-router-dom";
 import Header from './components/header';
 import {DynamoDB} from "aws-sdk/index";
 
-//var departments = []; //= [{name: "Dairy", image: "https://wemartimages.s3.us-west-1.amazonaws.com/departments/bakery.jpg"}, {name: "Dairy", image: "https://wemartimages.s3.us-west-1.amazonaws.com/departments/bakery.jpg"}, {name: "Dairy", image: "https://wemartimages.s3.us-west-1.amazonaws.com/departments/bakery.jpg"}, {name: "Dairy", image: "https://wemartimages.s3.us-west-1.amazonaws.com/departments/bakery.jpg"}, {name: "Dairy", image: "https://wemartimages.s3.us-west-1.amazonaws.com/departments/bakery.jpg"}, {name: "Dairy", image: "https://wemartimages.s3.us-west-1.amazonaws.com/departments/bakery.jpg"}, {name: "Dairy", image: "https://wemartimages.s3.us-west-1.amazonaws.com/departments/bakery.jpg"}, {name: "Dairy", image: "https://wemartimages.s3.us-west-1.amazonaws.com/departments/bakery.jpg"},]
-
 class Departments extends Component {
 
 	constructor(props) {
@@ -48,9 +46,9 @@ class Departments extends Component {
 	    });
 	}
 
-	renderDepartments() {
+	renderDepartments(departments) {
 		const gridItem = {
-		  border: '2px solid gray',
+		  border: '1.5px solid gray',
 		  borderRadius: '10px',
 		  fontSize: '1.4em',
 		  textAlign: 'center',
@@ -58,8 +56,11 @@ class Departments extends Component {
 		  height: 'minmax(150px, 1fr)',
 		}
 
-		return(this.state.departments.map((dep)=>
-			<div style={gridItem}>
+		// Inline sort by department name
+		departments.sort(function(a,b) {return (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0);} );
+
+		return(departments.map((dep)=>
+			<div style={gridItem} onClick={() => this.handleClick(dep.name)} >
 				<img src={dep.image} style={{width: '80%', marginLeft:'20%', borderRadius: '10px'}} />
 			{dep.name}
 			</div>
@@ -88,7 +89,7 @@ class Departments extends Component {
 			<Header />
 
 			<div style={gridContainer}>
-			  {this.renderDepartments()} 
+			  {this.renderDepartments(this.state.departments)} 
 			</div>
 
 		</div>
