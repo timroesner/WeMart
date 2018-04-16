@@ -1,7 +1,5 @@
-// CheckoutForm.js
 import React from 'react';
 import {Elements, StripeProvider} from 'react-stripe-elements';
-import CheckoutForm from "./components/CheckoutForm";
 import Header from "./components/header";
 import {Button, Form, MenuItem, NavigationPills, Radio, RadioGroup, Select, TextField} from "ic-snacks";
 import CheckoutPanel from "./components/CheckoutPanel";
@@ -11,7 +9,6 @@ import CreditCard from "./components/CreditCard";
 import OrderItems from "./components/OrderItems";
 import {DynamoDB} from "aws-sdk/index";
 import PropTypes from 'prop-types';
-import AWS from "aws-sdk/index";
 import NewCardForm from "./components/NewCardForm";
 //
 
@@ -21,7 +18,8 @@ let cart = [{id: 1, quantity:2},{id:4,quantity:1}]
 //STYLES
 const checkout = {margin:' 1rem auto', maxWidth:'71rem',};
 const checkoutForm = {width:'100%',overflow: 'hidden', borderTopLeftRadius:'.6rem',
-    borderTopRightRadius:'.6rem'}
+    borderTopRightRadius:'.6rem'};
+const validEntry = {margin:'1.5rem', fontWeight:'600',border:'1px solid red', padding:'1.5rem',borderRadius:'.6rem'}
 
 export default class Checkout extends React.Component {
 
@@ -43,7 +41,6 @@ export default class Checkout extends React.Component {
             cart: [],
             deliveryFee: 3.99,
             serviceFee: 2.98,
-            credit: 2.99,
             subtotal: 0,
 
 
@@ -97,15 +94,16 @@ export default class Checkout extends React.Component {
                     this.setState({
                         subtotal: (this.state.subtotal + itemTotalPrice)
                     })
+                    this.calculateTotal()
                 }
             })
         })
     }
 
-    componentDidMount(){
+    calculateTotal(){
         console.log(this.state.subtotal);
         this.setState({
-            total: this.state.subtotal + this.state.credit + this.state.serviceFee + this.state.deliveryFee
+            total: (this.state.subtotal + this.state.serviceFee + this.state.deliveryFee)
         })
     }
 
@@ -133,9 +131,9 @@ export default class Checkout extends React.Component {
     }
 
     handlePaymentMethod = (token) => {
-        var label = token.token.card.brand + ' ' + token.token.card.last4
+        var label = token.source.card.brand + ' ' + token.source.card.last4
         this.setState({token: token, paymentPanel: true,
-        paymentMethod: {brand: token.token.card.brand, last4:token.token.card.last4, label:label}});
+        paymentMethod: {brand: token.source.card.brand, last4:token.source.card.last4, label:label}});
     }
 
     renderAddress(){
@@ -207,7 +205,7 @@ export default class Checkout extends React.Component {
     renderContactDetails(){
         if(this.state.phonePanel){
             return(<div>
-                <div>
+                <div style={validEntry}>
                     {this.state.phoneNumber}
                 </div>
                 <div style={{marginLeft:'1.5rem'}}>
@@ -225,11 +223,13 @@ export default class Checkout extends React.Component {
                             type="tel"
                             floatingLabelText="Phone number"
                             fullWidth
+                            //TODO Validate
                             required
                         />
                     </div>
                     <div style={{marginLeft:'1.5rem'}}>
-                        <Button style={{paddingLeft:'3rem', paddingRight:'3rem'}} type="submit" >Save</Button>
+                        <Button style={{paddingLeft:'3rem', paddingRight:'3rem'}} type="submit"
+                                onClick={()=>{this.setState({phonePanel: false})}}>Save</Button>
                     </div>
                 </Form>
             )
@@ -269,10 +269,10 @@ export default class Checkout extends React.Component {
         if(this.state.timePanel){
             return(
                 <div>
-                    <div>{this.state.deliveryDay}, at {this.state.deliveryTime}</div>
+                    <div style={validEntry}>{this.state.deliveryDay}, from {this.state.deliveryTime}</div>
                     <div style={{marginLeft:'1.5rem', marginBottom:'1.5rem'}}>
                         <Button style={{paddingLeft:'3rem', paddingRight:'3rem'}} snacksStyle={'secondary'}
-                                type="submit" onClick={()=>{this.setState({timePanel: false})}}>Change</Button>
+                                type="submit" onClick={()=>{this.setState({timePanel: false, daySelected:false, timeSelected:false})}}>Change</Button>
                     </div>
                 </div>)
 
@@ -325,13 +325,15 @@ export default class Checkout extends React.Component {
             <diV>
                 <Header/>
                 <div style={checkout}>
-                    <h1>Checkout</h1>
+                    <div>
+                        <h1 style={{textAlign:'center', padding:'1.5rem' ,fontFamily:' "Open Sans", "Helvetica Neue", Helvetica, sans-serif'}}>Checkout</h1>
+                    </div>
                     <div style={checkoutForm}>
                         <CheckoutPanel icon={"locationMarker"} title='Select delivery address' onValidTitle={'Delivery address'}
                                        valid={this.state.addressPanel}>
                             {this.renderAddress()}
                         </CheckoutPanel>
-                        <CheckoutPanel icon={"clock"} title='Choose delivery time' onValidTitle={'Delivery time'}
+                        <CheckoutPanel icon={"clock"} title='Choose delivery time' onValidTitle={'Delivery Time'}
                         valid={this.state.timePanel}>
                             <div>
                                 {this.renderDeliveryTime()}
@@ -362,9 +364,6 @@ export default class Checkout extends React.Component {
                                 </div>
                                 <div style={{overflow:'hidden', lineHeight:'2.rem', display:'flex', alignItems:'center'}}>
                                     Service Fee <div style={{flexGrow:'1', textAlign:'end'}}>${this.state.serviceFee}</div>
-                                </div>
-                                <div style={{overflow:'hidden', lineHeight:'2.rem', display:'flex', alignItems:'center'}}>
-                                    Credit/Discount Applied <div style={{flexGrow:'1', textAlign:'end'}}>${this.state.credit}</div>
                                 </div>
                                 <hr></hr>
                                 <div style={{fontWeight:'600',overflow:'hidden', lineHeight:'2.rem', display:'flex', alignItems:'center'}}>

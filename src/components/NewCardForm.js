@@ -11,7 +11,7 @@ const checkoutForm = {padding:'3rem'};
 const label = {display: 'block', fontSize:'2rem', color:'#808080', borderRadius:'.6rem'}
 const cardElement = {
     base: {
-        fontSize:'2.4rem',
+        fontSize:'2rem',
         color: '#424770',
         letterSpacing: '0.025em',
         fontFamily: 'Source Code Pro, monospace',
@@ -52,7 +52,7 @@ class NewCardForm extends React.Component {
 
         if (this.props.stripe) {
             this.props.stripe.createSource()
-                .then(payload => {this.props.onSubmit(payload); console.log(payload.token.card.last4)} );
+                .then(payload => {this.props.onSubmit(payload)} );
         } else {
             console.log("Stripe.js hasn't loaded yet.");
         }
@@ -105,7 +105,7 @@ class NewCardForm extends React.Component {
                     Postal code
                     <div style={cardElementDiv}>
                         <PostalCodeElement
-                            style={{cardElement}}
+                            style={cardElement}
                             onBlur={handleBlur}
                             onChange={handleChange}
                             onFocus={handleFocus}
