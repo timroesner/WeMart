@@ -3,11 +3,52 @@ import { withRouter } from "react-router-dom";
 import Header from './components/header';
 import {DynamoDB} from "aws-sdk/index";
 
-var departments = [{name: "Dairy", image: "https://wemartimages.s3.us-west-1.amazonaws.com/departments/bakery.jpg"}, {name: "Dairy", image: "https://wemartimages.s3.us-west-1.amazonaws.com/departments/bakery.jpg"}, {name: "Dairy", image: "https://wemartimages.s3.us-west-1.amazonaws.com/departments/bakery.jpg"}, {name: "Dairy", image: "https://wemartimages.s3.us-west-1.amazonaws.com/departments/bakery.jpg"}, {name: "Dairy", image: "https://wemartimages.s3.us-west-1.amazonaws.com/departments/bakery.jpg"}, {name: "Dairy", image: "https://wemartimages.s3.us-west-1.amazonaws.com/departments/bakery.jpg"}, {name: "Dairy", image: "https://wemartimages.s3.us-west-1.amazonaws.com/departments/bakery.jpg"}, {name: "Dairy", image: "https://wemartimages.s3.us-west-1.amazonaws.com/departments/bakery.jpg"},]
+//var departments = []; //= [{name: "Dairy", image: "https://wemartimages.s3.us-west-1.amazonaws.com/departments/bakery.jpg"}, {name: "Dairy", image: "https://wemartimages.s3.us-west-1.amazonaws.com/departments/bakery.jpg"}, {name: "Dairy", image: "https://wemartimages.s3.us-west-1.amazonaws.com/departments/bakery.jpg"}, {name: "Dairy", image: "https://wemartimages.s3.us-west-1.amazonaws.com/departments/bakery.jpg"}, {name: "Dairy", image: "https://wemartimages.s3.us-west-1.amazonaws.com/departments/bakery.jpg"}, {name: "Dairy", image: "https://wemartimages.s3.us-west-1.amazonaws.com/departments/bakery.jpg"}, {name: "Dairy", image: "https://wemartimages.s3.us-west-1.amazonaws.com/departments/bakery.jpg"}, {name: "Dairy", image: "https://wemartimages.s3.us-west-1.amazonaws.com/departments/bakery.jpg"},]
 
 class Departments extends Component {
 
+	constructor(props) {
+		super(props)
+
+		this.state = { departments: [] }
+		
+		this.getDepartments()
+	}
+
 	getDepartments() {
+
+		// Get the dynamoDB database
+	    var dynamodb;
+	    if(process.env.NODE_ENV === 'development'){
+	        dynamodb = require('./db').db;
+	    } else {
+	        dynamodb = new DynamoDB({
+	            region: "us-west-1",
+	            credentials: {
+	                accessKeyId: process.env.REACT_APP_DB_accessKeyId,
+	                secretAccessKey: process.env.REACT_APP_DB_secretAccessKey},
+	        });
+	    }
+
+	    var params = {
+	        TableName: "department"
+	    };
+
+	    var departments = [];
+	    dynamodb.scan(params, (err, data) => {
+	        if (err) {
+	        	alert(JSON.stringify(err))
+	        } else {
+	            data.Items.forEach((element) => {
+	            	departments.push({name: element.departmentid.S, image: element.image.S})
+	            });
+				this.setState({departments: departments})
+				console.log(departments)
+	        }
+	    });
+	}
+
+	renderDepartments() {
 		const gridItem = {
 		  border: '2px solid gray',
 		  borderRadius: '10px',
@@ -17,46 +58,12 @@ class Departments extends Component {
 		  height: 'minmax(150px, 1fr)',
 		}
 
-		// // Get the dynamoDB database
-	 //    var dynamodb;
-	 //    if(process.env.NODE_ENV === 'development'){
-	 //        dynamodb = require('./db').db;
-	 //    } else {
-	 //        dynamodb = new DynamoDB({
-	 //            region: "us-west-1",
-	 //            credentials: {
-	 //                accessKeyId: process.env.REACT_APP_DB_accessKeyId,
-	 //                secretAccessKey: process.env.REACT_APP_DB_secretAccessKey},
-	 //        });
-	 //    }
-
-	 //    var params = {
-	 //        TableName: "departments"
-	 //    };
-
-	 //    dynamodb.scan(params, (err, data) => {
-	 //        if (err) {
-	 //        	alert(JSON.stringify(err))
-	 //        } else {
-	 //            data.Items.forEach((element) => {
-	 //            	departments.push({name: element.name.S, image: element.image.S})
-	 //            });
-
-	 //            return(departments.map((dep)=>
-		// 			<div style={gridItem}>
-		// 				<img src={dep.image} style={{width: '80%', marginLeft:'20%', borderRadius: '10px'}} />
-		// 			{dep.name}
-		// 			</div>
-		// 		))
-	 //        }
-	 //    });
-
-	    return(departments.map((dep)=>
-					<div style={gridItem} onClick={() => this.handleClick(dep.name)} >
-						<img src={dep.image} style={{width: '80%', marginLeft:'20%', borderRadius: '10px'}} />
-						{dep.name}
-					</div>
-				))
+		return(this.state.departments.map((dep)=>
+			<div style={gridItem}>
+				<img src={dep.image} style={{width: '80%', marginLeft:'20%', borderRadius: '10px'}} />
+			{dep.name}
+			</div>
+		))
 	}
 
 	handleClick(depName) {
@@ -81,7 +88,7 @@ class Departments extends Component {
 			<Header />
 
 			<div style={gridContainer}>
-			  {this.getDepartments()} 
+			  {this.renderDepartments()} 
 			</div>
 
 		</div>
