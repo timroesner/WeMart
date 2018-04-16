@@ -10,6 +10,7 @@ import PasswordReset from './PasswordReset'
 import ZipCodeCheck from './ZipCodeCheck'
 import Home from './Home'
 import Item from './Item'
+import Departments from './Departments'
 
 const Router = () => (
   <main>
@@ -20,6 +21,7 @@ const Router = () => (
       <Route path='/passwordreset' component={PasswordReset}/>
       <Route path='/home' component={Home} />
       <Route path='/item' component={Item} />
+      <Route path='/departments' component={Departments}/>
       <Route path='/' component={ZipCodeCheck}/>
     </Switch>
   </main>
