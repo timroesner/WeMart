@@ -3,8 +3,14 @@ import PropTypes from 'prop-types'
 import ItemCard from "./ItemCard";
 
 //STYLES
-const itemGrid = {listStyle:'none',maxWidth:'104rem',display:'table-cell',padding:'0',margin:'0'};
-const itemGrid_itemCard = {display:'inline-block',position:'relative',width:'20.8rem',verticalAlign:'top'};
+const gridContainer = {
+    display: 'grid',
+    gridTemplateColumns: 'repeat( auto-fit, minmax(14.8rem, 1fr) )',
+    gridColumnGap: '5%',
+    margin: '2%',
+    width: '95%',
+}
+const itemGrid_itemCard = {display:'inline-block', position:'relative', verticalAlign:'top', margin: '3%'};
 
 export default class ItemsGrid extends React.Component{
 
@@ -20,15 +26,17 @@ export default class ItemsGrid extends React.Component{
             return(this.props.items.map((item)=>
                 <li style={itemGrid_itemCard}>
                     <ItemCard
-                        itemID={item.itemid} name={item.name} image={item.image} price={item.price} inCart={item.inCart}
-                        weight={item.quantity} salePrice={item.sale} departmentid={item.departmentid} onAddToCart={()=>{
-                        this.props.onAddToCart(item);
-                    }} onQuantityIncrease={()=>{this.props.onQuantityIncrease(item,1)}}
-                        onQuantityDecrease={()=>{this.props.onQuantityDecrease(item,-1)}}
-                        onQuantityRemove={()=>{this.props.onQuantityRemove(item)}}/>
+                        itemID={item.itemid}
+                        name={item.name}
+                        image={item.image}
+                        price={item.price}
+                        quantity={item.quantity}
+                        salePrice={item.sale}
+                        departmentid={item.departmentid}
+                    />
                 </li>
             ))
-        }else{
+        } else {
             const { children, onSelect } = this.props;
             const { currentTabIndex } = this.state;
             let index = 0;
@@ -47,17 +55,13 @@ export default class ItemsGrid extends React.Component{
 
     render(){
         return(
-            <ul style={itemGrid}>
-                {this.renderChildren()};
-            </ul>
+            <div style={gridContainer}>
+                {this.renderChildren()}
+            </div>
         );
     }
 }
 
 ItemsGrid.propTypes = {
     items: PropTypes.array,
-    onQuantityIncrease: PropTypes.func,
-    onQuantityDecrease: PropTypes.func,
-    onQuantityRemove: PropTypes.func,
-    onAddToCart: PropTypes.func,
 }
