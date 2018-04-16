@@ -11,21 +11,20 @@ import {withRouter} from "react-router-dom";
 const addToCart = {width: "100%", display: "inherit"};
 
 //Item Card Styles
-const itemCard = {background:'#ffffff', width:'min(20.8rem, 40vw)', height:'35.2rem'};
-const itemCard_cardContents = {cursor:'pointer', margin:'0 auto 1rem auto',maxWidth:'15.8rem',display:'block'};
+const itemCard = {background:'#ffffff', height:'35.2rem'};
+const itemCard_cardContents = {cursor:'pointer', margin:'0 5% 1rem 5%',maxWidth:'15.8rem',display:'block'};
 const itemCard_badge = {position: 'absolute', top: '.8rem', left: '.8rem', height: '2rem', width:'10rem',
 backgroundRepeat:'no-repeat'};
 const itemCard_badge_onSale = {...itemCard_badge,  backgroundImage: `url(${onSaleBadge})`, backgroundSize: 'auto 2rem'};
 const itemCard_media = {margin: '0 auto'};
 const itemCard_media_image = {margin:'0 auto 01rem auto', display:'block', maxHeight:'15.5rem', maxWidth: '15.5rem', paddingTop:'1rem'};
-const itemCard_itemInfo = {padding: '.5rem 0 0',fontSize:'1.3rem'};
+const itemCard_itemInfo = {padding: '.5rem 0 0',fontSize:'1.3rem',};
 const itemCard_itemInfo_weight = {color: '#808080', fontSize:'1.1rem', margin:'0'};
-const itemCard_fullItemName = {marginTop:'0', paddingBottom:'0',color:'#393939', fontWeight:'400', height:'3.6rem',
-fontFamily: 'Open Sans", "Helvetica Neue", Helvetica, sans-serif'};
-const itemCard_price = {fontSize:'2rem', fontWeight:'400', fontFamily:'"Open Sans", "Helvetica Neue", Helvetica, sans-serif'};
-const itemCard_price_sale = {color: '#FF0000', fontSize:'2.1rem',fontWeight:'600',marginRight:'.5rem'};
+const itemCard_fullItemName = {marginTop:'0', paddingBottom:'0',color:'#393939', fontWeight:'400', height:'3.6rem', overflow: 'hidden'};
+const itemCard_price = {fontSize:'1.8rem', fontWeight:'400', fontFamily:'"Open Sans", "Helvetica Neue", Helvetica, sans-serif'};
+const itemCard_price_sale = {color: '#FF0000', fontSize:'1.8rem',fontWeight:'600',marginRight:'.5rem'};
 const itemCard_price_crossedOut = {textDecoration:'line-through',color:'#808080'};
-const itemCard_buttonBar = {marginTop:'4%'};
+const itemCard_buttonBar = {margin:'4% 5% 0% 5%'};
 
 
 class ItemCard extends React.Component{
@@ -123,8 +122,8 @@ class ItemCard extends React.Component{
                               {this.props.weight}
                           </p>
                       </div>
-                      {this.renderButtonBar()}
                   </div>
+                  {this.renderButtonBar()}
               </div>);
       } else { // No attributes to the props. Render the loading box from IC Snacks
           return (
