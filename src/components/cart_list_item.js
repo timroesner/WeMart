@@ -1,58 +1,26 @@
 import React from 'react'
+import Counter from './Counter'
 
 const CartItem = ({item}) => {
-
-  const itemStyle = {
-    padding: '20px 30px',
-    height: '120px',
-    display: 'flex'
-  }
-
-  const description = {
-    paddingTop: '10px',
-    marginRight: '60px',
-    width: '115px'
-  }
-
-  const descriptionSpan = {
-    display: 'block',
-    fontSize: '14px',
-    color: '#43484D',
-    fontWeight: '400'
-  }
-  const totalPrice = {
-    width: '83px',
-    paddingTop: '27px',
-    textAlign: 'center',
-    fontSize: '16px',
-    color: '#43484D',
-    fontWeight: '300'
-  }
-
-  const deleteButton = {
-    background:'none',
-    border:'none',
-    Cursor: 'pointer',
-    width: '18px',
-    height: '17px',
-  }
+  let cartQuantity= 2;
   return (
       <li className="list-group-item">
-        <div style={itemStyle}>
-          <div style={{position: 'relative', paddingTop: '30px'}}>
-            <button style={deleteButton} ><i className="far fa-trash-alt" style={{color: 'red'}}></i></button>
-          </div>
-          <div style={{marginRight: '50px'}}>
-            <img style={{width: '100%', height: '100%'}} className="img-responsive" src={item.image} />
-          </div>
-          <div style={description}>
-            <span style={descriptionSpan}>{item.name}</span>
-          </div>
-          <div style={{paddingTop: '20px', marginRight: '60px'}}>
-            <input type="number" name="quantity" min="1" max="25" />
-          </div>
-          <div style={totalPrice}>
-            {item.price}
+        <div className="container-fluid">
+          <div className="row">
+            <div className="col-xs-2">
+              <img className="img-responsive" src={item.image} />
+            </div>
+            <div className="col-xs-2">
+              <span>{item.name}</span>
+              <br />
+              <span style={{color: 'gray'}}>{item.quantity}</span>
+            </div>
+            <div className="col-xs-6" style={{paddingRight: '0'}}>
+              <Counter quantity={cartQuantity} />
+            </div>
+            <div className="col-xs-2">
+              <div>{item.price * cartQuantity}</div>
+            </div>
           </div>
         </div>
       </li>
