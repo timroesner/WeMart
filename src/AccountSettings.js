@@ -19,7 +19,7 @@ let stripeAPIKey = 'pk_test_ccBJoXsCQn6kn5dkF098Xywl'; //TODO change this to our
 
 //STYLES
 const noSession = {textAlign:'center', marginBottom: '2rem'};
-const noSessionButton = {marginLeft: '40%', marginRight:'40%', textAlign:'center', marginBottom:'3rem'};
+const noSessionButton = {marginLeft: '40%', marginRight:'40%', textAlign:'center', marginBottom:'3rem', display:'inline-fex'};
 const accountSettings = {fontFamily:'"Open Sans", "Helvetica Neue", Helvetica, sans-serif', maxWidth:'109.2rem',
 height:'auto !important', margin:'3rem auto'};
 var dynamodb;
@@ -39,7 +39,15 @@ class AccountSettings extends React.Component{
         this.handleClose = this.handleClose.bind(this);
 
         // Check if there is an existing cognito session open
-        var poolData =require('./poolData').poolData;
+        var poolData;
+        if(process.env.NODE_ENV === 'development'){
+            poolData =require('./poolData').poolData;
+        } else{
+            poolData = {
+                UserPoolId : process.env.REACT_APP_Auth_UserPoolId,
+                ClientId : process.env.REACT_APP_Auth_ClientId
+            }
+        }
         var userPool = new CognitoUserPool(poolData);
         var cognitoUser = userPool.getCurrentUser();
 
@@ -61,13 +69,13 @@ class AccountSettings extends React.Component{
             user: {
                 userId: '',
                 email: '',
-                password: "●●●●●●", // For demo purposes only
+                password: "●●●●●●●●", // For demo purposes only
                 phoneNumber: null,
                 firstName: '',
                 lastName: '',
                 paymentMethods: [{id: "card_1", brand: "Visa", last4: "4242", label: "Visa 4242" , isDefault: true}],
                 deliveryAddresses: [{id:1, street: "1 Washington Square", city: "San Jose", state: "CA", zipCode: 95112,
-                    instructions: "Как Деля"}],
+                    instructions: "Да"}],
                 orderHistory: []},
         };
 
@@ -360,7 +368,7 @@ class AccountSettings extends React.Component{
                                     required
                                 />
                             </div>
-                            <div>
+                            <div  style={{display:'inline-block', marginTop:'1.5rem', marginBottom:'1.5rem', marginRight:'1rem'}}>
                                 <TextField
                                     name="city"
                                     type="text"
@@ -370,7 +378,7 @@ class AccountSettings extends React.Component{
                                     required
                                 />
                             </div>
-                            <div>
+                            <div style={{display:'inline-block', marginTop:'1.5rem', marginBottom:'1.5rem', marginRight:'1rem'}}>
                                 <Select
                                     name="state"
                                     floatingLabelText="State"
@@ -381,7 +389,7 @@ class AccountSettings extends React.Component{
                                     <MenuItem label="California" value="CA"/>
                                 </Select>
                             </div>
-                            <div>
+                            <div  style={{display:'inline-block', marginTop:'1.5rem', marginBottom:'1.5rem', marginRight:'1rem'}}>
                                 <TextField
                                     name="zipCode"
                                     type="text"
@@ -430,7 +438,7 @@ class AccountSettings extends React.Component{
                                     required
                                 />
                             </div>
-                            <div>
+                            <div style={{display:'inline-block', marginTop:'1.5rem', marginBottom:'1.5rem', marginRight:'1rem'}}>
                                 <TextField
                                     name="city"
                                     type="text"
@@ -441,7 +449,7 @@ class AccountSettings extends React.Component{
                                     required
                                 />
                             </div>
-                            <div>
+                            <div style={{display:'inline-block', marginTop:'1.5rem', marginBottom:'1.5rem', marginRight:'1rem'}}>
                                 <Select
                                     name="state"
                                     floatingLabelText="State"
@@ -453,7 +461,7 @@ class AccountSettings extends React.Component{
                                     <MenuItem label="California" value="CA"/>
                                 </Select>
                             </div>
-                            <div>
+                            <div style={{display:'inline-block', marginTop:'1.5rem', marginBottom:'1.5rem', marginRight:'1rem'}}>
                                 <TextField
                                     name="zipCode"
                                     type="text"
@@ -684,7 +692,7 @@ class AccountSettings extends React.Component{
                 <StyleRoot>
                     <Header/>
                     <div style={accountSettings}>
-                        <h2>Account Settings</h2>
+                        <h1 style={{textAlign:'center', padding:'1.5rem' ,fontFamily:' "Open Sans", "Helvetica Neue", Helvetica, sans-serif'}}>Account Settings</h1>
                         <Row maxColumns={11} style={{maxWidth: "109.2rem"}}>
                             <Column sizes={{ sm: 6, md: 5, lg: 8, xl: 8}}>
                                 <ProfilePanel title="Account Information" content={
@@ -713,7 +721,7 @@ class AccountSettings extends React.Component{
                             </Column>
                             <Column sizes={{ sm: 6, md: 3, lg: 3, xl: 3 }}>
                                 <ProfilePanel title="Payment Methods">
-                                    <ul style={{listStyleType: "none"}}>
+                                    <ul style={{listStyleType: "none", padding:'1.5rem'}}>
                                         {this.renderCards()}
                                     </ul>
                                     <div style={newAddressStyle}>
