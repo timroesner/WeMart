@@ -62,7 +62,7 @@ class Departments extends Component {
 	handleClick(depName) {
 		this.props.history.push({
           pathname: '/search',
-          search: '?query='+depName+'&dep=true'
+          search: '?query='+depName+'&special=true'
         })
 	}
 
