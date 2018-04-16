@@ -19,7 +19,7 @@ let stripeAPIKey = 'pk_test_ccBJoXsCQn6kn5dkF098Xywl'; //TODO change this to our
 
 //STYLES
 const noSession = {textAlign:'center', marginBottom: '2rem'};
-const noSessionButton = {marginLeft: '40%', marginRight:'40%', textAlign:'center', marginBottom:'3rem', display:'inline-fex'};
+const noSessionButton = {margin: '2rem'};
 const accountSettings = {fontFamily:'"Open Sans", "Helvetica Neue", Helvetica, sans-serif', maxWidth:'109.2rem',
 height:'auto !important', margin:'3rem auto'};
 var dynamodb;
@@ -757,8 +757,8 @@ class AccountSettings extends React.Component{
                                 </h2>
                                 <h4>Please <Link href='/login'>Log In</Link> or <Link href='/signup'>Sign Up</Link></h4>
                             </div>
-                            <div>
-                                <Button style={noSessionButton} size='large' href='/home'>Browse Store</Button>
+                            <div style={{margin:'2rem auto', textAlign:'center'}}>
+                                <Button size='large' onClick={()=>{this.props.history.push('/home')}}>Browse Store</Button>
                             </div>
                         </ProfilePanel>
                     </div>
