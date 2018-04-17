@@ -19,12 +19,12 @@ let stripeAPIKey = 'pk_test_ccBJoXsCQn6kn5dkF098Xywl'; //TODO change this to our
 
 //STYLES
 const noSession = {textAlign:'center', marginBottom: '2rem'};
-const noSessionButton = {margin: '2rem'};
 const accountSettings = {fontFamily:'"Open Sans", "Helvetica Neue", Helvetica, sans-serif', maxWidth:'109.2rem',
 height:'auto !important', margin:'3rem auto'};
 var dynamodb;
 const modalButton_Accept = {margin:'1.8rem 0 1rem 1rem', paddingRight:'3rem', paddingLeft:'3rem'}
 const modalButton_Cancel = {margin:'1.8rem 1rem 1rem 0', paddingRight:'2rem', paddingLeft:'2rem'}
+const pageTitle = {textAlign:'center', padding:'1.5rem' ,fontFamily:' "Open Sans", "Helvetica Neue", Helvetica, sans-serif'};
 
 class AccountSettings extends React.Component{
 
@@ -35,7 +35,6 @@ class AccountSettings extends React.Component{
         this.handleShowPasswordModal = this.handleShowPasswordModal.bind(this);
         this.handleShowPersonalInfoModal = this.handleShowPersonalInfoModal.bind(this);
         this.handleEditAddressModal = this.handleEditAddressModal.bind(this);
-        this.handleNewAddressModal = this.handleNewAddressModal.bind(this);
         this.handleClose = this.handleClose.bind(this);
 
         // Check if there is an existing cognito session open
@@ -61,8 +60,6 @@ class AccountSettings extends React.Component{
             passwordModal: false,
             personalInfoModal: false,
             editAddressModal: false,
-            newAddressModal: false,
-            cognitoUser: cognitoUser,
             isLoggedIn: false,
             // For testing purposes only
             // TODO get data from AWS once API is complete
@@ -74,8 +71,7 @@ class AccountSettings extends React.Component{
                 firstName: '',
                 lastName: '',
                 paymentMethods: [{id: "card_1", brand: "Visa", last4: "4242", label: "Visa 4242" , isDefault: true}],
-                deliveryAddresses: [{id:1, street: "1 Washington Square", city: "San Jose", state: "CA", zipCode: 95112,
-                    instructions: "Да"}],
+                deliveryAddress: null,
                 orderHistory: []},
         };
 
@@ -97,6 +93,7 @@ class AccountSettings extends React.Component{
                 }
                 self.setState({isLoggedIn: true})
                 console.log(result) //Logs user attributes
+
                 result.forEach((attribute) => {
                     if(attribute.Name === 'email'){
                         self.setState({user: {...self.state.user , email: attribute.Value}}) // set the email
@@ -132,13 +129,25 @@ class AccountSettings extends React.Component{
         dynamodb.getItem(userParams, (err, data) => {
             if(err) {console.log(err, err.stack)}
             else{
+                console.log(data);
                 let firstName = data.Item.firstName.S;
                 let lastName = data.Item.lastName.S;
-                let phone = data.Item.phone.N;
                 this.setState({
-                    user: {...this.state.user, firstName: firstName, lastName:lastName, phoneNumber:phone}
+                    user: {...this.state.user, firstName: firstName, lastName:lastName}
                 })
-                console.log(data)
+
+                // Check if the user has a phone number in their attributes
+                if(data.Item.phone){
+                    let phone = data.Item.phone.N;
+                    this.setState({
+                        user: {...this.state.user, phoneNumber: phone}
+                    })
+                }
+
+                if(data.Item.addressline){
+                    console.log('address',data.Item)
+                    this.setDeliveryAddress(data.Item)
+                }
             }
         })
     }
@@ -150,7 +159,6 @@ class AccountSettings extends React.Component{
             passwordModal: false,
             personalInfoModal: false,
             editAddressModal: false,
-            newAddressModal: false,
             newCardModal: false,
         });
     }
@@ -171,13 +179,23 @@ class AccountSettings extends React.Component{
         this.setState({editAddressModal: true})
     }
 
-    handleNewAddressModal(){
-        this.setState({newAddressModal: true})
-    }
-
     handleNewCardModal(){
         this.setState({newCardModal: true})
     }
+
+    setDeliveryAddress(address){
+        console.log('[setDeliveryAddress]',address)
+        this.setState({user: {...this.state.user, deliveryAddress: {
+                    street: address.addressline.S,
+                    city: address.city.S,
+                    state: address.state.S,
+                    zipCode: address.zipcode.N,
+                    instructions: address.instructions.S,
+
+                }
+            }})
+    }
+
 
     handleEmailChange = (model) => {
         var email = model.newEmail;
@@ -211,7 +229,7 @@ class AccountSettings extends React.Component{
                             'userid': {S: this.state.userId}
                         },
                         TableName: 'user',
-                        ReturnValues: "ALL_NEW",
+                        ReturnValues: "UPDATED_NEW",
                         UpdateExpression: 'SET #UI = :i, #UN = :n',
                     }
 
@@ -287,52 +305,80 @@ class AccountSettings extends React.Component{
         console.log(model)
     };
 
-    handleNewAddress = (model) => {
-        let id = this.state.user.deliveryAddresses.length + 2;
-        this.setState({
-            user: {...this.state.user, deliveryAddresses: [...this.state.user.deliveryAddresses, {
-                street:model.addressLine1, city:model.city, zipCode:model.zipCode, state:model.state, id:id
-                }]}
-        })
-        this.handleClose()
-      console.log(this.state.user.deliveryAddresses)
-    };
-
-    handleEditAddress = (model, address) => {
-        console.log('address:', address)
-        console.log('model', model)
-        let addresses = this.state.user.deliveryAddresses
-        let item = {city:model.city, street:model.addressLine1, state:model.state, zipCode:model.zipCode, id:address.id}
-        for(var i = 0; i < addresses.length; i++){
-            if(addresses[i].id === address.id){
-                console.log('found ')
-                addresses[i] = item;
-            }
+    handleUpdateAddress(address){
+        var params = {
+            ExpressionAttributeNames: {
+                "#AD": "addressline",
+                '#CT': 'city',
+                '#ST': 'state',
+                '#ZI': 'zipcode',
+                '#IN': 'instructions',
+            },
+            ExpressionAttributeValues: {
+                ":a": {
+                    S:address.addressLine
+                    },
+                ":c": {
+                    S:address.city
+                    },
+                ":s": {
+                    S:address.state
+                    },
+                ":z": {
+                    N:address.zipCode
+                    },
+                ":i": {
+                    S:address.instructions
+                    },
+            },
+            Key: {
+                'userid': {S: this.state.user.userId}
+            },
+            TableName: "user",
+            ReturnValues: "ALL_NEW",
+            UpdateExpression: 'SET #AD = :a, #CT=:c, #ST=:s, #ZI=:z,#IN=:i',
         }
 
-        // item = {street:model.addressLine1, city:'city', zipCode:92222, state:'CA', id:item.id}
+        dynamodb.updateItem(params, (err, data) => {
+            if(err){
+                console.log(err, err.stack);
+                //TODO fancy alerts
+            }
+            else {
+                this.setDeliveryAddress(data.Attributes);
+            }
+        })
 
-        // this.setState({
-        //     user: {...this.state.user, delli}
-        // })
         this.handleClose()
-        console.log(model)
-    };
+    }
 
-    // Renders a list of all the delivery addresses.
+    // Renders the delivery address card
     renderAddress(){
-        if(this.state.user.deliveryAddresses){
-            let delivAddress = this.state.user.deliveryAddresses[0];
+        if(this.state.user.deliveryAddress){
+            var address = this.state.user.deliveryAddress
             return <div>
-                {this.state.user.deliveryAddresses.map((address) =>
-                <AddressCard key={address.id} street={address.street} city={address.city} state={address.state} zipCode={address.zipCode}
-                             onClick={() => {this.handleEditAddressModal(); delivAddress=address}}/>
-                )}
-                {this.editAddressModal(delivAddress)}
+                <AddressCard key={address.id}
+                             street={address.street}
+                             city={address.city}
+                             state={address.state}
+                             zipCode={address.zipCode}
+                             onClick={() => {this.handleEditAddressModal()}}/>
+                {this.editAddressModal()}
             </div>
         } else {
             return(
-                <div><h4>No delivery addresses add one below</h4></div>
+                <div>
+                    <h4 style={newAddressStyle}>No delivery addresses add one below</h4>
+                    <div style={newAddressStyle}>
+                        <Link onClick={(e) => {
+                            e.preventDefault();
+                            this.handleEditAddressModal();
+                        }} style={{width: "100%"}}>
+                            <Icon name="plusBold"/> Add New Delivery Address
+                        </Link>
+                    </div>
+                    {this.editAddressModal()}
+                </div>
             )
         }
     }
@@ -349,76 +395,13 @@ class AccountSettings extends React.Component{
             />)
     }
 
-    newAddressModal(){
-        return(
-            <div>
-                <Modal show={this.state.newAddressModal} onHide={this.handleClose}>
-                    <Modal.Header>
-                        <h1>New Address</h1>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <Form onSubmit={this.handleNewAddress}>
-                            <div>
-                                <TextField
-                                    name="addressLine1"
-                                    type="text"
-                                    floatingLabelText="Address"
-                                    hintText="Enter Your Address"
-                                    fullWidth
-                                    required
-                                />
-                            </div>
-                            <div  style={{display:'inline-block', marginTop:'1.5rem', marginBottom:'1.5rem', marginRight:'1rem'}}>
-                                <TextField
-                                    name="city"
-                                    type="text"
-                                    floatingLabelText="City"
-                                    hintText="Enter Your City"
-                                    halfWidth
-                                    required
-                                />
-                            </div>
-                            <div style={{display:'inline-block', marginTop:'1.5rem', marginBottom:'1.5rem', marginRight:'1rem'}}>
-                                <Select
-                                    name="state"
-                                    floatingLabelText="State"
-                                    hintText="Select a State"
-                                    halfWidth
-                                    required
-                                >
-                                    <MenuItem label="California" value="CA"/>
-                                </Select>
-                            </div>
-                            <div  style={{display:'inline-block', marginTop:'1.5rem', marginBottom:'1.5rem', marginRight:'1rem'}}>
-                                <TextField
-                                    name="zipCode"
-                                    type="text"
-                                    floatingLabelText="Zip Code"
-                                    hintText="Enter Your Zip Code"
-                                    halfWidth
-                                    required
-                                />
-                            </div>
-                            <div>
-                                <textarea
-                                    name="instructions"
-                                    placeholder="Delivery Instructions"
-                                    rows= "5"
-                                    wrap="soft"
-                                    style={{height: "10rem", width: "100%", resize: "none"}}
-                                />
-                            </div>
-                            <Button style={modalButton_Cancel} snacksStyle="secondary" onClick={this.handleClose}>Cancel</Button>
-                            <Button style={modalButton_Accept} type="submit">Accept</Button>
-                        </Form>
-                    </Modal.Body>
-                </Modal>
-            </div>
-        )
-    }
-
-    editAddressModal(address){
-        console.log(address)
+    editAddressModal(){
+        var address;
+        if(this.state.user.deliveryAddress){
+            address = this.state.user.deliveryAddress
+        } else {
+            address = {}
+        }
         return(
             <div>
                 <Modal show={this.state.editAddressModal} onHide={this.handleClose}>
@@ -426,10 +409,10 @@ class AccountSettings extends React.Component{
                         <h1>Edit Address</h1>
                     </Modal.Header>
                     <Modal.Body>
-                        <Form onSubmit={(model)=>{this.handleEditAddress(model,address)}}>
+                        <Form onSubmit={(model)=>{this.handleUpdateAddress(model)}}>
                             <div>
                                 <TextField
-                                    name="addressLine1"
+                                    name="addressLine"
                                     type="text"
                                     floatingLabelText="Address"
                                     hintText="Enter Your Address"
@@ -473,13 +456,11 @@ class AccountSettings extends React.Component{
                                 />
                             </div>
                             <div>
-                                <textarea
+                                <TextField
                                     name="instructions"
-                                    placeholder="Delivery Instructions"
+                                    floatingLabelText={'Delivery instructions'}
                                     defaultValue={address.instructions}
-                                    rows= "5"
-                                    wrap="soft"
-                                    style={{height: "10rem", width: "100%", resize: "none"}}
+                                    style={{width: "100%",}}
                                 />
                             </div>
                             <Button style={modalButton_Cancel} snacksStyle="secondary" onClick={this.handleClose}>Cancel</Button>
@@ -692,7 +673,7 @@ class AccountSettings extends React.Component{
                 <StyleRoot>
                     <Header/>
                     <div style={accountSettings}>
-                        <h1 style={{textAlign:'center', padding:'1.5rem' ,fontFamily:' "Open Sans", "Helvetica Neue", Helvetica, sans-serif'}}>Account Settings</h1>
+                        <h1 style={pageTitle}>Account Settings</h1>
                         <Row maxColumns={11} style={{maxWidth: "109.2rem"}}>
                             <Column sizes={{ sm: 6, md: 5, lg: 8, xl: 8}}>
                                 <ProfilePanel title="Account Information" content={
@@ -706,17 +687,9 @@ class AccountSettings extends React.Component{
                                         <Line title="Last Name" value={this.state.user.lastName} onChange={this.handleShowPersonalInfoModal}/>
                                         <Line title="Phone" value={this.state.user.phoneNumber} onChange={this.handleShowPersonalInfoModal}/>
                                     </div>}/>
-                                <ProfilePanel title="Delivery Addresses" content={
+                                <ProfilePanel title="Delivery Address" content={
                                     <div>
                                         {this.renderAddress()}
-                                        <div style={newAddressStyle}>
-                                            <Link onClick={(e, props) => {
-                                                e.preventDefault();
-                                                this.handleNewAddressModal();
-                                            }} style={{width: "100%"}}>
-                                                <Icon name="plusBold"/> Add New Delivery Address
-                                            </Link>
-                                        </div>
                                     </div>}/>
                             </Column>
                             <Column sizes={{ sm: 6, md: 3, lg: 3, xl: 3 }}>
@@ -739,7 +712,6 @@ class AccountSettings extends React.Component{
                     {this.emailModal()}
                     {this.passwordModal()}
                     {this.editPerInfoModal()}
-                    {this.newAddressModal()}
                     {this.addCardModal()}
                 </StyleRoot>
             );
@@ -749,7 +721,7 @@ class AccountSettings extends React.Component{
                 <div>
                     <Header/>
                     <div style={accountSettings}>
-                        <h2>Account Settings</h2>
+                        <h1 style={pageTitle}>Account Settings</h1>
                         <ProfilePanel title='Account Settings'>
                             <div style={noSession}>
                                 <h2>
