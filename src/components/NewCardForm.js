@@ -11,10 +11,9 @@ const checkoutForm = {padding:'3rem'};
 const label = {display: 'block', fontSize:'2rem', color:'#808080', borderRadius:'.6rem'}
 const cardElement = {
     base: {
-        fontSize:'2rem',
+        fontSize:'20px',
         color: '#424770',
         letterSpacing: '0.025em',
-        fontFamily: 'Source Code Pro, monospace',
         '::placeholder': {
             color: '#aab7c4',
         }}, invalid: {
@@ -44,22 +43,15 @@ class NewCardForm extends React.Component {
         // We don't want to let default form submission happen here, which would refresh the page.
         ev.preventDefault();
 
-        // Within the context of `Elements`, this call to createToken knows which Element to
-        // tokenize, since there's only one in this group.
-        // this.props.stripe.createToken({name: 'Jenny Rosen'}).then(({token}) => {
-        //     console.log('Received Stripe token:', token);
-        // });
-
         if (this.props.stripe) {
-            this.props.stripe.createSource()
-                .then(payload => {this.props.onSubmit(payload)} );
+            this.props.stripe.createSource({
+                type: 'card',
+                currency: 'usd',
+                owner:{name:this.props.name} })
+                .then(payload => {this.props.onSubmit(payload);} );
         } else {
             console.log("Stripe.js hasn't loaded yet.");
         }
-
-
-        // However, this line of code will do the same thing:
-        // this.props.stripe.createToken({type: 'card', name: 'Jenny Rosen'});
     };
 
     render() {
@@ -121,6 +113,9 @@ class NewCardForm extends React.Component {
 }
 
 NewCardForm.propTypes = {
+    name: PropTypes.string,
+    email: PropTypes.string,
+    phone: PropTypes.string,
     onSubmit: PropTypes.func
 }
 
