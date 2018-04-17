@@ -8,10 +8,10 @@ import {withRouter} from "react-router-dom";
 
 //STYLES
 //Add To cart button Style
-const addToCart = {width: "100%", display: "inherit"};
+const addToCart = {display: "inherit", margin:'0 0 auto', width:'100%'};
 
 //Item Card Styles
-const itemCard = {background:'#ffffff', height:'35.2rem'};
+const itemCard = {background:'#ffffff', height:'35.2rem', maxWidth:'16rem'};
 const itemCard_cardContents = {cursor:'pointer', margin:'0 5% 1rem 5%',maxWidth:'15.8rem',display:'block'};
 const itemCard_badge = {position: 'absolute', top: '.8rem', left: '.8rem', height: '2rem', width:'10rem',
     backgroundRepeat:'no-repeat'};

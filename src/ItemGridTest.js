@@ -26,7 +26,7 @@ export default class ItemGridTest extends React.Component{
         }
 
         // Get the table whose name is "item"
-        var params = {ExpressionAttributeValues: {
+        var params = {
             TableName: "item"
         };
 
