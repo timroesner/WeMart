@@ -3,9 +3,10 @@ import ItemsGrid from './components/ItemsGrid';
 import React, { Component } from 'react';
 import { withRouter } from "react-router-dom";
 import {DynamoDB} from "aws-sdk/index";
+import { Button, DropdownMenu, MenuItem } from 'ic-snacks';
 
 var query = "";
-var finishedLoading = false;
+var dynamodb;
 
 class Search extends Component {
 
@@ -13,8 +14,11 @@ class Search extends Component {
 		super(props);
 
 		this.state = {
-			items: []
+			items: [],
+			finishedLoading: false,
 		}
+
+		this.initializeDatabase()
 
 		const queryParams = new URLSearchParams(this.props.location.search);
     	query = queryParams.get('query')
@@ -31,17 +35,7 @@ class Search extends Component {
     	}
 	}
 
-	getDepartmentItems() {
-
-	}
-
-	getSavingsItems() {
-
-	}
-
-	searchItems() {
-		// Get the dynamoDB database
-	    var dynamodb;
+	initializeDatabase() {
 	    if(process.env.NODE_ENV === 'development'){
 	        dynamodb = require('./db').db;
 	    } else {
@@ -52,17 +46,25 @@ class Search extends Component {
 	                secretAccessKey: process.env.REACT_APP_DB_secretAccessKey},
 	        });
 	    }
+	}
 
-	    var params = {
-	        TableName: "item"
-	    };
+	getDepartmentItems() {
+		var params = { 
+		  ExpressionAttributeValues: {
+		   ":d": {
+		     S: query
+		    }
+		  }, 
+		  FilterExpression: "department = :d",  
+		  TableName: "item"
+		 };
 
-	    var items = [];
-	    dynamodb.scan(params, (err, data) => {
-	        if (err) {
-	        	alert(JSON.stringify(err))
-	        } else {
-	            data.Items.forEach((element) => {
+		 var items = [];
+		 dynamodb.scan(params, function(err, data) {
+		 	if(err) {
+				alert(JSON.stringify(err))
+		 	} else {
+		 		data.Items.forEach((element) => {
 	            	items.push({
 	            		itemid: element.itemid.S,
 	            		name: element.name.S, 
@@ -70,12 +72,81 @@ class Search extends Component {
 	            		price: element.price.N,
 	            		quantity: element.quantity.S,
 	            		sale: element.sale.N,
-	            		departmentid: element.departmentid.N,
+	            		departmentid: element.department.S,
 	            		inCart: 0,
 	            	})
 	            });
-	            this.setState({items: items})
-	            finishedLoading = true
+	            this.setState({items: items, finishedLoading: true})
+		 	}
+		 }.bind(this));
+	}
+
+	getSavingsItems() {
+		var params = { 
+		  ExpressionAttributeValues: {
+		   ":s": {
+		     N: "0"
+		    }
+		  }, 
+		  FilterExpression: "sale <> :s",  
+		  TableName: "item"
+		};
+
+		 var items = [];
+		 dynamodb.scan(params, function(err, data) {
+		 	if(err) {
+				alert(JSON.stringify(err))
+		 	} else {
+		 		data.Items.forEach((element) => {
+	            	items.push({
+	            		itemid: element.itemid.S,
+	            		name: element.name.S, 
+	            		image: element.image.S,
+	            		price: element.price.N,
+	            		quantity: element.quantity.S,
+	            		sale: element.sale.N,
+	            		departmentid: element.department.S,
+	            		inCart: 0,
+	            	})
+	            });
+	            this.setState({items: items, finishedLoading: true})
+		 	}
+		 }.bind(this));
+	}
+
+	searchItems() {
+
+	    var params = {  
+		  	TableName: "item"
+		};
+
+	    var items = [];
+	    dynamodb.scan(params, (err, data) => {
+	        if (err) {
+	        	alert(JSON.stringify(err))
+	        } else {
+	            data.Items.forEach((element) => {
+
+	            	// Grab parameters for search
+	            	let department = element.department.S;
+	            	let name = element.name.S;
+	            	let keywords = element.keywords.S.toLowerCase().split(",");
+	            	query = query.toLowerCase()
+
+	            	if(department.toLowerCase().includes(query) || name.toLowerCase().includes(query) || keywords.includes(query)) {
+		            	items.push({
+		            		itemid: element.itemid.S,
+		            		name: name, 
+		            		image: element.image.S,
+		            		price: element.price.N,
+		            		quantity: element.quantity.S,
+		            		sale: element.sale.N,
+		            		departmentid: department,
+		            		inCart: 0,
+		            	})
+		            }
+	            });
+	            this.setState({items: items, finishedLoading: true})
 	        }
 	    });
 	}
@@ -85,17 +156,53 @@ class Search extends Component {
 			return(
 				<ItemsGrid items={this.state.items} />
 			)
-		} else if(finishedLoading) {
+		} else if(this.state.finishedLoading) {
 			return(
-				<h1 style={{width: '100%', textAlign: 'center', marginTop: '35vh', color: 'gray'}}>No items found</h1>
+				<h1 style={{width: '100%', textAlign: 'center', marginTop: '30vh', color: 'gray'}}>No items found</h1>
 			)
 		}
+	}
+
+	sortBy(value) {
+		if(value == "lowtohigh") {
+			this.setState({items: this.state.items.sort(function(a, b){
+				let priceA = a.sale != 0 ? a.sale : a.price;
+				let priceB = b.sale != 0 ? b.sale : b.price;
+
+				return((priceA > priceB) ? 1 : ((priceA < priceB) ? -1 : 0))
+			})})
+
+		} else if(value == "hightolow") {
+			this.setState({items: this.state.items.sort(function(a, b){
+				let priceA = a.sale != 0 ? a.sale : a.price;
+				let priceB = b.sale != 0 ? b.sale : b.price;
+
+				return((priceA < priceB) ? 1 : ((priceA > priceB) ? -1 : 0))
+			})})
+
+		} else if(value == "name") {
+			this.setState({items: this.state.items.sort(function(a, b){return(a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0)})})
+		}
+	}
+
+	renderSortingMenu() {
+		return(
+				<div style={{ margin: '16px'}}>
+				<DropdownMenu triggerElement={<Button snacksStyle="secondary" size="small" >Sorting by&nbsp;
+				   <span class="caret"></span></Button>}>
+					<p value="lowtohigh" onClick={() => this.sortBy("lowtohigh")} style={{padding: '6px'}}>Price: Low to High</p>
+					<p value="hightolow" onClick={() => this.sortBy("hightolow")} style={{padding: '6px'}}>Price: High to Low</p>
+					<p onClick={() => this.sortBy("name")} style={{padding: '6px'}}>Name</p>
+    			</DropdownMenu>
+    			</div>
+		)
 	}
 
 	render() {
 		return(
 			<div>
 				<Header />
+				{this.renderSortingMenu()}
 				{this.renderItems()}
 			</div>
 		)
