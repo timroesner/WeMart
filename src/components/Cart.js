@@ -10,49 +10,23 @@ class Cart extends Component {
 
     this.state = {
       width: window.innerWidth,
-      cartItems: []
     }
 
-    var dynamodb = null;
-    if(process.env.NODE_ENV === 'development'){
-        dynamodb = require('../db').db
-    }else{
-        dynamodb = new DynamoDB({
-            region: "us-west-1",
-            credentials: {
-                accessKeyId: process.env.REACT_APP_DB_accessKeyId,
-                secretAccessKey: process.env.REACT_APP_DB_secretAccessKey},
-        });
+    if(localStorage.getItem('cart') != null) {
+      var cartString = localStorage.getItem('cart')
+      var cart = JSON.parse(cartString)
+      this.state ={cartItems: this.getItemsFromCart(cart)}
+    } else {
+      this.state = {cartItems: []}
     }
+  }
 
-    // Get the table whose name is "item"
-    var params = {
-        TableName: "item"
-    };
-
-    dynamodb.scan(params, (err, data) => {
-        if (err) {console.log(err, err.stack)} // an error occurred
-        else{
-            data.Items.forEach((element) => {
-
-                //TODO Clean this up into a one liner.
-                let departmentid = element.departmentid.N;
-                let image = element.image.S;
-                let itemid = (element.itemid.S);
-                let name = (element.name.S);
-                let price = (element.price.N);
-                let quantity = (element.quantity.S);
-                let sale = (element.sale.N);
-
-                let testItem = {
-                    itemid: itemid, name: name, departmentid: departmentid, image: image, price: price,
-                    quantity: quantity, sale: sale, inCart: 0};
-                this.setState({
-                    cartItems: [testItem]
-                });
-            });
-        }
-    });
+  getItemsFromCart = (cart) => {
+    var cartItems = []
+    for(var itemID in cart) {
+      cartItems.push(cart[itemID])
+    }
+    return cartItems
   }
 
   componentWillMount() {
