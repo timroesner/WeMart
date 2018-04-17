@@ -15,7 +15,6 @@ import {DynamoDB} from "aws-sdk/index";
 import NewCardForm from "./components/NewCardForm";
 
 let newAddressStyle = {textAlign: "center", fontSize: "1.6rem", paddingBottom: ".6rem", paddingTop: ".6rem"};
-let stripeAPIKey = 'pk_test_ccBJoXsCQn6kn5dkF098Xywl'; //TODO change this to our API key
 
 //STYLES
 const noSession = {textAlign:'center', marginBottom: '2rem'};
@@ -25,6 +24,7 @@ var dynamodb;
 const modalButton_Accept = {margin:'1.8rem 0 1rem 1rem', paddingRight:'3rem', paddingLeft:'3rem'}
 const modalButton_Cancel = {margin:'1.8rem 1rem 1rem 0', paddingRight:'2rem', paddingLeft:'2rem'}
 const pageTitle = {textAlign:'center', padding:'1.5rem' ,fontFamily:' "Open Sans", "Helvetica Neue", Helvetica, sans-serif'};
+var stripeAPIKey;
 
 class AccountSettings extends React.Component{
 
@@ -41,6 +41,7 @@ class AccountSettings extends React.Component{
         var poolData;
         if(process.env.NODE_ENV === 'development'){
             poolData =require('./poolData').poolData;
+            stripeAPIKey = require('./stripeKey').stripeAPIKey;
         } else{
             poolData = {
                 UserPoolId : process.env.REACT_APP_Auth_UserPoolId,
@@ -51,6 +52,8 @@ class AccountSettings extends React.Component{
         var cognitoUser = userPool.getCurrentUser();
 
         this.state = {
+            //Stripe
+            stripe: null,
             //Input Validators
             emailInput: null,
             passwordInput: null,
@@ -70,7 +73,7 @@ class AccountSettings extends React.Component{
                 phoneNumber: null,
                 firstName: '',
                 lastName: '',
-                paymentMethods: [{id: "card_1", brand: "Visa", last4: "4242", label: "Visa 4242" , isDefault: true}],
+                paymentMethod: null,
                 deliveryAddress: null,
                 orderHistory: []},
         };
@@ -101,6 +104,16 @@ class AccountSettings extends React.Component{
                     }
                 })
                 self.getUserDetails()
+            });
+        }
+    }
+    componentDidMount(){
+        if (window.Stripe) {
+            this.setState({stripe: window.Stripe(require('./stripeKey').stripeAPIKey)});
+        } else {
+            document.querySelector('#stripe-js').addEventListener('load', () => {
+                // Create Stripe instance once Stripe.js loads
+                this.setState({stripe: window.Stripe(require('./stripeKey').stripeAPIKey)});
             });
         }
     }
@@ -196,6 +209,24 @@ class AccountSettings extends React.Component{
             }})
     }
 
+    handleNewCard(token){
+        var label = token.source.card.brand + ' ' + token.source.card.last4
+        this.stripeTokenHandler()
+        this.setState({user: {...this.state.user,
+                paymentMethod: {brand: token.source.card.brand, last4:token.source.card.last4, label:label}}});
+        console.log('[token]',token)
+        this.handleClose()
+    }
+
+    stripeTokenHandler(token) {
+        // var hiddenInput = document.createElement('input');
+        // hiddenInput.setAttribute('type', 'hidden');
+        // hiddenInput.setAttribute('name', 'stripeToken');
+        // hiddenInput.setAttribute('value', token.id);
+
+        //send to the back end here
+    }
+
 
     handleEmailChange = (model) => {
         var email = model.newEmail;
@@ -266,7 +297,6 @@ class AccountSettings extends React.Component{
     };
 
     handlePersonalInfoChange = (model) => {
-
         var params = {
             ExpressionAttributeNames: {
                 "#FN": "firstName",
@@ -384,15 +414,36 @@ class AccountSettings extends React.Component{
     }
 
     // Renders a list of all the credit cards.
-    renderCards(){
-        return this.state.user.paymentMethods.map((card) =>
-            <CreditCard
-                key={card.id}
-                brand={card.brand}
-                label={card.label}
-                last4={card.last4}
-                isDefault={card.isDefault}
-            />)
+    renderCard(){
+        var card = this.state.user.paymentMethod
+        if(card){
+            return(
+                <ul style={{listStyleType: "none", padding:'2rem'}}>
+                    <CreditCard
+                        key={card.id}
+                        brand={card.brand}
+                        label={card.label}
+                        last4={card.last4}
+                        isDefault={card.isDefault}
+                    />
+                </ul>
+            )
+        } else{
+            return(
+                <div>
+                    <div style={newAddressStyle}>
+                        <Link onClick={(e) => {
+                            e.preventDefault();
+                            this.handleNewCardModal();
+                        }} style={{width: "100%"}}>
+                            <Icon name="plusBold"/> Add New Payment Method
+                        </Link>
+                    </div>
+                </div>
+            )
+        }
+
+
     }
 
     editAddressModal(){
@@ -647,14 +698,12 @@ class AccountSettings extends React.Component{
                     <Modal.Body>
                         <StripeProvider apiKey={stripeAPIKey}>
                             <Elements>
-                                <NewCardForm onSubmit={()=>{
-                                    this.handleClose();
-                                    this.setState({
-                                        user: {...this.state.user, paymentMethods: [...this.state.user.paymentMethods,
-                                                {id: "card_2", brand: "Visa", last4: "4241", label: "Visa 4241" , isDefault: false
-                                            }]}
-                                    })
-                                }}/>
+                                <NewCardForm
+                                    onSubmit={(token)=>{this.handleNewCard(token)}}
+                                    name={this.state.user.firstName + ' ' + this.state.user.lastName}
+                                    phone={this.state.user.phoneNumber}
+                                    email={this.state.user.email}
+                                />
                             </Elements>
                         </StripeProvider>
                     </Modal.Body>
@@ -694,17 +743,7 @@ class AccountSettings extends React.Component{
                             </Column>
                             <Column sizes={{ sm: 6, md: 3, lg: 3, xl: 3 }}>
                                 <ProfilePanel title="Payment Methods">
-                                    <ul style={{listStyleType: "none", padding:'1.5rem'}}>
-                                        {this.renderCards()}
-                                    </ul>
-                                    <div style={newAddressStyle}>
-                                        <Link onClick={(e, props) => {
-                                            e.preventDefault();
-                                            this.handleNewCardModal();
-                                        }} style={{width: "100%"}}>
-                                            <Icon name="plusBold"/> Add New Payment Method
-                                        </Link>
-                                    </div>
+                                    {this.renderCard()}
                                 </ProfilePanel>
                             </Column>
                         </Row>
