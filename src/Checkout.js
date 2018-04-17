@@ -76,7 +76,7 @@ export default class Checkout extends React.Component {
             dynamodb.getItem(itemParams,(err, data)=>{
                 if(err) console.log(err, err.stack)
                 else {
-                    let departmentid = data.Item.departmentid.N;
+                    let departmentid = data.Item.department.S;
                     let image = data.Item.image.S;
                     let itemid = (data.Item.itemid.S);
                     let name = (data.Item.name.S);
