@@ -5,9 +5,11 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group'; // ES6
 import './header.css'
 import Cart from './Cart'
 
+var zip;
+
 class Header extends Component {
-	constructor() {
-  		super();
+	constructor(props) {
+  		super(props);
   		this.state = {
    			width: window.innerWidth,
 				value: '',
@@ -15,6 +17,8 @@ class Header extends Component {
  	 	};
 		this.handleSearch = this.handleSearch.bind(this);
 		this.handleSearchChange = this.handleSearchChange.bind(this);
+
+		this.checkZip()
 	}
 
 componentWillMount() {
@@ -31,10 +35,21 @@ handleWindowSizeChange = () => {
   this.setState({ width: window.innerWidth });
 };
 
+checkZip() {
+	if(localStorage.getItem('zip') == null) {
+		this.props.history.push('/')
+	} else {
+		zip = localStorage.getItem('zip')
+	}
+}
+
 handleSearch(event) {
 	//search logic
-	console.log("search for "+ this.state.value);
 	event.preventDefault();
+	this.props.history.push({
+		pathname: 'search',
+		search: '?query='+this.state.value
+	})
 };
 
 handleSearchChange(event) {
@@ -55,6 +70,13 @@ handleAccountClick = () => {
 
 handleZipClick = () => {
 	this.props.history.push('/')
+}
+
+handleSavingsClick = () => {
+	this.props.history.push({
+		pathname: 'search',
+		search: '?query=saving&special=true'
+	})
 }
 
 
@@ -84,7 +106,7 @@ handleZipClick = () => {
 
 	const searchBtn = {
 		position: 'absolute',
-		backgroundColor: 'red',
+		backgroundColor: '#D30707',
 	  top: '0',
 	  right: '0',
 	  zIndex: '2',
@@ -111,12 +133,13 @@ handleZipClick = () => {
 	}
 
 	const links = {
-		color: 'red',
+		color: '#D30707',
 	    fontSize: '1.25em',
 		textAlign: 'center'
 	}
 
-  const isMobile = width <= 500;
+  // At this value the header would be unusable anyway so better to switch to the mobile header
+  const isMobile = width <= 767;
   if (isMobile) {
     return (
 			<div style={{paddingBottom: '200px'}}>
@@ -125,17 +148,19 @@ handleZipClick = () => {
 						<div className="container-fluid" style={center} >
 
 							<div style={{paddingLeft: '0'}} className="col-xs-2">
-								<button onClick={this.handleAccountClick} className="btn btn-danger btn-sm" style={{backgroundColor: 'red'}} >
+								<button onClick={this.handleAccountClick} className="btn btn-danger btn-sm" style={{backgroundColor: '#D30707'}} >
 									<i className="far fa-user" />
 								</button>
 							</div>
 
 							<div className="col-xs-8" style={{textAlign: 'center', color: '#E6003D'}}>
-								<img src={logo} style={{height: '35px', backgroundColor: 'clear'}} />
+								<a href="/home">
+									<img src={logo} style={{height: '35px', backgroundColor: 'clear'}} />
+								</a>
 							</div>
 
 							<div style={{paddingRight: '0'}} className="col-xs-2">
-								<button onClick={this.showCart} style={{float: 'right', backgroundColor: 'red'}} className="btn btn-danger btn-sm">
+								<button onClick={this.showCart} style={{float: 'right', backgroundColor: '#D30707'}} className="btn btn-danger btn-sm">
 									<i className="fas fa-shopping-cart" />
 								</button>
 							</div>
@@ -164,7 +189,7 @@ handleZipClick = () => {
 										</li>
 
 										<li style={mobileNavItems}> <a style={links} href="#">
-											<button style={astext}><i className="fas fa-tag" /><br />
+											<button style={astext} onClick={this.handleSavingsClick} ><i className="fas fa-tag" /><br />
 												<span>Savings</span>
 											</button></a>
 										</li>
@@ -200,7 +225,7 @@ handleZipClick = () => {
 
 		<div className="container-fluid" style={center}>
 			<div className="navbar-header" style={{width: '15%', paddingTop: '3px'}}>
-    			<a className="navbar-brand" style={center} href="/">
+    			<a className="navbar-brand" style={center} href="/home">
     				<img src={logo} style={{height: '35px', backgroundColor: 'clear'}} />
     			</a>
 			</div>
@@ -216,9 +241,8 @@ handleZipClick = () => {
 
 		    	<li style={{width: '36%'}}>
 		      		<button className="primaryRedWithHover" style={astext} onClick={this.handleZipClick}>
-		      			<i className="fas fa-map-marker" style={{marginRight: '5px'}} />
-		      			<span style={{ marginRight: '4px' }} />
-		      			95112
+		      			<i className="fas fa-map-marker" /> &nbsp;
+		      			{zip}
 		      		</button>
 		    	</li>
 
@@ -240,7 +264,7 @@ handleZipClick = () => {
 		</div>
 	    <ul id="pills" className="nav nav-pills" style={center}>
 			<li role="navigation" style={pillsLi}><button className="primaryRedWithHover" style={astext}>Departments</button></li>
-			<li role="navigation" style={pillsLi}><button className="primaryRedWithHover" style={astext}>Savings</button></li>
+			<li role="navigation" style={pillsLi}><button className="primaryRedWithHover" style={astext} onClick={this.handleSavingsClick} >Savings</button></li>
 			<li role="navigation" style={pillsLi}><button className="primaryRedWithHover" style={astext}>History</button></li>
 	    </ul>
 	</nav>
