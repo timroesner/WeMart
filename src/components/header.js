@@ -75,7 +75,7 @@ handleZipClick = () => {
 handleSavingsClick = () => {
 	this.props.history.push({
 		pathname: 'search',
-		search: '?query=saving&special=true'
+		search: '?query=savings&special=true'
 	})
 }
 
