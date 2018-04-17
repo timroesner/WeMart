@@ -13,7 +13,7 @@ import NewCardForm from "./components/NewCardForm";
 //
 
 let key = 'pk_test_ccBJoXsCQn6kn5dkF098Xywl';
-let cart = [{id: 1, quantity:2},{id:4,quantity:1}]
+let cart = [{id: 23, quantity:2},{id:24,quantity:1}]
 
 //STYLES
 const checkout = {margin:' 1rem auto', maxWidth:'71rem',};
@@ -367,12 +367,12 @@ export default class Checkout extends React.Component {
                                 </div>
                                 <hr></hr>
                                 <div style={{fontWeight:'600',overflow:'hidden', lineHeight:'2.rem', display:'flex', alignItems:'center'}}>
-                                    Total <div style={{flexGrow:'1', textAlign:'end'}}>${this.state.total}</div>
+                                    Total <div style={{flexGrow:'1', textAlign:'end'}}>${Math.round(this.state.total * 100) / 100}</div>
                                 </div>
                             </div>
                         </CheckoutPanel>
                         <div style={{background:'#FFFFFF', width:'100%', marginTop:'2rem', padding:'1rem'}}>
-                            <div><span style={{display:'inline-block'}}>Happy with your order? Place your order and enjoy your day.</span></div>
+                            <div><span style={{display:'inline-block'}}>Done? Place your order and enjoy your day</span></div>
 
                             <div style={{display:'inline-block', marginTop:'1.5rem', marginRight:'0', marginLeft:'auto'}}>
                                 <Button style={{paddingLeft:'3rem', paddingRight:'3rem', marginLeft:'auto', marginRight:'0'}}>Place order</Button>
