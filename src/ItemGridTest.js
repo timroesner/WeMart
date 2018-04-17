@@ -27,11 +27,6 @@ export default class ItemGridTest extends React.Component{
 
         // Get the table whose name is "item"
         var params = {ExpressionAttributeValues: {
-                ":a": {
-                    N: "1"
-                }
-            },
-            FilterExpression: "departmentid = :a",
             TableName: "item"
         };
 
@@ -43,7 +38,7 @@ export default class ItemGridTest extends React.Component{
 
                     console.log(element)
                     // TODO Clean this up into a one liner.
-                    let departmentid = element.departmentid.N;
+                    let departmentid = element.department.S;
                     let image = element.image.S;
                     let itemid = (element.itemid.S);
                     let name = (element.name.S);
