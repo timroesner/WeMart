@@ -761,7 +761,7 @@ class AccountSettings extends React.Component{
                     <Header/>
                     <div style={accountSettings}>
                         <h1 style={pageTitle}>Account Settings</h1>
-                        <ProfilePanel title='Account Settings'>
+                        <ProfilePanel >
                             <div style={noSession}>
                                 <h2>
                                     You must be logged in to view account settings.
