@@ -41,15 +41,15 @@ class Item extends Component {
 		   "itemid": {
 		     S: id
 		    }
-		  }, 
+		  },
 		  TableName: "item"
 		 };
 
 		dynamodb.getItem(params, function(err, data) {
 			if (err) {
-		   		console.log(err, err.stack)	
-		   	} else { 
-		   		this.setState({ item: { itemid: data.Item.itemid.S, name: data.Item.name.S, departmentid: data.Item.departmentid.N, 
+		   		console.log(err, err.stack)
+		   	} else {
+		   		this.setState({ item: { itemid: data.Item.itemid.S, name: data.Item.name.S, departmentid: data.Item.departmentid.N,
 		   		image: data.Item.image.S, price: data.Item.price.N, quantity: data.Item.quantity.S, sale: data.Item.sale.N } })
 		   	}
 		 }.bind(this));
@@ -72,7 +72,7 @@ class Item extends Component {
 		}
 	}
 
-	render() { 
+	render() {
 
 		if(window.innerWidth < 550) {
 			const astext = {
@@ -92,7 +92,7 @@ class Item extends Component {
 			    	marginLeft: '25%',
 			    	marginRight: '25%',
 					width: '50%',
-					float: 'left' 
+					float: 'left'
 				}}>
 			    	<img className="img-responsive" style={{width: '100%', width: '100%'}} src={this.state.item.image} />
 			    </div>
@@ -143,7 +143,7 @@ class Item extends Component {
 			    	margin: '3%',
 					width: '45%',
 					height: '500px',
-					float: 'left' 
+					float: 'left'
 				}}>
 			    	<img className="img-responsive" style={{width: '100%', width: '100%'}} src={this.state.item.image} />
 			    </div>

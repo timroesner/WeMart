@@ -112,6 +112,14 @@ class LogIn extends Component {
     });
   }
 
+  navigateToHome = () => {
+      console.log("Log in succesful");
+      console.log(this.props);
+      this.props.history.push({
+          pathname: '/accountsettings',
+      })
+  };
+
   render() {
     const txtStyle = {
       margin: '6%',
