@@ -63,7 +63,7 @@ class Departments extends Component {
 
 		return(departments.map((dep)=>
 			<div style={gridItem} onClick={() => this.handleClick(dep.name)} >
-				<img src={dep.image} style={{width: '80%', marginLeft:'20%', borderRadius: '10px'}} />
+				<img src={dep.image} style={{width: '80%', marginLeft:'20%', borderRadius: '0 10px 0 0'}} />
 			{dep.name}
 			</div>
 		))
