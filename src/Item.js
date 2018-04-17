@@ -97,7 +97,7 @@ class Item extends Component {
 			if (err) {
 		   		console.log(err, err.stack)	
 		   	} else { 
-		   		this.setState({ item: { itemid: data.Item.itemid.S, name: data.Item.name.S, departmentid: data.Item.departmentid.N, 
+		   		this.setState({ item: { itemid: data.Item.itemid.S, name: data.Item.name.S, department: data.Item.department.S, 
 		   		image: data.Item.image.S, price: data.Item.price.N, quantity: data.Item.quantity.S, sale: data.Item.sale.N } })
 		   		this.getSimilarItems()
 		   	}
@@ -179,10 +179,10 @@ class Item extends Component {
 		var params = { 
 		  ExpressionAttributeValues: {
 		   ":d": {
-		     N: this.state.item.departmentid
+		     S: this.state.item.department
 		    }
 		  }, 
-		  FilterExpression: "departmentid = :d",  
+		  FilterExpression: "department = :d",  
 		  TableName: "item"
 		 };
 
@@ -192,7 +192,7 @@ class Item extends Component {
 				alert(JSON.stringify(err))
 		 	} else {
 		 		data.Items.forEach((element) => {
-		 			let tempItem = { itemid: element.itemid.S, name: element.name.S, departmentid: element.departmentid.N, 
+		 			let tempItem = { itemid: element.itemid.S, name: element.name.S, department: element.department.S, 
 		   		image: element.image.S, price: element.price.N, quantity: element.quantity.S, sale: element.sale.N }
 		   			similarItems.push(tempItem)
 		 		});
