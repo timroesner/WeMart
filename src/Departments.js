@@ -54,6 +54,8 @@ class Departments extends Component {
 		  textAlign: 'center',
 		  marginBottom: '5vw',
 		  height: 'minmax(150px, 1fr)',
+		  overflow: 'hidden',
+		  cursor: 'pointer',
 		}
 
 		// Inline sort by department name
