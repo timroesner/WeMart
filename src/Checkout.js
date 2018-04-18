@@ -125,17 +125,10 @@ export default class Checkout extends React.Component {
                         orderItems: [...this.state.orderItems, {'M': {'itemid':{'S':item.itemID}, 'quantity':{'N':item.quantityInCart.toString()}}}]
                     })
                     //TODO calculate using sale price
-                    var itemTotalPrice;
-                    if(sale !== '0'){
-                        itemTotalPrice = item.quantityInCart * sale
-                    } else {
-                        itemTotalPrice = (item.quantityInCart * price);
-                    }
+                    var itemTotalPrice = sale != 0 ? sale : price;
+                    console.log('[item total price]', Number(itemTotalPrice))
                     this.setState({
-                        subtotal: (this.state.subtotal + itemTotalPrice)
-                    })
-                    this.setState({
-                        total: (this.state.subtotal + this.state.serviceFee + this.state.deliveryFee)
+                        subtotal: (this.state.subtotal + Number(itemTotalPrice))
                     })
                 }
             })
@@ -158,7 +151,7 @@ export default class Checkout extends React.Component {
             cognitoUser.getUserAttributes(function(err, result) {
                 if (err) {
                     alert(JSON.stringify(err));
-                    //TODO stingify these alerts
+                    //TODO stringify these alerts
                     return;
                 }
                 self.setState({isGuest: false})
@@ -218,7 +211,8 @@ export default class Checkout extends React.Component {
     }
 
     calculateTotal(){
-        var total = Math.round(this.state.total * 100) / 100
+        var total = this.state.subtotal + this.state.deliveryFee + this.state.serviceFee;
+        total = Math.round(total * 100) / 100;
         console.log('[calculate total]',total)
         return total
     }
