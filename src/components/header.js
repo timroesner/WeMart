@@ -5,7 +5,10 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group'; // ES6
 import './header.css'
 import Cart from './Cart'
 
+var AmazonCognitoIdentity = require('amazon-cognito-identity-js');
+
 var zip;
+var cognitoUser;
 
 class Header extends Component {
 	constructor(props) {
@@ -18,6 +21,7 @@ class Header extends Component {
 		this.handleSearch = this.handleSearch.bind(this);
 		this.handleSearchChange = this.handleSearchChange.bind(this);
 
+		this.getCurrentUser()
 		this.checkZip()
 	}
 
@@ -37,9 +41,38 @@ handleWindowSizeChange = () => {
 
 checkZip() {
 	if(localStorage.getItem('zip') == null) {
-		this.props.history.push('/')
+		if(cognitoUser === null) {
+			this.props.history.push('/')
+		} else {
+			localStorage.setItem('zip', '95112')
+			zip = '95112'
+		}
 	} else {
 		zip = localStorage.getItem('zip')
+	}
+}
+
+getCurrentUser() {
+	// Get poolData
+	var poolData;
+	if(process.env.NODE_ENV === 'development'){
+		poolData = require('../poolData').poolData;
+	} else {
+		var poolData = {
+	        UserPoolId : process.env.REACT_APP_Auth_UserPoolId,
+	        ClientId : process.env.REACT_APP_Auth_ClientId
+	      };
+	}
+	var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+
+	cognitoUser = userPool.getCurrentUser();
+}
+
+renderAccount() {
+	if(cognitoUser === null) {
+		return("Log In")
+	} else {
+		return("Account")
 	}
 }
 
@@ -64,8 +97,11 @@ showCart = () => {
 };
 
 handleAccountClick = () => {
-	//when account button is clicked
-	console.log("account button clicked");
+	if(cognitoUser === null) {
+		this.props.history.push('/login')
+	} else {
+		this.props.history.push('/accountsettings')
+	}
 }
 
 handleZipClick = () => {
@@ -248,7 +284,7 @@ handleSavingsClick = () => {
 
 		      <li style={{width: '32%'}}>
 		      	<button className="primaryRedWithHover" onClick={this.handleAccountClick} style={astext}>
-		      		Account
+		      		{this.renderAccount()}
 		      	</button>
 		      </li>
 
