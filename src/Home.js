@@ -67,7 +67,7 @@ class Home extends Component {
     return (
       <div>
         <Header />
-        <div className="container-fluid">
+        <div id="pageBody" className="container-fluid">
           <HorizontalScroll items={this.state.savingsItems} title="Browse by Department"/>
           <HorizontalScroll items={this.state.savingsItems} title="History"/>
           <HorizontalScroll items={this.state.savingsItems} title="Savings"/>

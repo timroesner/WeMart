@@ -153,7 +153,10 @@ class Cart extends Component {
               </button>
             </div>
             <div style={{height: '80%', overflowY: 'scroll'}}>
-              <CartList items={this.state.cartItems}/>
+              <CartList items={this.state.cartItems}
+                handleRemove={(itemID) => this.handleRemove(itemID)}
+                handleIncrease={(itemID) => this.handleIncrease(itemID)}
+                handleDecrease={(itemID) => this.handleDecrease(itemID)}/>
             </div>
             <div style={{height: '10%', display: 'flex', justifyContent: 'center'}}>
               <button style={checkoutBtn} className="primary">Checkout

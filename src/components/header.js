@@ -46,7 +46,15 @@ showCart = () => {
 	console.log("cart is clicked");
 	const bool = !this.state.cartClicked
 	this.setState({cartClicked: bool});
+	var body = document.querySelector('#pageBody')
+	body.classList.add('overlay');
 };
+
+closeCart = (cartClicked) => {
+	this.setState({cartClicked});
+	var body = document.querySelector('#pageBody')
+	body.classList.remove('overlay');
+}
 
 handleAccountClick = () => {
 	//when account button is clicked
@@ -185,7 +193,7 @@ handleZipClick = () => {
 
 						{this.state.cartClicked ?
 						 <Cart
-						 onCloseClick={(cartClicked) => this.setState({cartClicked})} /> :
+						 onCloseClick={(cartClicked) => this.closeCart(cartClicked)} /> :
 						 null
 						}
 					</ReactCSSTransitionGroup>
@@ -247,12 +255,12 @@ handleZipClick = () => {
 		<div>
 			<ReactCSSTransitionGroup
 				transitionName="slide"
-				transitionEnterTimeout={500}
+				transitionEnterTimeout={300}
 				transitionLeaveTimeout={300}>
 
 				{this.state.cartClicked ?
 				 <Cart
-				 onCloseClick={(cartClicked) => this.setState({cartClicked})} /> :
+				 onCloseClick={(cartClicked) => this.closeCart(cartClicked)} /> :
 				 null
 				}
 			</ReactCSSTransitionGroup>
