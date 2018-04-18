@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import { withRouter } from "react-router-dom";
 import HorizontalScroll from './components/HorizontalScroll';
 import {DynamoDB} from "aws-sdk/index";
+import Counter from "./components/Counter";
+import { Button } from 'ic-snacks';
 
 var AmazonCognitoIdentity = require('amazon-cognito-identity-js');
 
@@ -11,7 +13,6 @@ var cognitoUser;
 var email;
 var dynamodb;
 var itemsInList = [];
-var selectValue = 1;
 
 class Item extends Component {
 
@@ -20,7 +21,8 @@ class Item extends Component {
 
     	this.state = {
     		item: {},
-    		similarItems: []
+    		similarItems: [],
+    		quantityInCart: 0
     	}
     	const queryParams = new URLSearchParams(this.props.location.search);
     	id = queryParams.get('id')
@@ -28,6 +30,7 @@ class Item extends Component {
     	this.initializeDB()
     	this.getCurrentUser()
     	this.getItem()
+    	this.getCart()
 	}
 
 	initializeDB() {
@@ -104,6 +107,18 @@ class Item extends Component {
 		 }.bind(this));
 	}
 
+	getCart() {
+		if(localStorage.getItem('cart') != null) {
+	      var cartString = localStorage.getItem('cart')
+	      var cart = JSON.parse(cartString)
+
+	    	if(cart.hasOwnProperty(this.state.item.itemid)) {
+	        	var quantity = cart[this.state.item.itemid]
+	        	this.setState({quantityInCart: quantity})
+	    	}
+	    }
+	}
+
 	addToList() {
 		if(cognitoUser == null) {
 			alert("You need to Sign Up for an Account first.")
@@ -166,14 +181,108 @@ class Item extends Component {
 		}
 	}
 
-	addToCart() {
-		// TODO implement actual add to cart method
-		alert("Add "+selectValue+" to cart")
-	}
+	renderButtonBar() {
 
-	amountChanged = (e) => {
-		selectValue = e.target.value
-	}
+		var buttonBarStyle;
+		// Mobile
+		if(window.innerWidth < 550) {
+			buttonBarStyle = { 
+				height:'46px', 
+				width: '100%',
+			}
+		} else {
+			buttonBarStyle = {
+				marginTop: '3%', 
+				height:'44px', 
+				width: '40%',
+				float: 'left'
+			}
+		}
+        if(this.state.quantityInCart == 0) {return(
+                <button style={buttonBarStyle} class="primary" onClick={() => {this.handleAddToCart()}}>
+                	Add to Cart
+                </button>
+        );} else {
+            return(
+            	<div style={buttonBarStyle}>
+                    <Counter quantity={this.state.quantityInCart}
+                             onIncrease={this.handleIncrease}
+                             onDecrease={this.handleDecrease}
+                             onRemove={this.handleRemove}/>
+                </div>
+            );
+        }
+    }
+
+    // Increases the quantity of this item in the cart
+    handleIncrease = () => {
+      var quantity = this.state.quantityInCart
+      if(localStorage.getItem('cart') != null) {
+        var cartString = localStorage.getItem('cart')
+        var cart = JSON.parse(cartString)
+        if(cart.hasOwnProperty(this.state.item.itemid)) {
+          quantity++
+          cart[this.state.item.itemid] = quantity
+          localStorage.setItem('cart', JSON.stringify(cart))
+          console.log('Quantity of item with itemID '+this.state.item.itemid+ ' is ' + quantity);
+          this.setState({quantityInCart: quantity})
+          console.log("State " + this.state.quantityInCart);
+        }
+      }
+    };
+
+    // Decreases teh quantity of this item by 1 in the cart.
+    handleDecrease = () => {
+      var quantity = this.state.quantityInCart
+      if(localStorage.getItem('cart') != null) {
+        var cartString = localStorage.getItem('cart')
+        var cart = JSON.parse(cartString)
+        if(cart.hasOwnProperty(this.state.item.itemid)) {
+          quantity--
+          cart[this.state.item.itemid] = quantity
+          localStorage.setItem('cart', JSON.stringify(cart))
+          console.log('Quantity of item with itemID '+this.state.item.itemid+ ' is ' + quantity);
+          this.setState({quantityInCart: quantity})
+          console.log("State " + this.state.quantityInCart);
+        }
+      }
+    };
+
+    // Remove the item from the cart
+    handleRemove = () => {
+      var quantity = this.state.quantityInCart
+      if(localStorage.getItem('cart') != null) {
+        var cartString = localStorage.getItem('cart')
+        var cart = JSON.parse(cartString)
+        if(cart.hasOwnProperty(this.state.item.itemid)) {
+          quantity = 0
+          // cart[this.props.itemID] = quantity
+          delete cart[this.state.item.itemid]
+          localStorage.setItem('cart', JSON.stringify(cart))
+          console.log('Quantity of item with itemID '+this.state.item.itemid+ ' is ' + quantity);
+          this.setState({quantityInCart: quantity})
+          console.log("State " + this.state.quantityInCart);
+        }
+      }
+    };
+
+    handleAddToCart = () => {
+      var quantity = this.state.quantityInCart
+      if(localStorage.getItem('cart') != null) {
+        var cartString = localStorage.getItem('cart')
+        console.log(cartString);
+        var cart = JSON.parse(cartString)
+        quantity += 1
+        cart[this.state.item.itemid] = quantity
+        localStorage.setItem('cart', JSON.stringify(cart))
+        this.setState({quantityInCart: quantity})
+    } else {
+      var cart = {}
+      cart[this.state.item.itemid] = ++quantity
+      localStorage.setItem('cart', JSON.stringify(cart))
+      this.setState({quantityInCart: quantity})
+    }
+    };
 
 	getSimilarItems() {
 		var params = { 
@@ -205,8 +314,8 @@ class Item extends Component {
 		if(this.state.item.sale != 0) {
 			return (
 				<p style={{marginTop: '5%', color: 'red', fontSize: '1.8em'}}>
-					<span style={{color: 'black', textDecoration: 'line-through', webkitTextDecorationColor: 'red'}}>${this.state.item.price}</span>
-					&nbsp;&nbsp;${this.state.item.sale}
+					${this.state.item.sale} &nbsp;&nbsp;
+					<span style={{color: '#808080', textDecoration: 'line-through'}}>${this.state.item.price}</span>
 				</p>
 			);
 		} else {
@@ -224,10 +333,12 @@ class Item extends Component {
 			const astext = {
 			    background:'none',
 			    border:'none',
-			    width: '40%',
+			    width: '30%',
 			    padding:'0',
 			    fontSize: '1.2em',
 				textAlign: 'center',
+				float: 'right',
+				marginTop: '-40px',
 			}
 
 			return (
@@ -251,22 +362,11 @@ class Item extends Component {
 					<h1 style={{marginTop: '0', fontSize: '2em'}}>{this.state.item.name}</h1>
 					<p style={{marginTop: '3%', color: 'grey', fontSize: '1.4em'}} >{this.state.item.quantity}</p>
 					{this.renderPrice()}
-					<select style={{marginTop: '3%', borderColor: '#CCCCCC', webkitAppearance: 'menulist-button', height: '44px', width: '60%'}}>
-						<option value="1">1</option>
-						<option value="2">2</option>
-						<option value="3">3</option>
-						<option value="4">4</option>
-						<option value="5">5</option>
-						<option value="6">6</option>
-						<option value="7">7</option>
-						<option value="8">8</option>
-						<option value="9">9</option>
-					</select>
 					<button className="primaryRedWithHover" style={astext} onClick={this.addToList} >
-						<i class="fa fa-th-list" style={{width: '20%'}}/>
+						<i class="fa fa-th-list" style={{width: '20%'}}/>&nbsp;
 						Add to List
 					</button>
-					<button className="primary" style={{marginTop: '3%', height:'46px', width: '100%'}} onClick={this.addToCart} >Add to Cart</button>
+					{this.renderButtonBar()}
 					<HorizontalScroll items={this.state.similarItems} title="Similar Items"/>
 			    </div>
 			  </div>
@@ -277,6 +377,7 @@ class Item extends Component {
 			    border:'none',
 			    width: '80px',
 			    marginLeft: '10%',
+			    marginTop: '3%',
 			    padding:'0',
 			    fontSize: '1em',
 				textAlign: 'center',
@@ -304,22 +405,13 @@ class Item extends Component {
 					<h1 style={{marginTop: '0', fontSize: '2em'}}>{this.state.item.name}</h1>
 					<p style={{marginTop: '5%', color: 'grey', fontSize: '1.4em'}} >{this.state.item.quantity}</p>
 					{this.renderPrice()}
-					<select onChange={this.amountChanged} style={{marginTop: '5%', borderColor: '#CCCCCC', webkitAppearance: 'menulist-button', height: '44px', width: '64px'}}>
-						<option value="1">1</option>
-						<option value="2">2</option>
-						<option value="3">3</option>
-						<option value="4">4</option>
-						<option value="5">5</option>
-						<option value="6">6</option>
-						<option value="7">7</option>
-						<option value="8">8</option>
-						<option value="9">9</option>
-					</select>
-					<button className="primary" style={{marginLeft: '5%', height:'46px', width: '40%'}}  onClick={this.addToCart} >Add to Cart</button>
+					{this.renderButtonBar()}
+					<div>
 					<button className="primaryRedWithHover" style={astext} onClick={this.addToList.bind(this)} >
 						<i class="fa fa-th-list fa-2x" style={{width: '80px'}}/>
 						Add to List
 					</button>
+					</div>
 					<HorizontalScroll items={this.state.similarItems} title="Similar Items"/>
 			    </div>
 			  </div>
