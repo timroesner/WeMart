@@ -11,7 +11,7 @@ var poolData;
 var dynamodb;
 //Styles
 const history = {fontFamily:'"Open Sans", "Helvetica Neue", Helvetica, sans-serif', maxWidth:'145.6rem',
-    height:'auto !important', margin:'3rem auto'};
+    height:'auto !important', margin:'3rem auto', background:'#ffffff', borderRadius:'.6rem'};
 const pageTitle = {textAlign:'center', padding:'1.5rem' ,fontFamily:' "Open Sans", "Helvetica Neue", Helvetica, sans-serif'};
 const panel = {backgroundColor:'#FFFFFF',border:'1px solid #F0EFEC',borderRadius:'.6rem',
     marginBottom:'2rem',marginRight:'2rem',marginLeft:'2rem', padding:'4rem 0'}
@@ -87,7 +87,7 @@ class History extends React.Component{
                     let sale = (data.Item.sale.N);
 
                     let testItem = {
-                        itemid: itemid, name: name, departmentid: departmentid, image: image, price: price,
+                        key: itemid, itemid: itemid, name: name, departmentid: departmentid, image: image, price: price,
                         quantity: quantity, sale: sale, inCart: 0};
                     this.setState({
                         items: [...this.state.items, testItem]
