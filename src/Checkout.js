@@ -10,11 +10,9 @@ import OrderItems from "./components/OrderItems";
 import {DynamoDB} from "aws-sdk/index";
 import PropTypes from 'prop-types';
 import NewCardForm from "./components/NewCardForm";
-//
+import {CognitoUserPool} from "amazon-cognito-identity-js";
 
-let key = 'pk_test_ccBJoXsCQn6kn5dkF098Xywl';
-let cart = [{id: 23, quantity:2},{id:24,quantity:1}]
-
+var stripeAPIKey;
 //STYLES
 const checkout = {margin:' 1rem auto', maxWidth:'71rem',};
 const checkoutForm = {width:'100%',overflow: 'hidden', borderTopLeftRadius:'.6rem',
@@ -26,6 +24,8 @@ export default class Checkout extends React.Component {
     constructor(){
         super();
         this.state = {
+            //Stripe
+            stripe: null,
             //Validators
             addressPanel: false,
             timePanel: false,
@@ -36,20 +36,40 @@ export default class Checkout extends React.Component {
             daySelected: false,
             timeSelected: false,
             isGuest:true,
-            deliveryAddress: null,
-            paymentMethod: null,
             cart: [],
+            paymentMethod: null,
             deliveryFee: 3.99,
             serviceFee: 2.98,
             subtotal: 0,
 
 
             //Order Details
+            deliveryAddress: null,
             deliveryTime: null,
             deliveryDay: null,
             phoneNumber: null,
             total:0,
+            orderItems: [],
             token: null,
+        }
+
+        if(process.env.NODE_ENV === 'development'){
+            stripeAPIKey = require('./stripeKey').stripeAPIKey;
+        } else {
+            stripeAPIKey = process.env.REACT_APP_Stripe_Pk
+        }
+
+        this.getCognitoUser()
+        this.getOrderItems()
+    }
+
+    getOrderItems(){
+        // Get the items from local storage
+        if(localStorage.getItem('cart') != null) {
+            var cartString = localStorage.getItem('cart')
+            var cart = JSON.parse(cartString)
+            var arr = Object.keys(cart).map(function (key) { return cart[key]; });
+            console.log('[local storage cart]',arr)
         }
 
         // Get the dynamoDB database
@@ -65,46 +85,159 @@ export default class Checkout extends React.Component {
             });
         }
 
-        console.log(this.props)
-
-        cart.forEach((item)=> {
-            console.log(item);
+        arr.forEach((item)=> {
+            console.log('[Item]',item);
             var itemParams  = {
-                Key: {'itemid': {S:item.id.toString()}},
+                Key: {'itemid': {S:item.itemID.toString()}},
                 TableName: 'item'
             }
             dynamodb.getItem(itemParams,(err, data)=>{
                 if(err) console.log(err, err.stack)
                 else {
-                    let departmentid = data.Item.department.S;
                     let image = data.Item.image.S;
                     let itemid = (data.Item.itemid.S);
-                    let name = (data.Item.name.S);
                     let price = (data.Item.price.N);
-                    let quantity = (data.Item.quantity.S);
                     let sale = (data.Item.sale.N);
-                    let testItem = {
-                                    itemid: itemid, name: name, departmentid: departmentid, image: image, price: price,
-                                    quantity: quantity, sale: sale, inCart: 0};
+                    let testItem = {key: itemid, itemId:itemid, image: image, price: price, sale: sale};
+
+                    console.log('[testItem]', testItem)
 
                     this.setState({
-                        cart: [...this.state.cart, {item: testItem, quantity: item.quantity}]
+                        cart: [...this.state.cart, {...testItem, quantity: item.quantityInCart}]
                     })
-                    var itemTotalPrice = (item.quantity * price);
+                    this.setState({
+                        orderItems: [...this.state.orderItems, { quantity: item.quantityInCart, itemid: itemid}]
+                    })
+                    //TODO calculate using sale price
+                    var itemTotalPrice;
+                    if(sale !== '0'){
+                        itemTotalPrice = item.quantityInCart * sale
+                    } else {
+                        itemTotalPrice = (item.quantityInCart * price);
+                    }
                     this.setState({
                         subtotal: (this.state.subtotal + itemTotalPrice)
                     })
-                    this.calculateTotal()
+                    this.setState({
+                        total: (this.state.subtotal + this.state.serviceFee + this.state.deliveryFee)
+                    })
                 }
             })
         })
     }
 
-    calculateTotal(){
-        console.log(this.state.subtotal);
-        this.setState({
-            total: (this.state.subtotal + this.state.serviceFee + this.state.deliveryFee)
+    getCognitoUser(){
+        var poolData;
+        var stripeAPIKey;
+        if(process.env.NODE_ENV === 'development'){
+            poolData =require('./poolData').poolData;
+            stripeAPIKey = require('./stripeKey').stripeAPIKey;
+        } else{
+            poolData = {
+                UserPoolId : process.env.REACT_APP_Auth_UserPoolId,
+                ClientId : process.env.REACT_APP_Auth_ClientId
+            }
+        }
+        var userPool = new CognitoUserPool(poolData);
+        var cognitoUser = userPool.getCurrentUser();
+
+        if (cognitoUser != null) {
+            cognitoUser.getSession(function(err, session) {
+                if (err) {
+                    alert(err);
+                    return;
+                }
+            });
+            // Necessary becuase the closure has no access to this.state
+            let self = this;
+            cognitoUser.getUserAttributes(function(err, result) {
+                if (err) {
+                    alert(err);
+                    //TODO stingify these alerts
+                    return;
+                }
+                self.setState({isGuest: false})
+
+                result.forEach((attribute) => {
+                    if(attribute.Name === 'email'){
+                        self.getUserDetails(attribute.Value)
+                    }
+                })
+            });
+        }
+    }
+
+    getUserDetails(userId){
+        var dynamodb;
+        if(process.env.NODE_ENV === 'development'){
+            dynamodb = require('./db').db;
+        }else{
+            dynamodb = new DynamoDB({
+                region: "us-west-1",
+                credentials: {
+                    accessKeyId: process.env.REACT_APP_DB_accessKeyId,
+                    secretAccessKey: process.env.REACT_APP_DB_secretAccessKey},
+            });
+        }
+        // Get the user based on their userId from the user table
+        var userParams = {
+            Key: {
+                'userid': {S: userId}
+            },
+            TableName: "user"
+        };
+        // Scan the DB and get the user
+        dynamodb.getItem(userParams, (err, data) => {
+            if(err) {console.log(err, err.stack)}
+            else{
+                console.log(data);
+                let firstName = data.Item.firstName.S;
+                let lastName = data.Item.lastName.S;
+
+
+                // Check if the user has a phone number in their attributes
+                if(data.Item.phone){
+                    let phone = data.Item.phone.N;
+                    this.setState({
+                        phoneNumber: phone,
+                        phonePanel: true
+                    })
+                }
+                // Check that the user has an address in the attributes
+                if(data.Item.addressline){
+                    console.log('address',data.Item)
+                    this.setDeliveryAddress(data.Item)
+                }
+            }
         })
+    }
+    setDeliveryAddress(address){
+        console.log('[setDeliveryAddress]',address)
+        this.setState({deliveryAddress: {
+                    street: address.addressline.S,
+                    city: address.city.S,
+                    state: address.state.S,
+                    zipCode: address.zipcode.N,
+                    instructions: address.instructions.S,},
+            addressPanel: true, })
+
+    }
+
+    componentDidMount(){
+        if (window.Stripe) {
+            this.setState({stripe: window.Stripe(require('./stripeKey').stripeAPIKey)});
+        } else {
+            document.querySelector('#stripe-js').addEventListener('load', () => {
+                // Create Stripe instance once Stripe.js loads
+                this.setState({stripe: window.Stripe(require('./stripeKey').stripeAPIKey)});
+            });
+        }
+    }
+
+    calculateTotal(){
+        var total = Math.round(this.state.total * 100) / 100
+        console.log('[calculate total]',total)
+        return total
     }
 
     handleNewAddress = (model) =>{
@@ -134,6 +267,21 @@ export default class Checkout extends React.Component {
         var label = token.source.card.brand + ' ' + token.source.card.last4
         this.setState({token: token, paymentPanel: true,
         paymentMethod: {brand: token.source.card.brand, last4:token.source.card.last4, label:label}});
+    }
+
+    handleOrderPlace = ()=>{
+        var order = {
+            deliveryAddress: this.state.deliveryAddress,
+            deliveryTime: this.state.deliveryTime,
+            deliveryDay: this.state.deliveryDay,
+            phoneNumber: this.state.phoneNumber,
+            total: this.calculateTotal(),
+            token: this.state.token,
+            orderItems: this.state.orderItems
+        }
+        //TODO send this to the back end
+        var json = JSON.stringify(order)
+        console.log(json)
     }
 
     renderAddress(){
@@ -210,7 +358,7 @@ export default class Checkout extends React.Component {
                 </div>
                 <div style={{marginLeft:'1.5rem'}}>
                     <Button style={{paddingLeft:'3rem', paddingRight:'3rem', marginTop:'2rem'}} snacksStyle={'secondary'}
-                            onClick={()=>{this.setState({addressPanel: false})}} type="submit">Change</Button>
+                            onClick={()=>{this.setState({phonePanel: false})}} type="submit">Change</Button>
                 </div>
             </div>)
 
@@ -228,8 +376,7 @@ export default class Checkout extends React.Component {
                         />
                     </div>
                     <div style={{marginLeft:'1.5rem'}}>
-                        <Button style={{paddingLeft:'3rem', paddingRight:'3rem'}} type="submit"
-                                onClick={()=>{this.setState({phonePanel: false})}}>Save</Button>
+                        <Button style={{paddingLeft:'3rem', paddingRight:'3rem'}} type="submit">Save</Button>
                     </div>
                 </Form>
             )
@@ -252,7 +399,7 @@ export default class Checkout extends React.Component {
                 )
         } else{return(
             <div>
-                <StripeProvider apiKey={key}>
+                <StripeProvider apiKey={stripeAPIKey}>
                     <Elements>
                         <NewCardForm onSubmit={this.handlePaymentMethod}/>
                     </Elements>
@@ -322,7 +469,7 @@ export default class Checkout extends React.Component {
     }
     render() {
         return (
-            <diV>
+            <div>
                 <Header/>
                 <div style={checkout}>
                     <div>
@@ -367,21 +514,29 @@ export default class Checkout extends React.Component {
                                 </div>
                                 <hr></hr>
                                 <div style={{fontWeight:'600',overflow:'hidden', lineHeight:'2.rem', display:'flex', alignItems:'center'}}>
-                                    Total <div style={{flexGrow:'1', textAlign:'end'}}>${Math.round(this.state.total * 100) / 100}</div>
+                                    Total <div style={{flexGrow:'1', textAlign:'end'}}>${this.calculateTotal()}</div>
                                 </div>
                             </div>
                         </CheckoutPanel>
                         <div style={{background:'#FFFFFF', width:'100%', marginTop:'2rem', padding:'1rem'}}>
-                            <div><span style={{display:'inline-block'}}>Done? Place your order and enjoy your day</span></div>
-
-                            <div style={{display:'inline-block', marginTop:'1.5rem', marginRight:'0', marginLeft:'auto'}}>
-                                <Button style={{paddingLeft:'3rem', paddingRight:'3rem', marginLeft:'auto', marginRight:'0'}}>Place order</Button>
+                            <div style={{margin:'1.5rem auto', textAlign:'center'}}>
+                                <span>Done? Place your order and enjoy your day</span>
+                            </div>
+                            <div style={{margin:'2rem', textAlign:'center'}}>
+                                <Button style={{paddingLeft:'4rem', paddingRight:'4rem', marginLeft:'auto', marginRight:'0'}}
+                                        onClick={this.handleOrderPlace}
+                                        disabled={
+                                            !(this.state.addressPanel && this.state.paymentPanel && this.state.phonePanel && this.state.timePanel)}
+                                        //TODO Make this button active when all oder fields have been filled
+                                        >
+                                    Place order
+                                </Button>
                             </div>
 
                         </div>
                     </div>
                 </div>
-            </diV>
+            </div>
         );
     }
 }
