@@ -11,13 +11,13 @@ import {withRouter} from "react-router-dom";
 const addToCart = {display: "inherit", margin:'0 0 auto', width:'100%'};
 
 //Item Card Styles
-const itemCard = {background:'#ffffff', height:'35.2rem', maxWidth:'16rem'};
-const itemCard_cardContents = {cursor:'pointer', margin:'0 5% 1rem 5%',maxWidth:'15.8rem',display:'block'};
+const itemCard = {background:'#ffffff', width:'100%', marginBottom: '5%'};
+const itemCard_cardContents = {cursor:'pointer', margin:'0 5% 1rem 5%',width:'90%',display:'block'};
 const itemCard_badge = {position: 'absolute', top: '.8rem', left: '.8rem', height: '2rem', width:'10rem',
     backgroundRepeat:'no-repeat'};
 const itemCard_badge_onSale = {...itemCard_badge,  backgroundImage: `url(${onSaleBadge})`, backgroundSize: 'auto 2rem'};
 const itemCard_media = {margin: '0 auto'};
-const itemCard_media_image = {margin:'0 auto 01rem auto', display:'block', maxHeight:'15.5rem', maxWidth: '15.5rem', paddingTop:'1rem'};
+const itemCard_media_image = {margin:'0 auto 01rem auto', display:'block', maxWidth: '100%', paddingTop:'1rem'};
 const itemCard_itemInfo = {padding: '.5rem 0 0',fontSize:'1.3rem',};
 const itemCard_itemInfo_weight = {color: '#808080', fontSize:'1.1rem', margin:'0'};
 const itemCard_fullItemName = {marginTop:'0', paddingBottom:'0',color:'#393939', fontWeight:'400', height:'3.6rem', overflow: 'hidden'};
@@ -26,8 +26,13 @@ const itemCard_price_sale = {color: '#FF0000', fontSize:'1.8rem',fontWeight:'600
 const itemCard_price_crossedOut = {textDecoration:'line-through',color:'#808080'};
 const itemCard_buttonBar = {margin:'4% 5% 0% 5%'};
 
-
 class ItemCard extends React.Component{
+
+    constructor(props) {
+        super(props)
+
+        this.state = {inCart: 0}
+    }
 
     // Renders the item price.
     // If sale price is zero then it renders normally, otherwise
@@ -58,7 +63,7 @@ class ItemCard extends React.Component{
 
     // Renders the items button bar. By default this includes the counter
     renderButtonBar(){
-        if(this.props.inCart === undefined){return(
+        if(this.state.inCart == 0){return(
             <div style={itemCard_buttonBar}>
                 <Button style={addToCart} snacksStyle="secondary" size="small"
                         onClick={() => {this.handleAddToCart()}}>Add To Cart</Button>
@@ -66,7 +71,7 @@ class ItemCard extends React.Component{
         );} else {
             return(
                 <div style={itemCard_buttonBar}>
-                    <Counter quantity={this.props.inCart}
+                    <Counter quantity={this.state.inCart}
                              onIncrease={this.handleIncrease}
                              onDecrease={this.handleDecrease}
                              onRemove={this.handleRemove}/>
@@ -87,7 +92,7 @@ class ItemCard extends React.Component{
 
     // Remove the item from the cart
     handleRemove = () => {
-        // TODO Handle delete
+        this.setState({inCart: 0})
     };
 
     // Redirect to the item's product page.
@@ -99,7 +104,7 @@ class ItemCard extends React.Component{
     };
 
     handleAddToCart = () => {
-        // TODO handle add to cart
+        this.setState({inCart: 1})
     };
 
     render(){
