@@ -14,7 +14,6 @@ class CartItem extends Component {
         this.state = {quantityInCart: quantityInCart}
         console.log("State " + this.state.quantityInCart);
       } else {
-        console.log("Hi there, I am not in cart");
         this.state = {
           quantityInCart: 0
         }
@@ -42,7 +41,7 @@ class CartItem extends Component {
     }
   };
 
-  // Decreases teh quantity of this item by 1 in the cart.
+  // Decreases the quantity of this item by 1 in the cart.
   handleDecrease = () => {
     var quantityInCart = this.state.quantityInCart
     if(localStorage.getItem('cart') != null) {
@@ -59,7 +58,7 @@ class CartItem extends Component {
         console.log("State " + this.state.quantityInCart);
       }
     }
-  };
+  }
 
   // Remove the item from the cart
   handleRemove = () => {
@@ -77,9 +76,25 @@ class CartItem extends Component {
         console.log("State " + this.state.quantityInCart);
       }
     }
-  };
+  }
 
   render() {
+    function SalePrice(props) {
+      return <div>{props.price * props.quantity}</div>
+    }
+
+    function RegularPrice(props) {
+      return <div>{props.price * props.quantity}</div>
+    }
+
+    function Price(props) {
+      var isOnSale = props.isOnSale
+      if (isOnSale) {
+        return <SalePrice price={props.salePrice} quantity={props.quantity}/>
+      }
+      return <RegularPrice price={props.regularPrice} quantity={props.quantity}/>
+    }
+
     return (
         <li className="list-group-item">
           <div className="container-fluid">
@@ -99,7 +114,7 @@ class CartItem extends Component {
                   onRemove={this.handleRemove} />
               </div>
               <div className="col-xs-2">
-                <div>{this.props.item.price * this.props.item.quantityInCart}</div>
+                <Price isOnSale={this.props.item.salePrice != '0'} salePrice={this.props.item.salePrice} regularPrice={this.props.item.price} quantity={this.props.item.quantityInCart}/>
               </div>
             </div>
           </div>
@@ -107,30 +122,5 @@ class CartItem extends Component {
     );
   }
 }
-
-// const CartItem = ({item}) => {
-//   return (
-//       <li className="list-group-item">
-//         <div className="container-fluid">
-//           <div className="row">
-//             <div className="col-xs-2">
-//               <img className="img-responsive" src={item.image} />
-//             </div>
-//             <div className="col-xs-2">
-//               <span>{item.name}</span>
-//               <br />
-//               <span style={{color: 'gray'}}>{item.quantity}</span>
-//             </div>
-//             <div className="col-xs-6" style={{paddingRight: '0'}}>
-//               <Counter quantity={item.quantityInCart} />
-//             </div>
-//             <div className="col-xs-2">
-//               <div>{item.price * item.quantityInCart}</div>
-//             </div>
-//           </div>
-//         </div>
-//       </li>
-//   );
-// };
 
 export default CartItem;
