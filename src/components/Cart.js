@@ -8,17 +8,15 @@ class Cart extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      width: window.innerWidth,
-    }
-
     if(localStorage.getItem('cart') != null) {
       var cartString = localStorage.getItem('cart')
       var cart = JSON.parse(cartString)
-      this.state ={cartItems: this.getItemsFromCart(cart)}
+      this.state ={cartItems: this.getItemsFromCart(cart), totalPrice: 0, width: window.innerWidth}
     } else {
-      this.state = {cartItems: []}
+      this.state = {cartItems: [], totalPrice: 0, width: window.innerWidth}
     }
+
+    this.getTotalPrice(this.state.cartItems);
   }
 
   getItemsFromCart = (cart) => {
@@ -44,13 +42,15 @@ class Cart extends Component {
   };
 
   getTotalPrice(items) {
-    console.log(items);
-    var totalPrice = 0
-    for (var item in items) {
-      totalPrice += item.price;
-      console.log(Number(item.price));
-    }
-    return totalPrice
+    var tPrice = 0
+    items.forEach((item)=>{
+      var priceToBeAdded = Number(item.price)
+      if (item.salePrice != '0') {
+        priceToBeAdded = Number(item.salePrice)
+      }
+      tPrice += priceToBeAdded * item.quantityInCart
+    })
+    return tPrice
   }
 
   render() {
@@ -112,7 +112,7 @@ class Cart extends Component {
             <div style={{height: '10%', display: 'flex', justifyContent: 'center'}}>
               <button style={checkoutBtn} className="primary">Checkout
                 <span style={{position: 'absolute', right: '25px',bottom: '15px', padding: '4px 7px', borderRadius: '4px' ,background: 'linear-gradient(#d82929, #d82929)'}}>
-                  {this.getTotalPrice(this.state.cartItems)}
+                  {'$'+this.getTotalPrice(this.state.cartItems)}
                 </span>
               </button>
             </div>
@@ -133,7 +133,7 @@ class Cart extends Component {
             <div style={{height: '10%', display: 'flex', justifyContent: 'center'}}>
               <button style={checkoutBtn} className="primary">Checkout
                 <span style={{position: 'absolute', right: '25px',bottom: '15px', padding: '4px 7px', borderRadius: '4px' ,background: 'linear-gradient(#d82929, #d82929)'}}>
-                  {this.getTotalPrice(this.state.cartItems)}
+                  {'$'+this.getTotalPrice(this.state.cartItems)}
                 </span>
               </button>
             </div>
