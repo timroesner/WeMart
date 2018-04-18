@@ -5,7 +5,10 @@ import {Button} from "ic-snacks";
 import itemsEmpty from './images/items_empty.png'
 import {CognitoUserPool} from "amazon-cognito-identity-js";
 import {DynamoDB} from "aws-sdk";
+import ItemsGrid from "./components/ItemsGrid";
 
+var poolData;
+var dynamodb;
 //Styles
 const history = {fontFamily:'"Open Sans", "Helvetica Neue", Helvetica, sans-serif', maxWidth:'145.6rem',
     height:'auto !important', margin:'3rem auto'};
@@ -21,66 +24,17 @@ class History extends React.Component{
     constructor(){
         super();
         this.state = {
-            orderHistory: null,
+            orderHistory: [],
+            items: [],
             user: null,
         }
+        this.setKeys()
         this.getCognitoUser()
-    }
 
-    setHistory(){
-        // Get the dynamoDB database
-        var dynamodb;
-        if(process.env.NODE_ENV === 'development'){
-            dynamodb = require('./db').db;
-        }else{
-            dynamodb = new DynamoDB({
-                region: "us-west-1",
-                credentials: {
-                    accessKeyId: process.env.REACT_APP_DB_accessKeyId,
-                    secretAccessKey: process.env.REACT_APP_DB_secretAccessKey},
-            });
-        }
-        // Get the user based on their userId from the user table
-        var order = {'orderId': {'N':'1'}, 'date':{'S':'ddmmyy'}}
-        var order2 = {'orderId': {'N':'0'}, 'date':{'S':'ddmmyy'}}
-        var history = [{'M': order}, {'M':order2}]
-        var userParams = {
-            ExpressionAttributeNames: {
-                "#H": "history",
-            },
-            ExpressionAttributeValues: {
-                ":h": {
-                    L: history
-                }
-            },
-            Key: {
-                'userid': {S: this.state.user.userId}
-            },
-            ReturnValues: "ALL_NEW",
-            UpdateExpression: "ADD #H :h",
-            TableName: "user"
-        };
-        // Scan the DB and get the user
-        dynamodb.updateItem(userParams, (err, data) => {
-            if(err) {console.log(err, err.stack)}
-            else{
-                console.log('[Setting Hisotry]',data);
-
-                //TODO get the users order history;
-            }
-        })
     }
 
     getCognitoUser(){
-        var poolData;
-        if(process.env.NODE_ENV === 'development'){
-            poolData =require('./poolData').poolData;
-        } else{
-            poolData = {
-                UserPoolId : process.env.REACT_APP_Auth_UserPoolId,
-                ClientId : process.env.REACT_APP_Auth_ClientId
-            }
-        }
+
         var userPool = new CognitoUserPool(poolData);
         var cognitoUser = userPool.getCurrentUser();
         if (cognitoUser != null) {
@@ -107,27 +61,45 @@ class History extends React.Component{
                         self.setState({user: {...self.state.user , userId: attribute.Value}}) //set the userId
                     }
                 })
-                // self.setHistory();
                 self.getUserDetails()
             });
 
         }
     }
 
+    getItemsFromDB(){
+        this.state.orderHistory.forEach((itemid)=>{
+            var itemParams  = {
+                Key: {'itemid': {S:itemid}},
+                TableName: 'item'
+            }
+
+            dynamodb.getItem(itemParams,(err, data)=>{
+                if(err) console.log(err, err.stack)
+                else {
+                    console.log('data',data)
+                    let departmentid = data.Item.department.S;
+                    let image = data.Item.image.S;
+                    let itemid = data.Item.itemid.S;
+                    let name = data.Item.name.S;
+                    let price = (data.Item.price.N);
+                    let quantity = (data.Item.quantity.S);
+                    let sale = (data.Item.sale.N);
+
+                    let testItem = {
+                        itemid: itemid, name: name, departmentid: departmentid, image: image, price: price,
+                        quantity: quantity, sale: sale, inCart: 0};
+                    this.setState({
+                        items: [...this.state.items, testItem]
+                    });
+
+                    console.log('test item', testItem)
+                }
+            })
+        })
+    }
+
     getUserDetails(){
-        // Get the dynamoDB database
-        var dynamodb;
-        if(process.env.NODE_ENV === 'development'){
-            dynamodb = require('./db').db;
-        }else{
-            dynamodb = new DynamoDB({
-                region: "us-west-1",
-                credentials: {
-                    accessKeyId: process.env.REACT_APP_DB_accessKeyId,
-                    secretAccessKey: process.env.REACT_APP_DB_secretAccessKey},
-            });
-        }
-        // Get the user based on their userId from the user table
         var userParams = {
             Key: {
                 'userid': {S: this.state.user.userId}
@@ -137,13 +109,18 @@ class History extends React.Component{
             ],
             TableName: "user"
         };
-        // Scan the DB and get the user
         dynamodb.getItem(userParams, (err, data) => {
             if(err) {console.log(err, err.stack)}
             else{
-                console.log('[User Details]',data);
+                data.Item.history.L.forEach((item)=>{
+                    item.M.items.L.forEach((i)=>{
+                        let itemId = i.M.itemid.S
+                        console.log('[itemids]',itemId)
+                        this.setState({orderHistory: [...this.state.orderHistory, itemId]})
+                    })
+                })
 
-                //TODO get the users order history;
+                this.getItemsFromDB()
             }
         })
     }
@@ -151,6 +128,7 @@ class History extends React.Component{
     renderHistory(){
         if(this.state.orderHistory){return(
             <div style={history}>
+                <ItemsGrid items={this.state.items}/>
             </div>
         )}
         else{
@@ -188,6 +166,24 @@ class History extends React.Component{
             </div>
 
         )
+    }
+
+    setKeys() {
+        if(process.env.NODE_ENV === 'development'){
+            poolData =require('./poolData').poolData;
+            dynamodb = require('./db').db;
+        } else{
+            poolData = {
+                UserPoolId : process.env.REACT_APP_Auth_UserPoolId,
+                ClientId : process.env.REACT_APP_Auth_ClientId
+            }
+            dynamodb = new DynamoDB({
+                region: "us-west-1",
+                credentials: {
+                    accessKeyId: process.env.REACT_APP_DB_accessKeyId,
+                    secretAccessKey: process.env.REACT_APP_DB_secretAccessKey},
+            });
+        }
     }
 }
 
