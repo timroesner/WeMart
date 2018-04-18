@@ -4,7 +4,6 @@ import { withRouter } from "react-router-dom";
 import HorizontalScroll from './components/HorizontalScroll';
 import {DynamoDB} from "aws-sdk/index";
 import Counter from "./components/Counter";
-import { Button } from 'ic-snacks';
 
 var AmazonCognitoIdentity = require('amazon-cognito-identity-js');
 
