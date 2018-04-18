@@ -1,7 +1,7 @@
 export const wemartTheme = {
     colors: {
         action: '#D30707',
-        actionHover: '#c11d1d',
+        actionHover: '#DC0808',
         primaryBackground: '#FFFFFF',
         primaryForeground: '#D30707',
         secondaryBackground: '#D30707',
