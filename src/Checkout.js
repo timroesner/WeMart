@@ -34,6 +34,7 @@ export default class Checkout extends React.Component {
 
 
             daySelected: false,
+            userId: null,
             timeSelected: false,
             isGuest:true,
             cart: [],
@@ -60,10 +61,10 @@ export default class Checkout extends React.Component {
         }
 
         this.getCognitoUser()
-        this.getOrderItems()
+        this.getCartItems()
     }
 
-    getOrderItems(){
+    getCartItems(){
         // Get the items from local storage
         if(localStorage.getItem('cart') != null) {
             var cartString = localStorage.getItem('cart')
@@ -86,7 +87,6 @@ export default class Checkout extends React.Component {
         }
 
         arr.forEach((item)=> {
-            console.log('[Item]',item);
             var itemParams  = {
                 Key: {'itemid': {S:item.itemID.toString()}},
                 TableName: 'item'
@@ -128,10 +128,8 @@ export default class Checkout extends React.Component {
 
     getCognitoUser(){
         var poolData;
-        var stripeAPIKey;
         if(process.env.NODE_ENV === 'development'){
             poolData =require('./poolData').poolData;
-            stripeAPIKey = require('./stripeKey').stripeAPIKey;
         } else{
             poolData = {
                 UserPoolId : process.env.REACT_APP_Auth_UserPoolId,
@@ -144,7 +142,7 @@ export default class Checkout extends React.Component {
         if (cognitoUser != null) {
             cognitoUser.getSession(function(err, session) {
                 if (err) {
-                    alert(err);
+                    alert(JSON.stringify(err));
                     return;
                 }
             });
@@ -152,7 +150,7 @@ export default class Checkout extends React.Component {
             let self = this;
             cognitoUser.getUserAttributes(function(err, result) {
                 if (err) {
-                    alert(err);
+                    alert(JSON.stringify(err));
                     //TODO stingify these alerts
                     return;
                 }
@@ -160,6 +158,9 @@ export default class Checkout extends React.Component {
 
                 result.forEach((attribute) => {
                     if(attribute.Name === 'email'){
+                        self.setState({
+                            userId: attribute.Value
+                        })
                         self.getUserDetails(attribute.Value)
                     }
                 })
@@ -211,6 +212,7 @@ export default class Checkout extends React.Component {
             }
         })
     }
+
     setDeliveryAddress(address){
         console.log('[setDeliveryAddress]',address)
         this.setState({deliveryAddress: {
@@ -270,19 +272,69 @@ export default class Checkout extends React.Component {
     }
 
     handleOrderPlace = ()=>{
-        var order = {
-            deliveryAddress: this.state.deliveryAddress,
-            deliveryTime: this.state.deliveryTime,
-            deliveryDay: this.state.deliveryDay,
-            phoneNumber: this.state.phoneNumber,
-            total: this.calculateTotal(),
-            token: this.state.token,
-            orderItems: this.state.orderItems
+        // Get the dynamoDB database
+        var dynamodb;
+        if(process.env.NODE_ENV === 'development'){
+            dynamodb = require('./db').db;
+        }else{
+            dynamodb = new DynamoDB({
+                region: "us-west-1",
+                credentials: {
+                    accessKeyId: process.env.REACT_APP_DB_accessKeyId,
+                    secretAccessKey: process.env.REACT_APP_DB_secretAccessKey},
+            });
         }
+        // Get the user based on their userId from the user table
+        var date = new Date().toJSON().slice(0,10).replace(/-/g,'/');
+        var orderItems = []
+        this.state.orderItems.forEach((item)=>{
+            orderItems.push({'M': {'itemid':{'S':item.itemid}, 'quantity':{'N':item.quantity.toString()}}})
+        })
+        var address = this.state.deliveryAddress.street + ' ' + this.state.deliveryAddress.city +', ' +
+            this.state.deliveryAddress.state + ' ' + this.state.deliveryAddress.zipCode;
+
+        var order = {
+            'orderId': {'N':this.hashCode().toString()},
+            'date':{'S':date},
+            'deliveryDate': {'S':this.state.deliveryDay},
+            'deliveryTime':{'S':this.state.deliveryTime},
+            'deliveryAddress':{'S':address},
+            'status':{'S':'inProgress'},
+            'total':{'N':this.calculateTotal().toString()},
+            'phoneNumber':{'N':this.state.phoneNumber},
+            'items':{'L':orderItems}
+        }
+        var history = [{'M': order}]
+        var userParams = {
+            ExpressionAttributeNames: {
+                "#H": "history",
+            },
+            ExpressionAttributeValues: {
+                ":h": {
+                    L: history
+                }
+            },
+            Key: {
+                'userid': {S: this.state.userId}
+            },
+            ReturnValues: "ALL_NEW",
+            UpdateExpression: "SET #H=:h",
+            TableName: "user"
+        };
+        // Scan the DB and get the user
+        dynamodb.updateItem(userParams, (err, data) => {
+            if(err) {console.log(err, err.stack)}
+            else{
+                console.log('[Order Placed]',data);
+            }
+        })
         //TODO send this to the back end
-        var json = JSON.stringify(order)
-        console.log(json)
     }
+
+    hashCode() {
+        var s = new Date().toUTCString();
+        return s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);
+    };
 
     renderAddress(){
         if(this.state.addressPanel && this.state.deliveryAddress){
