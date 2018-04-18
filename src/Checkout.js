@@ -278,7 +278,7 @@ export default class Checkout extends React.Component {
                 'userid': {S: this.state.userId}
             },
             ReturnValues: "ALL_NEW",
-            UpdateExpression: "SET #H=:h",
+            UpdateExpression: "SET #H = list_append( :h, #H) ",
             TableName: "user"
         };
         // Scan the DB and get the user
