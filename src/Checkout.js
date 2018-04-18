@@ -13,6 +13,8 @@ import NewCardForm from "./components/NewCardForm";
 import {CognitoUserPool} from "amazon-cognito-identity-js";
 
 var stripeAPIKey;
+var dynamodb;
+var poolData;
 //STYLES
 const checkout = {margin:' 1rem auto', maxWidth:'71rem',};
 const checkoutForm = {width:'100%',overflow: 'hidden', borderTopLeftRadius:'.6rem',
@@ -53,15 +55,40 @@ export default class Checkout extends React.Component {
             orderItems: [],
             token: null,
         }
-
-        if(process.env.NODE_ENV === 'development'){
-            stripeAPIKey = require('./stripeKey').stripeAPIKey;
-        } else {
-            stripeAPIKey = process.env.REACT_APP_Stripe_Pk
-        }
-
+        this.setKeys()
         this.getCognitoUser()
         this.getCartItems()
+    }
+
+    componentDidMount(){
+        if (window.Stripe) {
+            this.setState({stripe: window.Stripe(require('./stripeKey').stripeAPIKey)});
+        } else {
+            document.querySelector('#stripe-js').addEventListener('load', () => {
+                // Create Stripe instance once Stripe.js loads
+                this.setState({stripe: window.Stripe(require('./stripeKey').stripeAPIKey)});
+            });
+        }
+    }
+
+    setKeys(){
+        if(process.env.NODE_ENV === 'development'){
+            stripeAPIKey = require('./stripeKey').stripeAPIKey;
+            dynamodb = require('./db').db;
+            poolData =require('./poolData').poolData;
+        } else {
+            stripeAPIKey = process.env.REACT_APP_Stripe_Pk
+            dynamodb = new DynamoDB({
+                region: "us-west-1",
+                credentials: {
+                    accessKeyId: process.env.REACT_APP_DB_accessKeyId,
+                    secretAccessKey: process.env.REACT_APP_DB_secretAccessKey},
+            });
+            poolData = {
+                UserPoolId : process.env.REACT_APP_Auth_UserPoolId,
+                ClientId : process.env.REACT_APP_Auth_ClientId
+            }
+        }
     }
 
     getCartItems(){
@@ -71,19 +98,6 @@ export default class Checkout extends React.Component {
             var cart = JSON.parse(cartString)
             var arr = Object.keys(cart).map(function (key) { return cart[key]; });
             console.log('[local storage cart]',arr)
-        }
-
-        // Get the dynamoDB database
-        var dynamodb;
-        if(process.env.NODE_ENV === 'development'){
-            dynamodb = require('./db').db;
-        }else{
-            dynamodb = new DynamoDB({
-                region: "us-west-1",
-                credentials: {
-                    accessKeyId: process.env.REACT_APP_DB_accessKeyId,
-                    secretAccessKey: process.env.REACT_APP_DB_secretAccessKey},
-            });
         }
 
         arr.forEach((item)=> {
@@ -102,11 +116,13 @@ export default class Checkout extends React.Component {
 
                     console.log('[testItem]', testItem)
 
+                    // Set the cart state. Used for fetching item images
                     this.setState({
                         cart: [...this.state.cart, {...testItem, quantity: item.quantityInCart}]
                     })
+                    // Set the oder items. Used for sending it to the database
                     this.setState({
-                        orderItems: [...this.state.orderItems, { quantity: item.quantityInCart, itemid: itemid}]
+                        orderItems: [...this.state.orderItems, {'M': {'itemid':{'S':item.itemID}, 'quantity':{'N':item.quantityInCart.toString()}}}]
                     })
                     //TODO calculate using sale price
                     var itemTotalPrice;
@@ -127,15 +143,6 @@ export default class Checkout extends React.Component {
     }
 
     getCognitoUser(){
-        var poolData;
-        if(process.env.NODE_ENV === 'development'){
-            poolData =require('./poolData').poolData;
-        } else{
-            poolData = {
-                UserPoolId : process.env.REACT_APP_Auth_UserPoolId,
-                ClientId : process.env.REACT_APP_Auth_ClientId
-            }
-        }
         var userPool = new CognitoUserPool(poolData);
         var cognitoUser = userPool.getCurrentUser();
 
@@ -159,6 +166,7 @@ export default class Checkout extends React.Component {
                 result.forEach((attribute) => {
                     if(attribute.Name === 'email'){
                         self.setState({
+                            // how are order going to be placed for a guest user with no userID?
                             userId: attribute.Value
                         })
                         self.getUserDetails(attribute.Value)
@@ -169,17 +177,6 @@ export default class Checkout extends React.Component {
     }
 
     getUserDetails(userId){
-        var dynamodb;
-        if(process.env.NODE_ENV === 'development'){
-            dynamodb = require('./db').db;
-        }else{
-            dynamodb = new DynamoDB({
-                region: "us-west-1",
-                credentials: {
-                    accessKeyId: process.env.REACT_APP_DB_accessKeyId,
-                    secretAccessKey: process.env.REACT_APP_DB_secretAccessKey},
-            });
-        }
         // Get the user based on their userId from the user table
         var userParams = {
             Key: {
@@ -191,11 +188,6 @@ export default class Checkout extends React.Component {
         dynamodb.getItem(userParams, (err, data) => {
             if(err) {console.log(err, err.stack)}
             else{
-                console.log(data);
-                let firstName = data.Item.firstName.S;
-                let lastName = data.Item.lastName.S;
-
-
                 // Check if the user has a phone number in their attributes
                 if(data.Item.phone){
                     let phone = data.Item.phone.N;
@@ -223,17 +215,6 @@ export default class Checkout extends React.Component {
                     instructions: address.instructions.S,},
             addressPanel: true, })
 
-    }
-
-    componentDidMount(){
-        if (window.Stripe) {
-            this.setState({stripe: window.Stripe(require('./stripeKey').stripeAPIKey)});
-        } else {
-            document.querySelector('#stripe-js').addEventListener('load', () => {
-                // Create Stripe instance once Stripe.js loads
-                this.setState({stripe: window.Stripe(require('./stripeKey').stripeAPIKey)});
-            });
-        }
     }
 
     calculateTotal(){
@@ -272,24 +253,7 @@ export default class Checkout extends React.Component {
     }
 
     handleOrderPlace = ()=>{
-        // Get the dynamoDB database
-        var dynamodb;
-        if(process.env.NODE_ENV === 'development'){
-            dynamodb = require('./db').db;
-        }else{
-            dynamodb = new DynamoDB({
-                region: "us-west-1",
-                credentials: {
-                    accessKeyId: process.env.REACT_APP_DB_accessKeyId,
-                    secretAccessKey: process.env.REACT_APP_DB_secretAccessKey},
-            });
-        }
-        // Get the user based on their userId from the user table
         var date = new Date().toJSON().slice(0,10).replace(/-/g,'/');
-        var orderItems = []
-        this.state.orderItems.forEach((item)=>{
-            orderItems.push({'M': {'itemid':{'S':item.itemid}, 'quantity':{'N':item.quantity.toString()}}})
-        })
         var address = this.state.deliveryAddress.street + ' ' + this.state.deliveryAddress.city +', ' +
             this.state.deliveryAddress.state + ' ' + this.state.deliveryAddress.zipCode;
 
@@ -302,8 +266,10 @@ export default class Checkout extends React.Component {
             'status':{'S':'inProgress'},
             'total':{'N':this.calculateTotal().toString()},
             'phoneNumber':{'N':this.state.phoneNumber},
-            'items':{'L':orderItems}
+            'items':{'L':this.state.orderItems}
         }
+
+        console.log('[order]',order)
         var history = [{'M': order}]
         var userParams = {
             ExpressionAttributeNames: {
@@ -328,7 +294,7 @@ export default class Checkout extends React.Component {
                 console.log('[Order Placed]',data);
             }
         })
-        //TODO send this to the back end
+        //TODO send the token to the back end
     }
 
     hashCode() {
