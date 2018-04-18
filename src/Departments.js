@@ -50,7 +50,7 @@ class Departments extends Component {
 		const gridItem = {
 		  border: '1.5px solid gray',
 		  borderRadius: '10px',
-		  fontSize: '1.4em',
+		  fontSize: '1.2em',
 		  textAlign: 'center',
 		  marginBottom: '5vw',
 		  height: 'minmax(150px, 1fr)',
