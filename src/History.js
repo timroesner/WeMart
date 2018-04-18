@@ -27,6 +27,50 @@ class History extends React.Component{
         this.getCognitoUser()
     }
 
+    setHistory(){
+        // Get the dynamoDB database
+        var dynamodb;
+        if(process.env.NODE_ENV === 'development'){
+            dynamodb = require('./db').db;
+        }else{
+            dynamodb = new DynamoDB({
+                region: "us-west-1",
+                credentials: {
+                    accessKeyId: process.env.REACT_APP_DB_accessKeyId,
+                    secretAccessKey: process.env.REACT_APP_DB_secretAccessKey},
+            });
+        }
+        // Get the user based on their userId from the user table
+        var order = {'orderId': {'N':'1'}, 'date':{'S':'ddmmyy'}}
+        var order2 = {'orderId': {'N':'0'}, 'date':{'S':'ddmmyy'}}
+        var history = [{'M': order}, {'M':order2}]
+        var userParams = {
+            ExpressionAttributeNames: {
+                "#H": "history",
+            },
+            ExpressionAttributeValues: {
+                ":h": {
+                    L: history
+                }
+            },
+            Key: {
+                'userid': {S: this.state.user.userId}
+            },
+            ReturnValues: "ALL_NEW",
+            UpdateExpression: "ADD #H :h",
+            TableName: "user"
+        };
+        // Scan the DB and get the user
+        dynamodb.updateItem(userParams, (err, data) => {
+            if(err) {console.log(err, err.stack)}
+            else{
+                console.log('[Setting Hisotry]',data);
+
+                //TODO get the users order history;
+            }
+        })
+    }
+
     getCognitoUser(){
         var poolData;
         if(process.env.NODE_ENV === 'development'){
@@ -55,7 +99,7 @@ class History extends React.Component{
                     return;
                 }
                 self.setState({isLoggedIn: true})
-                console.log(result) //Logs user attributes
+                console.log('[Cognito User Attributes]',result) //Logs user attributes
 
                 result.forEach((attribute) => {
                     if(attribute.Name === 'email'){
@@ -63,8 +107,10 @@ class History extends React.Component{
                         self.setState({user: {...self.state.user , userId: attribute.Value}}) //set the userId
                     }
                 })
+                // self.setHistory();
                 self.getUserDetails()
             });
+
         }
     }
 
@@ -85,14 +131,17 @@ class History extends React.Component{
         var userParams = {
             Key: {
                 'userid': {S: this.state.user.userId}
-            },
+            },AttributesToGet: [
+                'history',
+                /* more items */
+            ],
             TableName: "user"
         };
         // Scan the DB and get the user
         dynamodb.getItem(userParams, (err, data) => {
             if(err) {console.log(err, err.stack)}
             else{
-                console.log(data);
+                console.log('[User Details]',data);
 
                 //TODO get the users order history;
             }
@@ -114,7 +163,7 @@ class History extends React.Component{
                             </div>
                             <h1>No Items</h1>
                             <h4>
-                                Items that you order will show up here so that you can quickly find your items again
+                                Items that you order will show up here, so that you can quickly find your items again
                             </h4>
                         </div>
                         <div style={{margin:'3rem auto 2rem auto', textAlign:'center'}}>
