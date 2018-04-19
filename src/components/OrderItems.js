@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import {Column, Grid, Row} from "ic-snacks";
 import {StyleRoot} from "radium";
 
-const columnStyles = {display:'inline-block', marginRight:'.5rem', width:'4rem'};
+const columnStyles = {display:'inline-block', margin:'.5rem', width:'4rem'};
 
 export default class OrderItems extends React.Component{
 

@@ -12,7 +12,6 @@ import PropTypes from 'prop-types';
 import NewCardForm from "./components/NewCardForm";
 import {CognitoUserPool} from "amazon-cognito-identity-js";
 
-var stripeAPIKey;
 var dynamodb;
 var poolData;
 //STYLES
@@ -25,6 +24,7 @@ export default class Checkout extends React.Component {
 
     constructor(){
         super();
+
         this.state = {
             //Stripe
             stripe: null,
@@ -73,11 +73,9 @@ export default class Checkout extends React.Component {
 
     setKeys(){
         if(process.env.NODE_ENV === 'development'){
-            stripeAPIKey = require('./stripeKey').stripeAPIKey;
             dynamodb = require('./db').db;
             poolData =require('./poolData').poolData;
         } else {
-            stripeAPIKey = process.env.REACT_APP_Stripe_Pk
             dynamodb = new DynamoDB({
                 region: "us-west-1",
                 credentials: {
@@ -150,7 +148,6 @@ export default class Checkout extends React.Component {
             cognitoUser.getUserAttributes(function(err, result) {
                 if (err) {
                     alert(JSON.stringify(err));
-                    //TODO stringify these alerts
                     return;
                 }
                 self.setState({isGuest: false})
@@ -193,7 +190,28 @@ export default class Checkout extends React.Component {
                     console.log('address',data.Item)
                     this.setDeliveryAddress(data.Item)
                 }
+                if(data.Item.sources){
+                    this.setPaymentSources(data.Item.sources.L)
+                }
             }
+        })
+    }
+
+    setPaymentSources(sources){
+        var self = this
+        sources.forEach((source)=>{
+            let id = source.M.id.S;
+            let client_secret = source.M.client_secret.S;
+            console.log(source)
+            this.state.stripe.retrieveSource({
+                id: id,
+                client_secret: client_secret,
+            }).then(function(result) {
+                // console.log('res',result)
+                var label = result.source.card.brand + ' ' + result.source.card.last4
+                self.setState({ paymentPanel:true,
+                    paymentMethod: {brand: result.source.card.brand, last4:result.source.card.last4, label:label}});
+            });
         })
     }
 

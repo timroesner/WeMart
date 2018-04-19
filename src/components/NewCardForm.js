@@ -7,7 +7,7 @@ import PropTypes from 'prop-types'
 import {Button} from "ic-snacks";
 
 //STYLES
-const checkoutForm = {padding:'3rem'};
+const checkoutForm = {padding:'2rem'};
 const label = {display: 'block', fontSize:'2rem', color:'#808080', borderRadius:'.6rem'}
 const cardElement = {
     base: {
