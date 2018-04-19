@@ -200,6 +200,13 @@ class ShoppingList extends Component {
 	    }
 	}
 
+	handleItemClick(item) {
+		this.props.history.push({
+			pathname: 'item',
+			search: "?id="+item.itemid
+		})
+	}
+
 	renderShoppingList() {
 		const placeHolder = {textAlign: 'center', marginTop: '20vh', color: 'gray'}
 
@@ -228,7 +235,7 @@ class ShoppingList extends Component {
 					<hr />
 					<p style={{cursor: 'pointer', float: 'right'}} class="primaryRedWithHover" onClick={() => this.deleteItem(item)}><i class="fa fa-trash" /></p>
 					<div style={{height: '100px', width: '100px'}}>
-						<img className="img-responsive" src={item.image} />
+						<img className="img-responsive" src={item.image} onClick={() => this.handleItemClick(item)}/>
 					</div>
 					<div style={{marginLeft: '120px', marginTop: '-120px'}} >
 						<h3 style={webkitEllipsis} >{item.name} </h3>
@@ -247,7 +254,7 @@ class ShoppingList extends Component {
 						<p style={{cursor: 'pointer'}} class="primaryRedWithHover" onClick={() => this.deleteItem(item)}><i class="fa fa-trash" /></p>
 					</div>
 					<div style={{height: '150px', width: '150px'}}>
-						<img className="img-responsive" src={item.image} />
+						<img className="img-responsive" src={item.image} onClick={() => this.handleItemClick(item)} />
 					</div>
 					<div style={{marginLeft: '170px', marginTop: '-170px'}} >
 						<h3>{item.name}</h3>
