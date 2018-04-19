@@ -410,11 +410,7 @@ export default class Checkout extends React.Component {
                 )
         } else{return(
             <div>
-                <StripeProvider apiKey={stripeAPIKey}>
-                    <Elements>
-                        <NewCardForm onSubmit={this.handlePaymentMethod}/>
-                    </Elements>
-                </StripeProvider>
+                <NewCardForm onSubmit={this.handlePaymentMethod}/>
                 <div style={{marginLeft:'1.5rem'}}>
                     <Button style={{paddingLeft:'3rem', paddingRight:'3rem', marginTop:'2rem'}}
                             type="submit" elementAttributes={{form:'newcard'}}>Save</Button>
@@ -482,80 +478,72 @@ export default class Checkout extends React.Component {
         return (
             <div>
                 <Header/>
-                <div style={checkout}>
-                    <div>
-                        <h1 style={{textAlign:'center', padding:'1.5rem' ,fontFamily:' "Open Sans", "Helvetica Neue", Helvetica, sans-serif'}}>Checkout</h1>
-                    </div>
-                    <div style={checkoutForm}>
-                        <CheckoutPanel icon={"locationMarker"} title='Select delivery address' onValidTitle={'Delivery address'}
-                                       valid={this.state.addressPanel}>
-                            {this.renderAddress()}
-                        </CheckoutPanel>
-                        <CheckoutPanel icon={"clock"} title='Choose delivery time' onValidTitle={'Delivery Time'}
-                        valid={this.state.timePanel}>
-                            <div>
-                                {this.renderDeliveryTime()}
-                            </div>
-                        </CheckoutPanel>
-                        <CheckoutPanel icon={"phone"} title='Enter contact number' valid={this.state.phonePanel}
-                        onValidTitle={'Mobile number'}>
-                            {this.renderContactDetails()}
-                        </CheckoutPanel>
-                        <CheckoutPanel
-                            valid={this.state.paymentPanel}
-                            icon={"creditCard"}
-                            title='Select payment method' onValidTitle={'Payment'}>
-                            {this.renderPaymentMethods()}
-                        </CheckoutPanel>
-                        <CheckoutPanel icon={"orderReview"} title={this.state.cart.length + ' Items'}>
-                            <div style={{margin:'1.5rem 2rem'}}>
-                                <OrderItems items={this.state.cart}/>
-                            </div>
-                        </CheckoutPanel>
-                        <CheckoutPanel title={'Order Total'} icon={'note'}>
-                            <div style={{margin:'1.5rem'}}>
-                                <div style={{overflow:'hidden', lineHeight:'2.rem', display:'flex', alignItems:'center'}}>
-                                    Subtotal <div style={{flexGrow:'1', textAlign:'end'}}>${this.state.subtotal}</div>
+                <Elements>
+                    <div style={checkout}>
+                        <div>
+                            <h1 style={{textAlign:'center', padding:'1.5rem' ,fontFamily:' "Open Sans", "Helvetica Neue", Helvetica, sans-serif'}}>Checkout</h1>
+                        </div>
+                        <div style={checkoutForm}>
+                            <CheckoutPanel icon={"locationMarker"} title='Select delivery address' onValidTitle={'Delivery address'}
+                                           valid={this.state.addressPanel}>
+                                {this.renderAddress()}
+                            </CheckoutPanel>
+                            <CheckoutPanel icon={"clock"} title='Choose delivery time' onValidTitle={'Delivery Time'}
+                                           valid={this.state.timePanel}>
+                                <div>
+                                    {this.renderDeliveryTime()}
                                 </div>
-                                <div style={{overflow:'hidden', lineHeight:'2.rem', display:'flex', alignItems:'center'}}>
-                                    Delivery <div style={{flexGrow:'1', textAlign:'end'}}>${this.state.deliveryFee}</div>
+                            </CheckoutPanel>
+                            <CheckoutPanel icon={"phone"} title='Enter contact number' valid={this.state.phonePanel}
+                                           onValidTitle={'Mobile number'}>
+                                {this.renderContactDetails()}
+                            </CheckoutPanel>
+                            <CheckoutPanel
+                                valid={this.state.paymentPanel}
+                                icon={"creditCard"}
+                                title='Select payment method' onValidTitle={'Payment'}>
+                                {this.renderPaymentMethods()}
+                            </CheckoutPanel>
+                            <CheckoutPanel icon={"orderReview"} title={this.state.cart.length + ' Items'}>
+                                <div style={{margin:'1.5rem 2rem'}}>
+                                    <OrderItems items={this.state.cart}/>
                                 </div>
-                                <div style={{overflow:'hidden', lineHeight:'2.rem', display:'flex', alignItems:'center'}}>
-                                    Service Fee <div style={{flexGrow:'1', textAlign:'end'}}>${this.state.serviceFee}</div>
+                            </CheckoutPanel>
+                            <CheckoutPanel title={'Order Total'} icon={'note'}>
+                                <div style={{margin:'1.5rem'}}>
+                                    <div style={{overflow:'hidden', lineHeight:'2.rem', display:'flex', alignItems:'center'}}>
+                                        Subtotal <div style={{flexGrow:'1', textAlign:'end'}}>${this.state.subtotal}</div>
+                                    </div>
+                                    <div style={{overflow:'hidden', lineHeight:'2.rem', display:'flex', alignItems:'center'}}>
+                                        Delivery <div style={{flexGrow:'1', textAlign:'end'}}>${this.state.deliveryFee}</div>
+                                    </div>
+                                    <div style={{overflow:'hidden', lineHeight:'2.rem', display:'flex', alignItems:'center'}}>
+                                        Service Fee <div style={{flexGrow:'1', textAlign:'end'}}>${this.state.serviceFee}</div>
+                                    </div>
+                                    <hr></hr>
+                                    <div style={{fontWeight:'600',overflow:'hidden', lineHeight:'2.rem', display:'flex', alignItems:'center'}}>
+                                        Total <div style={{flexGrow:'1', textAlign:'end'}}>${this.calculateTotal()}</div>
+                                    </div>
                                 </div>
-                                <hr></hr>
-                                <div style={{fontWeight:'600',overflow:'hidden', lineHeight:'2.rem', display:'flex', alignItems:'center'}}>
-                                    Total <div style={{flexGrow:'1', textAlign:'end'}}>${this.calculateTotal()}</div>
+                            </CheckoutPanel>
+                            <div style={{background:'#FFFFFF', width:'100%', marginTop:'2rem', padding:'1rem'}}>
+                                <div style={{margin:'1.5rem auto', textAlign:'center'}}>
+                                    <span>Done? Place your order and enjoy your day</span>
+                                </div>
+                                <div style={{margin:'2rem', textAlign:'center'}}>
+                                    <Button style={{paddingLeft:'4rem', paddingRight:'4rem', marginLeft:'auto', marginRight:'0'}}
+                                            onClick={this.handleOrderPlace}
+                                            disabled={
+                                                !(this.state.addressPanel && this.state.paymentPanel && this.state.phonePanel && this.state.timePanel)}
+                                    >
+                                        Place order
+                                    </Button>
                                 </div>
                             </div>
-                        </CheckoutPanel>
-                        <div style={{background:'#FFFFFF', width:'100%', marginTop:'2rem', padding:'1rem'}}>
-                            <div style={{margin:'1.5rem auto', textAlign:'center'}}>
-                                <span>Done? Place your order and enjoy your day</span>
-                            </div>
-                            <div style={{margin:'2rem', textAlign:'center'}}>
-                                <Button style={{paddingLeft:'4rem', paddingRight:'4rem', marginLeft:'auto', marginRight:'0'}}
-                                        onClick={this.handleOrderPlace}
-                                        disabled={
-                                            !(this.state.addressPanel && this.state.paymentPanel && this.state.phonePanel && this.state.timePanel)}
-                                        //TODO Make this button active when all oder fields have been filled
-                                        >
-                                    Place order
-                                </Button>
-                            </div>
-
                         </div>
                     </div>
-                </div>
+                </Elements>
             </div>
         );
     }
-}
-
-Checkout.defaultProps = {
-    cart: [{id: 1, quantity:2},{id:4,quantity:1}],
-}
-
-Checkout.propTypes = {
-    cart: PropTypes.array
 }

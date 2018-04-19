@@ -7,13 +7,16 @@ import {themer} from "ic-snacks";
 import {wemartTheme} from './wemartTheme';
 
 import Router from './Router.js';
+import {StripeProvider} from "react-stripe-elements";
 themer.themeConfig = wemartTheme; //IC-Snacks theme for WeMart
-
+const stripeKey = require('./stripeKey').stripeAPIKey;
 
 ReactDOM.render(
-  <BrowserRouter>
-    <Router />
-  </BrowserRouter>, 
+    <StripeProvider apiKey={stripeKey}>
+        <BrowserRouter>
+            <Router />
+        </BrowserRouter>
+    </StripeProvider>,
   document.getElementById('root')
 );
 
