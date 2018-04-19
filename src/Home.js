@@ -73,8 +73,8 @@ class Home extends Component {
 	            data.Items.forEach((element) => {
 	            	departments.push({name: element.departmentid.S, image: element.image.S})
 	            });
-				this.setState({departmentItems: departments})
-				console.log(departments)
+              departments = departments.slice(0,10)
+				      this.setState({departmentItems: departments})
 	        }
 	    });
   }
