@@ -98,41 +98,40 @@ export default class Checkout extends React.Component {
             var cart = JSON.parse(cartString)
             var arr = Object.keys(cart).map(function (key) { return cart[key]; });
             console.log('[local storage cart]',arr)
-        }
-
-        arr.forEach((item)=> {
-            var itemParams  = {
-                Key: {'itemid': {S:item.itemID.toString()}},
-                TableName: 'item'
-            }
-            dynamodb.getItem(itemParams,(err, data)=>{
-                if(err) console.log(err, err.stack)
-                else {
-                    let image = data.Item.image.S;
-                    let itemid = (data.Item.itemid.S);
-                    let price = (data.Item.price.N);
-                    let sale = (data.Item.sale.N);
-                    let testItem = {key: itemid, itemId:itemid, image: image, price: price, sale: sale};
-
-                    console.log('[testItem]', testItem)
-
-                    // Set the cart state. Used for fetching item images
-                    this.setState({
-                        cart: [...this.state.cart, {...testItem, quantity: item.quantityInCart}]
-                    })
-                    // Set the oder items. Used for sending it to the database
-                    this.setState({
-                        orderItems: [...this.state.orderItems, {'M': {'itemid':{'S':item.itemID}, 'quantity':{'N':item.quantityInCart.toString()}}}]
-                    })
-                    //TODO calculate using sale price
-                    var itemTotalPrice = sale != 0 ? sale : price;
-                    console.log('[item total price]', Number(itemTotalPrice))
-                    this.setState({
-                        subtotal: (this.state.subtotal + Number(itemTotalPrice))
-                    })
+            arr.forEach((item)=> {
+                var itemParams  = {
+                    Key: {'itemid': {S:item.itemID.toString()}},
+                    TableName: 'item'
                 }
+                dynamodb.getItem(itemParams,(err, data)=>{
+                    if(err) console.log(err, err.stack)
+                    else if(data.Item){
+                        let image = data.Item.image.S;
+                        let itemid = (data.Item.itemid.S);
+                        let price = (data.Item.price.N);
+                        let sale = (data.Item.sale.N);
+                        let testItem = {key: itemid, itemId:itemid, image: image, price: price, sale: sale};
+
+                        console.log('[testItem]', testItem)
+
+                        // Set the cart state. Used for fetching item images
+                        this.setState({
+                            cart: [...this.state.cart, {...testItem, quantity: item.quantityInCart}]
+                        })
+                        // Set the oder items. Used for sending it to the database
+                        this.setState({
+                            orderItems: [...this.state.orderItems, {'M': {'itemid':{'S':item.itemID}, 'quantity':{'N':item.quantityInCart.toString()}}}]
+                        })
+                        //TODO calculate using sale price
+                        var itemTotalPrice = sale != 0 ? sale : price;
+                        console.log('[item total price]', Number(itemTotalPrice))
+                        this.setState({
+                            subtotal: (this.state.subtotal + Number(itemTotalPrice))
+                        })
+                    }
+                })
             })
-        })
+        }
     }
 
     getCognitoUser(){
