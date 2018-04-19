@@ -1,5 +1,5 @@
 import React from 'react';
-import {Elements, StripeProvider} from 'react-stripe-elements';
+import {Elements} from 'react-stripe-elements';
 import Header from "./components/header";
 import {Button, Form, MenuItem, NavigationPills, Radio, RadioGroup, Select, TextField} from "ic-snacks";
 import CheckoutPanel from "./components/CheckoutPanel";
@@ -288,6 +288,26 @@ export default class Checkout extends React.Component {
             }
         })
         //TODO send the token to the back end
+        // paymentRequest.on('token', function(ev) {
+        //     // Send the token to your server to charge it!
+        //     fetch('/charges', {
+        //         method: 'POST',
+        //         body: JSON.stringify({token: ev.token.id}),
+        //         headers: {'content-type': 'application/json'},
+        //     })
+        //         .then(function(response) {
+        //             if (response.ok) {
+        //                 // Report to the browser that the payment was successful, prompting
+        //                 // it to close the browser payment interface.
+        //                 ev.complete('success');
+        //             } else {
+        //                 // Report to the browser that the payment failed, prompting it to
+        //                 // re-show the payment interface, or show an error message and close
+        //                 // the payment interface.
+        //                 ev.complete('fail');
+        //             }
+        //         });
+        // });
     }
 
     hashCode() {
