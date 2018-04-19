@@ -52,6 +52,10 @@ handleAccountClick = () => {
 	console.log("account button clicked");
 }
 
+handleDepartments = () => {
+	this.props.history.push('/departments')
+}
+
 handleZipClick = () => {
 	this.props.history.push('/')
 }
@@ -157,7 +161,7 @@ handleZipClick = () => {
 				<div className="container">
 					<ul className="nav nav-tabs" style={mobileNav}>
 							<li style={mobileNavItems}><a style={links} href="#">
-								<button style={astext}><i className="fas fa-th-large" /><br />
+								<button style={astext} onClick={this.handleDepartments}><i className="fas fa-th-large" /><br />
 									<span>Aisles</span>
 								</button></a>
 							</li>
@@ -225,7 +229,7 @@ handleZipClick = () => {
 		    </ul>
 		</div>
 	    <ul id="pills" className="nav nav-pills" style={center}>
-			<li role="navigation" style={pillsLi}><button className="primaryRedWithHover" style={astext}>Departments</button></li>
+			<li role="navigation" style={pillsLi}><button className="primaryRedWithHover" style={astext} onClick={this.handleDepartments} >Departments</button></li>
 			<li role="navigation" style={pillsLi}><button className="primaryRedWithHover" style={astext}>Savings</button></li>
 			<li role="navigation" style={pillsLi}><button className="primaryRedWithHover" style={astext}>History</button></li>
 	    </ul>

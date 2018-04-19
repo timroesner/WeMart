@@ -2,15 +2,14 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import registerServiceWorker from './registerServiceWorker';
-import { BrowserRouter} from 'react-router-dom';
+import { BrowserRouter, Route } from 'react-router-dom';
 import {themer} from "ic-snacks";
 import {wemartTheme} from './wemartTheme';
 
 import Router from './Router.js';
-import {StripeProvider} from "react-stripe-elements";
-import {DynamoDB} from "aws-sdk/index";
 themer.themeConfig = wemartTheme; //IC-Snacks theme for WeMart
 var stripeKey;
+import {StripeProvider} from "react-stripe-elements";
 
 if(process.env.NODE_ENV === 'development'){
     stripeKey = require('./stripeKey').stripeAPIKey;
