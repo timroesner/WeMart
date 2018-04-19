@@ -36,6 +36,7 @@ class AccountSettings extends React.Component{
         this.handleShowPersonalInfoModal = this.handleShowPersonalInfoModal.bind(this);
         this.handleEditAddressModal = this.handleEditAddressModal.bind(this);
         this.handleClose = this.handleClose.bind(this);
+        this.handleSignOut = this.handleSignOut.bind(this)
 
        this.setKeys();
 
@@ -116,6 +117,18 @@ class AccountSettings extends React.Component{
                 })
                 self.getUserDetails()
             });
+        }
+    }
+
+    handleSignOut(){
+        if (window.confirm('Are you sure you want to log out?')) {
+            var userPool = new CognitoUserPool(poolData);
+            var cognitoUser = userPool.getCurrentUser();
+            cognitoUser.signOut();
+            console.log(this.props)
+            this.props.history.push('/login')
+        } else {
+            console.log('cancels')
         }
     }
 
@@ -792,6 +805,10 @@ class AccountSettings extends React.Component{
                                 <ProfilePanel title="Payment Methods">
                                     {this.renderCard()}
                                 </ProfilePanel>
+                                <div style={{textAlign:'center'}}>
+                                    <Button style={{margin:'1.5rem auto', width:'85%'}}
+                                    onClick={this.handleSignOut}>Sign Out</Button>
+                                </div>
                             </Column>
                         </Row>
                     </div>
