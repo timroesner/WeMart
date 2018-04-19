@@ -34,7 +34,8 @@ class Home extends Component {
 
     // Get the table whose name is "item"
     var params = {
-        TableName: "item"
+        TableName: "item",
+        Limit: 10
     };
 
     dynamodb.scan(params, (err, data) => {
@@ -62,7 +63,8 @@ class Home extends Component {
     });
 
     var params = {
-	        TableName: "department"
+	        TableName: "department",
+          Limit: 10
 	    };
 
 	    var departments = [];
@@ -73,7 +75,6 @@ class Home extends Component {
 	            data.Items.forEach((element) => {
 	            	departments.push({name: element.departmentid.S, image: element.image.S})
 	            });
-              departments = departments.slice(0,10)
 				      this.setState({departmentItems: departments})
 	        }
 	    });
