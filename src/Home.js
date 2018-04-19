@@ -34,7 +34,8 @@ class Home extends Component {
 
     // Get the table whose name is "item"
     var params = {
-        TableName: "item"
+        TableName: "item",
+        Limit: 15
     };
 
     dynamodb.scan(params, (err, data) => {
