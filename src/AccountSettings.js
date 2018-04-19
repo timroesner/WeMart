@@ -139,6 +139,7 @@ class AccountSettings extends React.Component{
             TableName: "user"
         };
         // Scan the DB and get the user
+        let self = this;
         dynamodb.getItem(userParams, (err, data) => {
             if(err) {console.log(err, err.stack)}
             else{
@@ -160,6 +161,23 @@ class AccountSettings extends React.Component{
                 if(data.Item.addressline){
                     console.log('address',data.Item)
                     this.setDeliveryAddress(data.Item)
+                }
+
+                if(data.Item.sources){
+                    data.Item.sources.L.forEach((source)=>{
+                        let id = source.M.id.S;
+                        let client_secret = source.M.client_secret.S;
+                        this.state.stripe.retrieveSource({
+                            id: id,
+                            client_secret: client_secret,
+                        }).then(function(result) {
+                            console.log('res',result)
+                            var label = result.source.card.brand + ' ' + result.source.card.last4
+                            self.setState({user: {...self.state.user,
+                                    paymentMethod: {brand: result.source.card.brand, last4:result.source.card.last4, label:label}}});
+                        });
+                        console.log('source', source.M);
+                    })
                 }
             }
         })
@@ -215,6 +233,40 @@ class AccountSettings extends React.Component{
         this.setState({user: {...this.state.user,
                 paymentMethod: {brand: token.source.card.brand, last4:token.source.card.last4, label:label}}});
         console.log('[token]',token)
+
+        var id = token.source.id;
+        var clientSecret = token.source.client_secret;
+        var source = {
+            'id' : {'S':id},
+            'client_secret':{'S':clientSecret}
+        }
+        var sources = [{'M': source}];
+
+        var params = {
+            ExpressionAttributeNames: {
+                "#S": "sources",
+            },
+            ExpressionAttributeValues: {
+                ":s": {
+                    L: sources
+                }
+            },
+            Key: {
+                'userid': {S: this.state.user.userId}
+            },
+            TableName: 'user',
+            ReturnValues: "UPDATED_NEW",
+            UpdateExpression: 'SET #S = :s',
+        }
+
+        console.log(params)
+
+        dynamodb.updateItem(params, (err, data) => {
+            if(err) {console.log(err, err.stack)}
+            else{
+                console.log('[Card Added]',data);
+            }
+        })
         this.handleClose()
     }
 
@@ -696,11 +748,13 @@ class AccountSettings extends React.Component{
                         <h1>Add Card</h1>
                     </Modal.Header>
                     <Modal.Body>
+                        <Elements>
                         <NewCardForm
                                     onSubmit={(token)=>{this.handleNewCard(token)}}
                                     name={this.state.user.firstName + ' ' + this.state.user.lastName}
                                     phone={this.state.user.phoneNumber} email={this.state.user.email}
                                 />
+                        </Elements>
                     </Modal.Body>
                     <Modal.Footer>
                         <Button style={modalButton_Cancel} snacksStyle="secondary" onClick={this.handleClose} >Cancel</Button>
@@ -754,7 +808,6 @@ class AccountSettings extends React.Component{
                 //TODO implement react-router-dom
                 <div>
                     <Header/>
-                    <Elements>
                         <div style={accountSettings}>
                             <h1 style={pageTitle}>Account Settings</h1>
                             <ProfilePanel >
@@ -769,7 +822,6 @@ class AccountSettings extends React.Component{
                                 </div>
                             </ProfilePanel>
                         </div>
-                    </Elements>
                 </div>
             );
         }
