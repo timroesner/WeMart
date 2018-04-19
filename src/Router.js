@@ -11,6 +11,7 @@ import ZipCodeCheck from './ZipCodeCheck'
 import Home from './Home'
 import Item from './Item'
 import Departments from './Departments'
+import ShoppingList from './ShoppingList'
 
 const Router = () => (
   <main>
@@ -22,6 +23,7 @@ const Router = () => (
       <Route path='/home' component={Home} />
       <Route path='/item' component={Item} />
       <Route path='/departments' component={Departments}/>
+      <Route path='/shoppinglist' component={ShoppingList}/>
       <Route path='/' component={ZipCodeCheck}/>
     </Switch>
   </main>

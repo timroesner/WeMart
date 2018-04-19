@@ -14,6 +14,7 @@
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
     "react-scripts": "1.1.1",
+    "react-toastify": "^4.0.0-rc.4",
     "react-transition-group": "^2.3.0"
   },
   "scripts": {
