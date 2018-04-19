@@ -696,16 +696,11 @@ class AccountSettings extends React.Component{
                         <h1>Add Card</h1>
                     </Modal.Header>
                     <Modal.Body>
-                        <StripeProvider apiKey={stripeAPIKey}>
-                            <Elements>
-                                <NewCardForm
+                        <NewCardForm
                                     onSubmit={(token)=>{this.handleNewCard(token)}}
                                     name={this.state.user.firstName + ' ' + this.state.user.lastName}
-                                    phone={this.state.user.phoneNumber}
-                                    email={this.state.user.email}
+                                    phone={this.state.user.phoneNumber} email={this.state.user.email}
                                 />
-                            </Elements>
-                        </StripeProvider>
                     </Modal.Body>
                     <Modal.Footer>
                         <Button style={modalButton_Cancel} snacksStyle="secondary" onClick={this.handleClose} >Cancel</Button>
@@ -759,20 +754,22 @@ class AccountSettings extends React.Component{
                 //TODO implement react-router-dom
                 <div>
                     <Header/>
-                    <div style={accountSettings}>
-                        <h1 style={pageTitle}>Account Settings</h1>
-                        <ProfilePanel >
-                            <div style={noSession}>
-                                <h2>
-                                    You must be logged in to view account settings.
-                                </h2>
-                                <h4>Please <Link href='/login'>Log In</Link> or <Link href='/signup'>Sign Up</Link></h4>
-                            </div>
-                            <div style={{margin:'2rem auto', textAlign:'center'}}>
-                                <Button size='large' onClick={()=>{this.props.history.push('/home')}}>Browse Store</Button>
-                            </div>
-                        </ProfilePanel>
-                    </div>
+                    <Elements>
+                        <div style={accountSettings}>
+                            <h1 style={pageTitle}>Account Settings</h1>
+                            <ProfilePanel >
+                                <div style={noSession}>
+                                    <h2>
+                                        You must be logged in to view account settings.
+                                    </h2>
+                                    <h4>Please <Link href='/login'>Log In</Link> or <Link href='/signup'>Sign Up</Link></h4>
+                                </div>
+                                <div style={{margin:'2rem auto', textAlign:'center'}}>
+                                    <Button size='large' onClick={()=>{this.props.history.push('/home')}}>Browse Store</Button>
+                                </div>
+                            </ProfilePanel>
+                        </div>
+                    </Elements>
                 </div>
             );
         }
