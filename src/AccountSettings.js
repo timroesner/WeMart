@@ -7,7 +7,7 @@ import ProfilePanel from "./components/ProfilePanel";
 import Line from "./components/Line";
 import {Modal} from "react-bootstrap";
 import CreditCard from "./components/CreditCard";
-import {Elements, StripeProvider} from "react-stripe-elements";
+import {Elements} from "react-stripe-elements";
 import Header from "./components/header";
 import { withRouter } from "react-router-dom";
 import {CognitoUserAttribute, CognitoUserPool} from 'amazon-cognito-identity-js';
@@ -20,11 +20,12 @@ let newAddressStyle = {textAlign: "center", fontSize: "1.6rem", paddingBottom: "
 const noSession = {textAlign:'center', marginBottom: '2rem'};
 const accountSettings = {fontFamily:'"Open Sans", "Helvetica Neue", Helvetica, sans-serif', maxWidth:'109.2rem',
 height:'auto !important', margin:'3rem auto'};
-var dynamodb;
 const modalButton_Accept = {margin:'1.8rem 0 1rem 1rem', paddingRight:'3rem', paddingLeft:'3rem'}
 const modalButton_Cancel = {margin:'1.8rem 1rem 1rem 0', paddingRight:'2rem', paddingLeft:'2rem'}
 const pageTitle = {textAlign:'center', padding:'1.5rem' ,fontFamily:' "Open Sans", "Helvetica Neue", Helvetica, sans-serif'};
 var stripeAPIKey;
+var dynamodb;
+var poolData;
 
 class AccountSettings extends React.Component{
 
@@ -37,19 +38,7 @@ class AccountSettings extends React.Component{
         this.handleEditAddressModal = this.handleEditAddressModal.bind(this);
         this.handleClose = this.handleClose.bind(this);
 
-        // Check if there is an existing cognito session open
-        var poolData;
-        if(process.env.NODE_ENV === 'development'){
-            poolData =require('./poolData').poolData;
-            stripeAPIKey = require('./stripeKey').stripeAPIKey;
-        } else{
-            poolData = {
-                UserPoolId : process.env.REACT_APP_Auth_UserPoolId,
-                ClientId : process.env.REACT_APP_Auth_ClientId
-            }
-        }
-        var userPool = new CognitoUserPool(poolData);
-        var cognitoUser = userPool.getCurrentUser();
+       this.setKeys();
 
         this.state = {
             //Stripe
@@ -64,8 +53,8 @@ class AccountSettings extends React.Component{
             personalInfoModal: false,
             editAddressModal: false,
             isLoggedIn: false,
-            // For testing purposes only
-            // TODO get data from AWS once API is complete
+
+            // The user Object
             user: {
                 userId: '',
                 email: '',
@@ -77,6 +66,31 @@ class AccountSettings extends React.Component{
                 deliveryAddress: null,
                 orderHistory: []},
         };
+        this.getCognitoUser()
+    }
+
+    setKeys(){
+        if(process.env.NODE_ENV === 'development'){
+            poolData =require('./poolData').poolData;
+            stripeAPIKey = require('./stripeKey').stripeAPIKey;
+            dynamodb = require('./db').db;
+
+        } else{
+            poolData = {
+                UserPoolId : process.env.REACT_APP_Auth_UserPoolId,
+                ClientId : process.env.REACT_APP_Auth_ClientId
+            }
+            dynamodb = new DynamoDB({
+                region: "us-west-1",
+                credentials: {
+                    accessKeyId: process.env.REACT_APP_DB_accessKeyId,
+                    secretAccessKey: process.env.REACT_APP_DB_secretAccessKey},
+            });
+        }
+    }
+    getCognitoUser(){
+        var userPool = new CognitoUserPool(poolData);
+        var cognitoUser = userPool.getCurrentUser();
 
         //If there is a cognito user then get his data from the DB otherwise do nothing
         if (cognitoUser != null) {
@@ -90,12 +104,11 @@ class AccountSettings extends React.Component{
             let self = this;
             cognitoUser.getUserAttributes(function(err, result) {
                 if (err) {
-                    alert(err);
-                    //TODO remove these alerts
+                    alert(JSON.stringify(err));
                     return;
                 }
                 self.setState({isLoggedIn: true})
-                console.log(result) //Logs user attributes
+                // console.log(result) //Logs user attributes
 
                 result.forEach((attribute) => {
                     if(attribute.Name === 'email'){
@@ -107,7 +120,9 @@ class AccountSettings extends React.Component{
             });
         }
     }
+
     componentDidMount(){
+        // Load Stripe async
         if (window.Stripe) {
             this.setState({stripe: window.Stripe(require('./stripeKey').stripeAPIKey)});
         } else {
@@ -119,19 +134,6 @@ class AccountSettings extends React.Component{
     }
 
     getUserDetails(){
-        // Get the dynamoDB database
-
-        if(process.env.NODE_ENV === 'development'){
-            dynamodb = require('./db').db;
-        }else{
-            dynamodb = new DynamoDB({
-                region: "us-west-1",
-                credentials: {
-                    accessKeyId: process.env.REACT_APP_DB_accessKeyId,
-                    secretAccessKey: process.env.REACT_APP_DB_secretAccessKey},
-            });
-        }
-        // Get the user based on their userId from the user table
         var userParams = {
             Key: {
                 'userid': {S: this.state.user.userId}
@@ -143,7 +145,7 @@ class AccountSettings extends React.Component{
         dynamodb.getItem(userParams, (err, data) => {
             if(err) {console.log(err, err.stack)}
             else{
-                console.log(data);
+                // console.log(data);
                 let firstName = data.Item.firstName.S;
                 let lastName = data.Item.lastName.S;
                 this.setState({
@@ -159,7 +161,7 @@ class AccountSettings extends React.Component{
                 }
 
                 if(data.Item.addressline){
-                    console.log('address',data.Item)
+                    // console.log('address',data.Item)
                     this.setDeliveryAddress(data.Item)
                 }
 
@@ -171,12 +173,11 @@ class AccountSettings extends React.Component{
                             id: id,
                             client_secret: client_secret,
                         }).then(function(result) {
-                            console.log('res',result)
+                            // console.log('res',result)
                             var label = result.source.card.brand + ' ' + result.source.card.last4
                             self.setState({user: {...self.state.user,
                                     paymentMethod: {brand: result.source.card.brand, last4:result.source.card.last4, label:label}}});
                         });
-                        console.log('source', source.M);
                     })
                 }
             }
@@ -215,7 +216,7 @@ class AccountSettings extends React.Component{
     }
 
     setDeliveryAddress(address){
-        console.log('[setDeliveryAddress]',address)
+        // console.log('[setDeliveryAddress]',address)
         this.setState({user: {...this.state.user, deliveryAddress: {
                     street: address.addressline.S,
                     city: address.city.S,
@@ -423,8 +424,7 @@ class AccountSettings extends React.Component{
 
         dynamodb.updateItem(params, (err, data) => {
             if(err){
-                console.log(err, err.stack);
-                //TODO fancy alerts
+                alert(JSON.stringify(err));
             }
             else {
                 this.setDeliveryAddress(data.Attributes);
@@ -805,7 +805,6 @@ class AccountSettings extends React.Component{
             );
         } else {
             return(
-                //TODO implement react-router-dom
                 <div>
                     <Header/>
                         <div style={accountSettings}>
