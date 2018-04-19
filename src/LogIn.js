@@ -83,7 +83,7 @@ class LogIn extends Component {
         ClientId : process.env.REACT_APP_Auth_ClientId
       };
     }
-    
+
     var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
     var userData = {
         Username : email,
@@ -129,15 +129,15 @@ class LogIn extends Component {
 
     return (
 
-      <div style={{ 
-        height: window.innerHeight+'px', 
-        overflow: 'auto',  
-        backgroundImage: `url(${background})`, 
-        backgroundRepeat: 'repeat', 
-        backgroundColor: 'red', 
-        display: 'flex', 
-        alignItems: 'center' 
-     
+      <div style={{
+        height: window.innerHeight+'px',
+        overflow: 'auto',
+        backgroundImage: `url(${background})`,
+        backgroundRepeat: 'repeat',
+        backgroundColor: 'red',
+        display: 'flex',
+        alignItems: 'center'
+
       }} >
 
         <div style={{

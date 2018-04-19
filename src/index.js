@@ -10,7 +10,7 @@ import Router from './Router.js';
 themer.themeConfig = wemartTheme; //IC-Snacks theme for WeMart
 
 ReactDOM.render(
-  <BrowserRouter>
+  <BrowserRouter onUpdate={() => window.scrollTo(0, 0)}>
     <Router />
   </BrowserRouter>,
   document.getElementById('root')

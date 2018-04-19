@@ -4,6 +4,7 @@ import Header from './components/header';
 import { withRouter } from 'react-router-dom';
 import AWS from 'aws-sdk/index';
 import {DynamoDB} from 'aws-sdk/index';
+import Footer from './components/Footer'
 
 
 class Home extends Component {
@@ -43,7 +44,7 @@ class Home extends Component {
             data.Items.forEach((element) => {
 
                 //TODO Clean this up into a one liner.
-                let departmentid = element.departmentid.N;
+                let departmentid = element.department.S;
                 let image = element.image.S;
                 let itemid = (element.itemid.S);
                 let name = (element.name.S);
@@ -72,6 +73,7 @@ class Home extends Component {
           <HorizontalScroll items={this.state.savingsItems} title="History"/>
           <HorizontalScroll items={this.state.savingsItems} title="Savings"/>
       </div>
+        <Footer />
       </div>
     );
   }

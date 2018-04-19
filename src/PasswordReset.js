@@ -25,7 +25,7 @@ class PasswordReset extends Component {
         ClientId : process.env.REACT_APP_Auth_ClientId
       };
     }
-    
+
     var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
     var userData = {
         Username : email,
@@ -52,25 +52,25 @@ class PasswordReset extends Component {
 
   render() {
     const txtStyle = {
-      margin: '6%', 
-      marginBottom: '0%', 
+      margin: '6%',
+      marginBottom: '0%',
       width: '88%'
     }
 
     return (
-      <div style={{ 
-        height: window.innerHeight+'px', 
-        overflow: 'auto',  
-        backgroundImage: `url(${background})`, 
-        backgroundRepeat: 'repeat', 
-        backgroundColor: 'red', 
-        display: 'flex', 
-        alignItems: 'center' 
+      <div style={{
+        height: window.innerHeight+'px',
+        overflow: 'auto',
+        backgroundImage: `url(${background})`,
+        backgroundRepeat: 'repeat',
+        backgroundColor: 'red',
+        display: 'flex',
+        alignItems: 'center'
       }} >
 
         <div style={{
           margin: 'auto',
-          backgroundColor: 'white', 
+          backgroundColor: 'white',
           borderRadius: '15px',
           maxWidth: `${0.5*window.innerWidth}px`,
           minWidth: '250px'
@@ -99,8 +99,8 @@ class PasswordReset extends Component {
               required
               style={txtStyle}
             />
-            <button class="primary" type="submit" style={{margin: '6% 15% 3% 15%', width: '70%', height:'2.2em'}} > 
-              Reset Password 
+            <button class="primary" type="submit" style={{margin: '6% 15% 3% 15%', width: '70%', height:'2.2em'}} >
+              Reset Password
             </button>
           </Form>
       </div>

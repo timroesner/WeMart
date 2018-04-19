@@ -90,7 +90,7 @@ class Cart extends Component {
       position: 'fixed',
       top: '0',
       right: '0',
-      zIndex: '11',
+      zIndex: '1',
       width: '40vw',
       height: '100vh',
       background: '#f7f7f7',

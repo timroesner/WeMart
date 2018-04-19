@@ -17,15 +17,15 @@
 
 button.primary {
 	width: 100px;
-	height: 75px; 
-	font-size: 1.2em; 
+	height: 75px;
+	font-size: 1.2em;
 	border: none;
-	color: white; 
-	border-radius: 10px; 
+	color: white;
+	border-radius: 10px;
 	background-color: red;
 }
 
-button.primary:hover { 
+button.primary:hover {
 	background-color: #d82929;
 }
 

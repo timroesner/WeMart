@@ -1,56 +1,63 @@
 import React, { Component } from 'react';
-import '../App.css';
+import { withRouter } from "react-router-dom";
+import {Link} from "react-router-dom";
+import Modal from "react-modal";
+import Radium from 'radium'
+import {Button, Form, TextField} from 'ic-snacks';
+
+
 class Footer extends Component {
-
-
-
   constructor(){
     super();
-
   }
 
 
   render() {
     const divStyle={
-      backgroundColor: '#D30707',
-      position: "fixed",
+      paddingTop: "10px",
+      backgroundColor: 'white',
       bottom: 0,
       width: "100%",
-      color: "white",
-      textAlign: 'left',
+      color: "#D30707", //change to header grey
+      textAlign: 'center',
+
     };
+
+    const Links={
+      color: "#D30707",
+    }
+
+    const Spacing={
+      paddingTop: "15px",
+      paddingBottom: "10px",
+    }
+
+
 
 
     return (
       <div style={divStyle}>
 
         <div>
-          <ul class="footer">
-            <li><a href="#">About Us</a></li>
+            <Link to={"./AboutUs"} style={Links}>About Us</Link> &nbsp;&nbsp;&nbsp;&nbsp;
 
-            <li><a href="#">Contact Us</a></li>
+            <a onClick={this.openModal} style={Links}>Contact Us</a> &nbsp;&nbsp;&nbsp;&nbsp;
 
-            <li><a href="#">Locations</a></li>
+            <Link to={"./Locations"} style={Links}>Locations</Link> &nbsp;&nbsp;&nbsp;&nbsp;
 
-            <li><a href="#">Privacy</a></li>
+            <Link to={"./Privacy"} style={Links}>Privacy</Link> &nbsp;&nbsp;&nbsp;&nbsp;
 
-            <li><a href="#">Terms</a></li>
-          </ul>
-
+            <Link to={"./Terms"} style={Links}>Terms</Link> &nbsp;&nbsp;&nbsp;&nbsp;
         </div>
 
-        <div>
-          <p style={{textAlign: 'center',}}> Copyright © 2018 WeMart Inc.</p>
+        <div style={Spacing}>
+          Copyright © 2018 WeMart Inc.
         </div>
+
 
       </div>
     );
   }
 }
 
-Footer.propTypes = {
-  //categories: PropTypes.array,
-  //addProject: PropTypes.func
-}
-
-export default Footer;
+export default withRouter(Footer);
