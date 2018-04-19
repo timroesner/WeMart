@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    CardCVCElement, CardExpiryElement, CardNumberElement, injectStripe,
+    CardCVCElement, CardElement, CardExpiryElement, CardNumberElement, injectStripe,
     PostalCodeElement
 } from 'react-stripe-elements';
 import PropTypes from 'prop-types'
@@ -18,6 +18,7 @@ const cardElement = {
             color: '#aab7c4',
         }}, invalid: {
         color: '#9e2146',
+        border:'1px solid grey'
     }};
 const cardElementDiv = {border:'1px solid', padding:'1rem', borderRadius:'.6rem',
     maxHeight:'6rem'};
@@ -58,55 +59,18 @@ class NewCardForm extends React.Component {
         return (
             <form onSubmit={this.handleSubmit} style={checkoutForm} id={'newcard'}>
                 <label style={label}>
-                    Card number
-                    <div style={cardElementDiv}>
-                        <CardNumberElement
-                            style={cardElement}
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            onFocus={handleFocus}
-                            onReady={handleReady}
-                        />
-                    </div>
+                    Card details
                 </label>
-                <label style={label}>
-                    Expiration date
-                    <div style={cardElementDiv}>
-                        <CardExpiryElement
-                            style={cardElement}
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            onFocus={handleFocus}
-                            onReady={handleReady}
-                        />
-                    </div>
-                </label>
-                <label style={label}>
-                    CVC
-                    <div style={cardElementDiv}>
-                        <CardCVCElement
-                            style={cardElement}
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            onFocus={handleFocus}
-                            onReady={handleReady}
-                        />
-                    </div>
-                </label>
-                <label style={label}>
-                    Postal code
-                    <div style={cardElementDiv}>
-                        <PostalCodeElement
-                            style={cardElement}
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            onFocus={handleFocus}
-                            onReady={handleReady}
-                        />
-                    </div>
-                </label>
-                <div>
+                <div style={{padding:'1.5rem', borderRadius:'.6rem', boxShadow:'0 0 7px 0px #828282'}}>
+                    <CardElement
+                        style={cardElement}
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        onFocus={handleFocus}
+                        onReady={handleReady}
+                    />
                 </div>
+
             </form>
         );
     }

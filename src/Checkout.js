@@ -415,7 +415,7 @@ export default class Checkout extends React.Component {
     }
 
     renderPaymentMethods(){
-        if(this.state.paymentMethod){
+        if(this.state.paymentPanel){
             return(
                 <div>
                     <ul style={{listStyleType: "none",marginBottom:'3rem'}}>
