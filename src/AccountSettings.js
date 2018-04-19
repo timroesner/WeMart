@@ -23,7 +23,6 @@ height:'auto !important', margin:'3rem auto'};
 const modalButton_Accept = {margin:'1.8rem 0 1rem 1rem', paddingRight:'3rem', paddingLeft:'3rem'}
 const modalButton_Cancel = {margin:'1.8rem 1rem 1rem 0', paddingRight:'2rem', paddingLeft:'2rem'}
 const pageTitle = {textAlign:'center', padding:'1.5rem' ,fontFamily:' "Open Sans", "Helvetica Neue", Helvetica, sans-serif'};
-var stripeAPIKey;
 var dynamodb;
 var poolData;
 
@@ -72,7 +71,6 @@ class AccountSettings extends React.Component{
     setKeys(){
         if(process.env.NODE_ENV === 'development'){
             poolData =require('./poolData').poolData;
-            stripeAPIKey = require('./stripeKey').stripeAPIKey;
             dynamodb = require('./db').db;
 
         } else{

@@ -8,8 +8,15 @@ import {wemartTheme} from './wemartTheme';
 
 import Router from './Router.js';
 import {StripeProvider} from "react-stripe-elements";
+import {DynamoDB} from "aws-sdk/index";
 themer.themeConfig = wemartTheme; //IC-Snacks theme for WeMart
-const stripeKey = require('./stripeKey').stripeAPIKey;
+var stripeKey;
+
+if(process.env.NODE_ENV === 'development'){
+    stripeKey = require('./stripeKey').stripeAPIKey;
+} else{
+    stripeKey = process.env.REACT_APP_STRIPE_PK
+}
 
 ReactDOM.render(
     <StripeProvider apiKey={stripeKey}>
