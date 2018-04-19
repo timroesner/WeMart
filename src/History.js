@@ -25,12 +25,12 @@ class History extends React.Component{
         super();
         this.state = {
             orderHistory: [],
-            items: null,
+            items: [],
+            isLoaded: false,
             user: null,
         }
         this.setKeys()
         this.getCognitoUser()
-
     }
 
     getCognitoUser(){
@@ -69,6 +69,7 @@ class History extends React.Component{
 
     getItemsFromDB(){
         this.state.orderHistory.forEach((itemid)=>{
+            console.log('itemid',itemid)
             var itemParams  = {
                 Key: {'itemid': {S:itemid}},
                 TableName: 'item'
@@ -77,6 +78,7 @@ class History extends React.Component{
             dynamodb.getItem(itemParams,(err, data)=>{
                 if(err) {console.log(err, err.stack)}
                 else if(data.Item) {
+                    console.log(data);
                     let image = data.Item.image.S;
                     let itemid = data.Item.itemid.S;
                     let name = data.Item.name.S;
@@ -93,6 +95,7 @@ class History extends React.Component{
 
                     console.log('test item', testItem)
                 }
+                this.setState({isLoaded: true})
             })
         })
     }
@@ -117,14 +120,14 @@ class History extends React.Component{
                         this.setState({orderHistory: [...this.state.orderHistory, itemId]})
                     })
                 })
+                this.getItemsFromDB()
             }
         })
     }
 
     renderHistory(){
-        if(this.state.items){return(
+        if(this.state.isLoaded){return(
             <div style={history}>
-                {this.getItemsFromDB()}
                 <ItemsGrid items={this.state.items}/>
             </div>
         )}
