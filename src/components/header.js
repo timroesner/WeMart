@@ -4,16 +4,20 @@ import { withRouter } from "react-router-dom";
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'; // ES6
 import './header.css'
 
+var query;
+
 class Header extends Component {
-	constructor() {
-  		super();
+	constructor(props) {
+  		super(props);
   		this.state = {
    			width: window.innerWidth,
 				value: '',
 				cartClicked: false
  	 	};
+
 		this.handleSearch = this.handleSearch.bind(this);
 		this.handleSearchChange = this.handleSearchChange.bind(this);
+		this.getSearchValue()
 	}
 
 componentWillMount() {
@@ -30,19 +34,30 @@ handleWindowSizeChange = () => {
   this.setState({ width: window.innerWidth });
 };
 
+getSearchValue() {
+	if(this.props.location !== undefined) {
+		const queryParams = new URLSearchParams(this.props.location.search);
+		let special = queryParams.get('special')
+		if(special != "true") {
+			query = queryParams.get('query')
+		}
+	}
+}
+
 handleSearch(event) {
 	//search logic
 	event.preventDefault();
 	this.props.history.push({
 		pathname: 'search',
-		search: '?query='+this.state.value
+		search: '?query='+query
 	})
 	window.location.reload()
 };
 
 handleSearchChange(event) {
-    this.setState({value: event.target.value});
-  }
+	query = event.target.value
+	this.setState({value: event.target.value})
+}
 
 showCart = () => {
 	//when cart button is clicked
@@ -158,7 +173,7 @@ handleSavingsClick = () => {
 			<div className="container-fluid">
 				<div className="form-group"  style={{position: 'relative', margin: '15px 0'}}>
 					<form className="form-inline form-horizontal" onSubmit={this.handleSearch} >
-						<input name="search" value={this.state.value} onChange={this.handleSearchChange} type="text" placeholder="Search" className="form-control" style={{width: '100%'}}/>
+						<input name="search" value={query} onChange={this.handleSearchChange} type="text" placeholder="Search" className="form-control" style={{width: '100%'}}/>
 						<button type="submit" className="btn btn-danger btn-sm" style={searchBtn}><i className="fas fa-search" /></button>
 					</form>
 				</div>
@@ -205,7 +220,7 @@ handleSavingsClick = () => {
 
 			<ul className="nav navbar-nav" style={{width: '55%'}} >
 				<form className="form-inline" onSubmit={this.handleSearch} style={{position: 'relative', margin: '15px 0'}}>
-					<input name="search" value={this.state.value} onChange={this.handleSearchChange} type="text" placeholder="Search" className="form-control" style={{width: '80%'}} />
+					<input name="search" value={query} onChange={this.handleSearchChange} type="text" placeholder="Search" className="form-control" style={{width: '80%'}} />
 					<button type="submit" className="primary" style={{height: '34px', width: '44px', borderRadius: '4px'}}><i className="fas fa-search" /></button>
 				</form>
 		    </ul>

@@ -48,7 +48,7 @@ class Item extends Component {
 			if (err) {
 		   		console.log(err, err.stack)	
 		   	} else { 
-		   		this.setState({ item: { itemid: data.Item.itemid.S, name: data.Item.name.S, departmentid: data.Item.departmentid.N, 
+		   		this.setState({ item: { itemid: data.Item.itemid.S, name: data.Item.name.S, department: data.Item.department.S, 
 		   		image: data.Item.image.S, price: data.Item.price.N, quantity: data.Item.quantity.S, sale: data.Item.sale.N } })
 		   	}
 		 }.bind(this));
