@@ -190,9 +190,9 @@ class Search extends Component {
 				<div style={{ margin: '16px'}}>
 				<DropdownMenu triggerElement={<Button snacksStyle="secondary" size="small" >Sorting by&nbsp;
 				   <span class="caret"></span></Button>}>
-					<p value="lowtohigh" onClick={() => this.sortBy("lowtohigh")} style={{padding: '6px'}}>Price: Low to High</p>
-					<p value="hightolow" onClick={() => this.sortBy("hightolow")} style={{padding: '6px'}}>Price: High to Low</p>
-					<p onClick={() => this.sortBy("name")} style={{padding: '6px'}}>Name</p>
+				   	<MenuItem value="lowtohigh" style={{padding: '6px'}} labelStyles={{padding: '0'}}><p onClick={() => this.sortBy("lowtohigh")}>Price: High to Low</p></MenuItem>
+				   	<MenuItem value="hightolow" style={{padding: '6px'}} labelStyles={{padding: '0'}}><p onClick={() => this.sortBy("hightolow")}>Price: Low to High</p></MenuItem>
+				   	<MenuItem value="name" style={{padding: '6px'}} labelStyles={{padding: '0'}}><p onClick={() => this.sortBy("name")}>Name</p></MenuItem>
     			</DropdownMenu>
     			</div>
 		)

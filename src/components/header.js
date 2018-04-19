@@ -32,8 +32,12 @@ handleWindowSizeChange = () => {
 
 handleSearch(event) {
 	//search logic
-	console.log("search for "+ this.state.value);
 	event.preventDefault();
+	this.props.history.push({
+		pathname: 'search',
+		search: '?query='+this.state.value
+	})
+	window.location.reload()
 };
 
 handleSearchChange(event) {
@@ -54,6 +58,14 @@ handleAccountClick = () => {
 
 handleZipClick = () => {
 	this.props.history.push('/')
+}
+
+handleSavingsClick = () => {
+	this.props.history.push({
+		pathname: 'search',
+		search: '?query=savings&special=true'
+	})
+	window.location.reload()
 }
 
 
@@ -163,7 +175,7 @@ handleZipClick = () => {
 							</li>
 
 							<li style={mobileNavItems}> <a style={links} href="#">
-								<button style={astext}><i className="fas fa-tag" /><br />
+								<button style={astext} onClick={this.handleSavingsClick}><i className="fas fa-tag" /><br />
 									<span>Savings</span>
 								</button></a>
 							</li>
@@ -226,7 +238,7 @@ handleZipClick = () => {
 		</div>
 	    <ul id="pills" className="nav nav-pills" style={center}>
 			<li role="navigation" style={pillsLi}><button className="primaryRedWithHover" style={astext}>Departments</button></li>
-			<li role="navigation" style={pillsLi}><button className="primaryRedWithHover" style={astext}>Savings</button></li>
+			<li role="navigation" style={pillsLi}><button className="primaryRedWithHover" onClick={this.handleSavingsClick} style={astext}>Savings</button></li>
 			<li role="navigation" style={pillsLi}><button className="primaryRedWithHover" style={astext}>History</button></li>
 	    </ul>
 	</nav>
