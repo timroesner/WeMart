@@ -38,18 +38,34 @@ class ItemCard extends React.Component{
       if(cart.hasOwnProperty(this.props.itemID)) {
         var quantityInCart = cart[this.props.itemID].quantityInCart
         console.log('Quantity of item with itemID '+this.props.itemID+ ' is ' + quantityInCart);
-        this.state = {quantityInCart: quantityInCart}
+        this.state = {
+          quantityInCart: quantityInCart,
+          isMouseInside: false
+        }
         console.log("State " + this.state.quantityInCart);
       } else {
         this.state = {
-          quantityInCart: 0
+          quantityInCart: 0,
+          isMouseInside: false
         }
       }
     } else {
       this.state = {
-        quantityInCart: 0
+        quantityInCart: 0,
+        isMouseInside: false
       }
     }
+
+    this.mouseEnter = this.mouseEnter.bind(this)
+    this.mouseLeave = this.mouseLeave.bind(this)
+  }
+
+  mouseEnter = () => {
+    this.setState({ isMouseInside: true });
+  }
+
+  mouseLeave = () => {
+    this.setState({ isMouseInside: false });
   }
     // Renders the item price.
     // If sale price is zero then it renders normally, otherwise
@@ -80,21 +96,15 @@ class ItemCard extends React.Component{
 
     // Renders the items button bar. By default this includes the counter
     renderButtonBar(){
-        if(this.state.quantityInCart == 0){return(
-            <div style={itemCard_buttonBar}>
-                <Button style={addToCart} snacksStyle="secondary" size="small"
-                        onClick={() => {this.handleAddToCart()}}>Add To Cart</Button>
-            </div>
-        );} else {
-            return(
-                <div style={itemCard_buttonBar}>
-                    <Counter quantity={this.state.quantityInCart}
-                             onIncrease={this.handleIncrease}
-                             onDecrease={this.handleDecrease}
-                             onRemove={this.handleRemove}/>
-                </div>
-            );
-        }
+        return(
+          <div style={itemCard_buttonBar} onMouseEnter={this.mouseEnter} onMouseLeave={this.mouseLeave}>
+            {this.state.isMouseInside && (this.state.quantityInCart != 0) ? <Counter quantity={this.state.quantityInCart}
+                                 onIncrease={this.handleIncrease}
+                                 onDecrease={this.handleDecrease}
+                                 onRemove={this.handleRemove}/> :<Button style={addToCart} snacksStyle="secondary" size="small"
+                           onClick={() => {this.handleAddToCart()}}>Add To Cart</Button>}
+          </div>
+        )
     }
 
     // Increases the quantity of this item in the cart
