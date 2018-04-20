@@ -32,40 +32,45 @@ class ItemCard extends React.Component{
   constructor(props) {
     super(props)
 
+    this.state = {
+      quantityInCart: 0,
+      isMouseInside: false
+    }
+  }
+
+  componentDidMount = () => {
+    this.updateQuantityFromCart()
+  }
+
+  updateQuantityFromCart = () => {
     if(localStorage.getItem('cart') != null) {
       var cartString = localStorage.getItem('cart')
       var cart = JSON.parse(cartString)
       if(cart.hasOwnProperty(this.props.itemID)) {
         var quantityInCart = cart[this.props.itemID].quantityInCart
-        console.log('Quantity of item with itemID '+this.props.itemID+ ' is ' + quantityInCart);
-        this.state = {
-          quantityInCart: quantityInCart,
-          isMouseInside: false
-        }
-        console.log("State " + this.state.quantityInCart);
+        this.setState({
+          quantityInCart: quantityInCart
+        });
       } else {
-        this.state = {
-          quantityInCart: 0,
-          isMouseInside: false
-        }
+        this.setState({
+          quantityInCart: 0
+        });
       }
     } else {
-      this.state = {
-        quantityInCart: 0,
-        isMouseInside: false
-      }
+      this.setState({
+        quantityInCart: 0
+      })
     }
-
-    this.mouseEnter = this.mouseEnter.bind(this)
-    this.mouseLeave = this.mouseLeave.bind(this)
   }
 
   mouseEnter = () => {
-    this.setState({ isMouseInside: true });
+    this.updateQuantityFromCart()
+    this.setState({isMouseInside: true});
   }
 
   mouseLeave = () => {
-    this.setState({ isMouseInside: false });
+    this.updateQuantityFromCart()
+    this.setState({isMouseInside: false});
   }
     // Renders the item price.
     // If sale price is zero then it renders normally, otherwise
