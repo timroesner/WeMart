@@ -12,7 +12,7 @@ const CartList = (props) => {
   });
 
   return (
-    <ul className='list-group'>
+    <ul className='list-group' style={{lineHeight: '20px'}}>
       {items}
     </ul>
   );

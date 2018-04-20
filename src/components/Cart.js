@@ -111,7 +111,7 @@ class Cart extends Component {
       top: '0',
       right: '0',
       zIndex: '11',
-      width: '40vw',
+      width: '35vw',
       height: '100vh',
       background: '#f7f7f7',
       boxShadow: '1px 2px 3px 0px rgba(0,0,0,0.10)',
@@ -142,6 +142,7 @@ class Cart extends Component {
       padding: '0',
       height: '82%'
     }
+
     const isMobile = this.state.width <= 700;
     if (isMobile) {
       return(
@@ -160,7 +161,7 @@ class Cart extends Component {
             </div>
             <div style={{height: '10%', display: 'flex', justifyContent: 'center'}}>
               <button style={checkoutBtn} className="primary">Checkout
-                <span style={{position: 'absolute', right: '25px',bottom: '15px', padding: '4px 7px', borderRadius: '4px' ,background: 'linear-gradient(#d82929, #d82929)'}}>
+                <span style={{position: 'absolute', right: '7%', padding: '4px 7px', borderRadius: '4px' ,background: 'linear-gradient(#d82929, #d82929)'}}>
                   {'$'+this.getTotalPrice(this.state.cartItems).toFixed(2)}
                 </span>
               </button>
@@ -184,7 +185,7 @@ class Cart extends Component {
             </div>
             <div style={{height: '10%', display: 'flex', justifyContent: 'center'}}>
               <button style={checkoutBtn} className="primary">Checkout
-                <span style={{position: 'absolute', right: '25px',bottom: '15px', padding: '4px 7px', borderRadius: '4px' ,background: 'linear-gradient(#d82929, #d82929)'}}>
+                <span style={{position: 'absolute', right: '7%', padding: '4px 7px', borderRadius: '4px' ,background: 'linear-gradient(#d82929, #d82929)'}}>
                   {'$'+this.getTotalPrice(this.state.cartItems).toFixed(2)}
                 </span>
               </button>
