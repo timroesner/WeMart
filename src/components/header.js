@@ -4,21 +4,129 @@ import { withRouter } from "react-router-dom";
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'; // ES6
 import './header.css'
 import Cart from './Cart'
+import {CognitoUserAttribute, CognitoUserPool} from 'amazon-cognito-identity-js';
+
+//Styles
+const astext = {
+		background:'none',
+		border:'none',
+		margin:'0',
+		padding:'0',
+		marginTop: '14px',
+		fontSize: '1.25em',
+		textAlign: 'center'
+}
+
+const dropdownButton = {
+	background:'none',
+	border:'none',
+	margin:'7.5px 0px',
+	padding:'0',
+	fontSize: '1.15em',
+	textAlign: 'center',
+	fontWeight: '200'
+}
+
+const center = {
+		display: 'flex',
+		justifyContent: 'center',
+		alignItems: 'center'
+}
+
+const pillsLi = {
+	margin: 'auto 44px',
+		fontSize: '1em',
+		marginBottom: '8px',
+		textAlign: 'center'
+}
+
+const searchBtn = {
+	position: 'absolute',
+	backgroundColor: 'red',
+	top: '0',
+	right: '0',
+	zIndex: '2',
+	height: '34px',
+	width: '50px'
+}
+
+const mobileNav = {
+	display: 'inline',
+	margin: '0 auto',
+	padding: '0',
+	display: 'block',
+	listStyleType: 'disc',
+	fontSize: '11px'
+}
+
+const mobileNavItems = {
+	display: 'inline-block',
+	height: '100%',
+	textAlign: 'center',
+	float: 'left',
+	margin: '0',
+	width: '33%'
+}
+
+const links = {
+	color: 'red',
+		fontSize: '1.25em',
+	textAlign: 'center'
+}
 
 class Header extends Component {
+
 	constructor() {
   		super();
   		this.state = {
    			width: window.innerWidth,
 				value: '',
-				cartClicked: false
+				cartClicked: false,
+				isLoggedIn: false
  	 	};
+		var poolData;
 		this.handleSearch = this.handleSearch.bind(this);
 		this.handleSearchChange = this.handleSearchChange.bind(this);
+		this.handleSignOut = this.handleSignOut.bind(this);
 	}
+
+	handleSignOut(){
+    if (window.confirm('Are you sure you want to log out?')) {
+      var userPool = new CognitoUserPool(this.poolData);
+      var cognitoUser = userPool.getCurrentUser();
+      cognitoUser.signOut();
+      console.log(this.props)
+    } else {
+      console.log('cancels')
+      }
+    }
+
+	getCognitoUser = () => {
+
+		if(process.env.NODE_ENV === 'development'){
+    	this.poolData =require('../poolData').poolData;
+      } else {
+        	this.poolData = {
+            UserPoolId : process.env.REACT_APP_Auth_UserPoolId,
+            ClientId : process.env.REACT_APP_Auth_ClientId
+          }
+      }
+
+      var userPool = new CognitoUserPool(this.poolData);
+      var cognitoUser = userPool.getCurrentUser();
+
+      //If there is a cognito user then set isLoggedIn
+      if (cognitoUser != null) {
+          this.setState({isLoggedIn: true})
+					console.log(cognitoUser);
+      } else {
+				this.setState({isLoggedIn: false})
+			}
+    }
 
 componentWillMount() {
   window.addEventListener('resize', this.handleWindowSizeChange);
+	this.getCognitoUser();
 }
 
 // make sure to remove the listener
@@ -65,65 +173,39 @@ handleZipClick = () => {
 	this.props.history.push('/')
 }
 
+renderAccountButton() {
+	if(this.state.isLoggedIn) {
+		return (
+			<div className="dropdown">
+  			<button className="dropdown-toggle primaryRedWithHover" style={astext} type="button" id="dropdownMenuHeader" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+    			Account
+    			<span className="caret"></span>
+  			</button>
+  			<ul className="dropdown-menu" aria-labelledby="dropdownMenu1">
+			    <li><a href="/accountsettings">
+						<button className="primaryRedWithHover" style={dropdownButton}>
+							Account Settings</button></a></li>
+			    <li><a href="/shoppinglist">
+						<button className="primaryRedWithHover" style={dropdownButton}>
+							Shopping Lists</button></a></li>
+			    <li><a href="/login">
+						<button className="primaryRedWithHover" style={dropdownButton} onClick={this.handleSignOut}>
+							Sign Out</button></a></li>
+  			</ul>
+			</div>
+		);
+	} else {
+		return (
+			<button className="primaryRedWithHover" style={astext} onClick={() => this.props.history.push('/login')}>
+				LogIn
+			</button>
+		);
+	}
+}
+
 
   render() {
   const  {width}  = this.state;
-	const center = {
-		  display: 'flex',
-		  justifyContent: 'center',
-		  alignItems: 'center'
-	}
-	const astext = {
-	    background:'none',
-	    border:'none',
-	    margin:'0',
-	    padding:'0',
-	    marginTop: '14px',
-	    fontSize: '1.25em',
-		textAlign: 'center',
-	}
-
-	const pillsLi = {
-		margin: 'auto 44px',
-	    fontSize: '1em',
-	    marginBottom: '8px',
-	    textAlign: 'center'
-	}
-
-	const searchBtn = {
-		position: 'absolute',
-		backgroundColor: 'red',
-	  top: '0',
-	  right: '0',
-	  zIndex: '2',
-	  height: '34px',
-	  width: '50px'
-	}
-
-	const mobileNav = {
-		display: 'inline',
-	  margin: '0 auto',
-	  padding: '0',
-	  display: 'block',
-	  listStyleType: 'disc',
-	  fontSize: '11px'
-	}
-
-	const mobileNavItems = {
-		display: 'inline-block',
-	  height: '100%',
-	  textAlign: 'center',
-	  float: 'left',
-	  margin: '0',
-		width: '33%'
-	}
-
-	const links = {
-		color: 'red',
-	    fontSize: '1.25em',
-		textAlign: 'center'
-	}
-
   const isMobile = width <= 500;
   if (isMobile) {
     return (
@@ -231,9 +313,7 @@ handleZipClick = () => {
 		    	</li>
 
 		      <li style={{width: '32%'}}>
-		      	<button className="primaryRedWithHover" onClick={this.handleAccountClick} style={astext}>
-		      		Account
-		      	</button>
+		      	{this.renderAccountButton()}
 		      </li>
 
 		      <li style={{width: '32%'}}>
