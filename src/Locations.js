@@ -37,7 +37,7 @@ class Locations extends Component {
       width: "100%",
       textAlign: 'center',
       fontFamily: 'calibri',
-      marginTop:"0.5em",
+      marginTop:"0.5em"
     };
 
     const imageHolder={
