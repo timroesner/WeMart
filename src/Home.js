@@ -35,7 +35,7 @@ class Home extends Component {
     // Get the table whose name is "item"
     var params = {
         TableName: "item",
-        Limit: 15
+        Limit: 10
     };
 
     dynamodb.scan(params, (err, data) => {
@@ -61,6 +61,23 @@ class Home extends Component {
             });
         }
     });
+
+    var params = {
+	        TableName: "department",
+          Limit: 10
+	    };
+
+	    var departments = [];
+	    dynamodb.scan(params, (err, data) => {
+	        if (err) {
+	        	alert(JSON.stringify(err))
+	        } else {
+	            data.Items.forEach((element) => {
+	            	departments.push({name: element.departmentid.S, image: element.image.S})
+	            });
+				      this.setState({departmentItems: departments})
+	        }
+	    });
   }
 
 
@@ -69,7 +86,7 @@ class Home extends Component {
       <div>
         <Header />
         <div id="pageBody" className="container-fluid">
-          <HorizontalScroll items={this.state.savingsItems} title="Browse by Department"/>
+          <HorizontalScroll items={this.state.departmentItems} title="Browse by Department"/>
           <HorizontalScroll items={this.state.savingsItems} title="History"/>
           <HorizontalScroll items={this.state.savingsItems} title="Savings"/>
       </div>

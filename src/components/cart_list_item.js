@@ -43,25 +43,27 @@ class CartItem extends Component {
     }
 
     return (
-        <li className="list-group-item">
+        <li className="list-group-item" style={{height: '100px'}}>
           <div className="container-fluid">
             <div className="row">
               <div className="col-xs-2">
                 <img className="img-responsive" src={this.props.item.image} />
               </div>
-              <div className="col-xs-2">
+              <div className="col-xs-8">
                 <span>{this.props.item.name}</span>
                 <br />
                 <span style={{color: 'gray'}}>{this.props.item.weight}</span>
               </div>
-              <div className="col-xs-6" style={{paddingRight: '0'}}>
-                <Counter quantity={this.props.item.quantityInCart}
-                  onIncrease={() => this.props.handleIncrease(this.props.item.itemID)}
-                  onDecrease={()=> this.props.handleDecrease(this.props.item.itemID)}
-                  onRemove={() => this.props.handleRemove(this.props.item.itemID)} />
-              </div>
               <div className="col-xs-2">
                 <Price isOnSale={this.props.item.salePrice != '0'} salePrice={this.props.item.salePrice} regularPrice={this.props.item.price} quantity={this.props.item.quantityInCart}/>
+              </div>
+              <div className="row">
+                <div className="col-xs-12" style={{position:'absolute', left:'48%', top:'50%'}}>
+                  <Counter quantity={this.props.item.quantityInCart}
+                    onIncrease={() => this.props.handleIncrease(this.props.item.itemID)}
+                    onDecrease={()=> this.props.handleDecrease(this.props.item.itemID)}
+                    onRemove={() => this.props.handleRemove(this.props.item.itemID)} />
+                </div>
               </div>
             </div>
           </div>
