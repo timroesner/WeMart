@@ -24,7 +24,7 @@ class History extends React.Component{
     constructor(){
         super();
         this.state = {
-            orderHistory: [],
+            orderHistory: new Set(),
             items: [],
             isLoaded: false,
             user: null,
@@ -117,7 +117,9 @@ class History extends React.Component{
                     item.M.items.L.forEach((i)=>{
                         let itemId = i.M.itemid.S
                         console.log('[itemids]',itemId)
-                        this.setState({orderHistory: [...this.state.orderHistory, itemId]})
+                        var set = this.state.orderHistory
+                        set.add(itemId)
+                        this.setState({orderHistory: set})
                     })
                 })
                 this.getItemsFromDB()
