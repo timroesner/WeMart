@@ -163,8 +163,8 @@ class Search extends Component {
 		}
 	}
 
-	sortBy(value) {
-		if(value == "lowtohigh") {
+	sortBy = (e, option) => {
+		if(option.value == "lowtohigh") {
 			this.setState({items: this.state.items.sort(function(a, b){
 				let priceA = a.sale != 0 ? a.sale : a.price;
 				let priceB = b.sale != 0 ? b.sale : b.price;
@@ -172,7 +172,7 @@ class Search extends Component {
 				return((priceA > priceB) ? 1 : ((priceA < priceB) ? -1 : 0))
 			})})
 
-		} else if(value == "hightolow") {
+		} else if(option.value == "hightolow") {
 			this.setState({items: this.state.items.sort(function(a, b){
 				let priceA = a.sale != 0 ? a.sale : a.price;
 				let priceB = b.sale != 0 ? b.sale : b.price;
@@ -180,7 +180,7 @@ class Search extends Component {
 				return((priceA < priceB) ? 1 : ((priceA > priceB) ? -1 : 0))
 			})})
 
-		} else if(value == "name") {
+		} else if(option.value == "name") {
 			this.setState({items: this.state.items.sort(function(a, b){return(a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0)})})
 		}
 	}
@@ -188,11 +188,11 @@ class Search extends Component {
 	renderSortingMenu() {
 		return(
 				<div style={{ margin: '16px'}}>
-				<DropdownMenu triggerElement={<Button snacksStyle="secondary" size="small" >Sorting by&nbsp;
+				<DropdownMenu onSelect={this.sortBy} triggerElement={<Button snacksStyle="secondary" size="small" >Sorting by&nbsp;
 				   <span class="caret"></span></Button>}>
-				   	<MenuItem value="lowtohigh" style={{padding: '6px'}} labelStyles={{padding: '0'}}><p onClick={() => this.sortBy("lowtohigh")}>Price: Low to High</p></MenuItem>
-				   	<MenuItem value="hightolow" style={{padding: '6px'}} labelStyles={{padding: '0'}}><p onClick={() => this.sortBy("hightolow")}>Price: High to Low</p></MenuItem>
-				   	<MenuItem value="name" style={{padding: '6px'}} labelStyles={{padding: '0'}}><p onClick={() => this.sortBy("name")}>Name</p></MenuItem>
+				   <MenuItem label="Price: Low to High" value="lowtohigh" style={{padding: '6px'}} labelStyles={{padding: '0'}} />
+					<MenuItem label="Price: High to Low" value="hightolow" style={{padding: '6px'}} labelStyles={{padding: '0'}} />
+					<MenuItem label="Name" value="name" style={{padding: '6px'}} labelStyles={{padding: '0'}} />
     			</DropdownMenu>
     			</div>
 		)
