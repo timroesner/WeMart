@@ -169,6 +169,10 @@ handleAccountClick = () => {
 	console.log("account button clicked");
 }
 
+handleDepartments = () => {
+	this.props.history.push('/departments')
+}
+
 handleZipClick = () => {
 	this.props.history.push('/')
 }
@@ -355,7 +359,7 @@ renderMobileAccountButton() {
 		    </ul>
 		</div>
 	    <ul id="pills" className="nav nav-pills" style={center}>
-			<li role="navigation" style={pillsLi}><button className="primaryRedWithHover" style={astext}>Departments</button></li>
+			<li role="navigation" style={pillsLi}><button className="primaryRedWithHover" style={astext} onClick={this.handleDepartments} >Departments</button></li>
 			<li role="navigation" style={pillsLi}><button className="primaryRedWithHover" style={astext}>Savings</button></li>
 			<li role="navigation" style={pillsLi}><button className="primaryRedWithHover" style={astext}>History</button></li>
 	    </ul>
