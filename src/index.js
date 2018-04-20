@@ -10,12 +10,11 @@ import Router from './Router.js';
 
 ReactDOM.render(
     <StyleRoot>
-        <SetStyles assetsUrl={'./fonts'}/>
+        <SetStyles assetsUrl={'https://instacart.github.io/Snacks/src/fonts'} />
         <BrowserRouter>
-        <Router />
+            <Router />
         </BrowserRouter>
-    </StyleRoot>
-  ,
+    </StyleRoot>,
   document.getElementById('root')
 );
 
