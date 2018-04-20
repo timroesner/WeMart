@@ -4,11 +4,3 @@ body {
     font-family: sans-serif;
     background-color: #ECECEC;
 }
-html{
-    font-size: 62.5%;
-}
-html, body {
-    /*makes the body fill the entire page*/
-    margin: 0;
-    height: 100%;
-}

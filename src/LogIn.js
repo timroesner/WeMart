@@ -115,7 +115,7 @@ class LogIn extends Component {
       console.log("Log in succesful");
       console.log(this.props);
       this.props.history.push({
-          pathname: '/accountsettings',
+          pathname: '/home',
       })
   };
 
