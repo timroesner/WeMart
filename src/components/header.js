@@ -203,10 +203,40 @@ renderAccountButton() {
 	}
 }
 
+renderMobileAccountButton() {
+	if(this.state.isLoggedIn) {
+		return (
+			<div className="dropdown">
+				<button className="btn btn-danger btn-sm dropdown-toggle" type="button" id="dropdownMenuHeader" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style={{backgroundColor: 'red'}}>
+					<i class="fas fa-user"></i>
+					<span className="caret"></span>
+				</button>
+  			<ul className="dropdown-menu" aria-labelledby="dropdownMenu1">
+			    <li><a href="/accountsettings">
+						<button className="primaryRedWithHover" style={dropdownButton}>
+							Account Settings</button></a></li>
+			    <li><a href="/shoppinglist">
+						<button className="primaryRedWithHover" style={dropdownButton}>
+							Shopping Lists</button></a></li>
+			    <li><a href="/login">
+						<button className="primaryRedWithHover" style={dropdownButton} onClick={this.handleSignOut}>
+							Sign Out</button></a></li>
+  			</ul>
+			</div>
+		);
+	} else {
+		return (
+			<button onClick={() => this.props.history.push('/login')} className="btn btn-danger btn-sm" style={{backgroundColor: 'red'}} >
+				<i class="fas fa-sign-in-alt"></i>
+			</button>
+		);
+	}
+}
+
 
   render() {
-  const  {width}  = this.state;
-  const isMobile = width <= 500;
+	const  {width}  = this.state;
+	const isMobile = width <= 500;
   if (isMobile) {
     return (
 			<div style={{paddingBottom: '200px'}}>
@@ -215,9 +245,7 @@ renderAccountButton() {
 						<div className="container-fluid" style={center} >
 
 							<div style={{paddingLeft: '0'}} className="col-xs-2">
-								<button onClick={this.handleAccountClick} className="btn btn-danger btn-sm" style={{backgroundColor: 'red'}} >
-									<i className="far fa-user" />
-								</button>
+								{this.renderMobileAccountButton()}
 							</div>
 
 							<div className="col-xs-8" style={{textAlign: 'center', color: '#E6003D'}}>
