@@ -332,7 +332,7 @@ class Item extends Component {
 			const astext = {
 			    background:'none',
 			    border:'none',
-			    width: '30%',
+			    width: '40%',
 			    padding:'0',
 			    fontSize: '1.2em',
 				textAlign: 'center',
