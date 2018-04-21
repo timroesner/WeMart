@@ -25,6 +25,7 @@ const modalButton_Cancel = {margin:'1.8rem 1rem 1rem 0', paddingRight:'2rem', pa
 const pageTitle = {textAlign:'center', padding:'1.5rem' ,fontFamily:' "Open Sans", "Helvetica Neue", Helvetica, sans-serif'};
 var dynamodb;
 var poolData;
+var stripeKey;
 
 class AccountSettings extends React.Component{
 
@@ -73,6 +74,7 @@ class AccountSettings extends React.Component{
         if(process.env.NODE_ENV === 'development'){
             poolData =require('./poolData').poolData;
             dynamodb = require('./db').db;
+            stripeKey = require('./stripeKey').stripeAPIKey;
 
         } else{
             poolData = {
@@ -85,8 +87,11 @@ class AccountSettings extends React.Component{
                     accessKeyId: process.env.REACT_APP_DB_accessKeyId,
                     secretAccessKey: process.env.REACT_APP_DB_secretAccessKey},
             });
+            stripeKey = process.env.REACT_APP_STRIPE_PK
         }
     }
+
+
     getCognitoUser(){
         var userPool = new CognitoUserPool(poolData);
         var cognitoUser = userPool.getCurrentUser();
@@ -135,11 +140,11 @@ class AccountSettings extends React.Component{
     componentDidMount(){
         // Load Stripe async
         if (window.Stripe) {
-            this.setState({stripe: window.Stripe(require('./stripeKey').stripeAPIKey)});
+            this.setState({stripe: window.Stripe(stripeKey)});
         } else {
             document.querySelector('#stripe-js').addEventListener('load', () => {
                 // Create Stripe instance once Stripe.js loads
-                this.setState({stripe: window.Stripe(require('./stripeKey').stripeAPIKey)});
+                this.setState({stripe: window.Stripe(stripeKey)});
             });
         }
     }
