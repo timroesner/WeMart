@@ -53,6 +53,10 @@ handleAccountClick = () => {
 	console.log("account button clicked");
 }
 
+handleDepartments = () => {
+	this.props.history.push('/departments')
+}
+
 handleZipClick = () => {
 	this.props.history.push('/')
 }
@@ -119,6 +123,7 @@ handleZipClick = () => {
   const isMobile = width <= 500;
   if (isMobile) {
     return (
+			<div>
 			<div style={{paddingBottom: '200px'}}>
 		    <div className="container" style={{width: '100%', backgroundColor: '#F5F5F5',position: 'fixed', zIndex:'10'}}>
 					<div className="row" style={{marginTop: '3%'}}>
@@ -190,6 +195,32 @@ handleZipClick = () => {
 						}
 					</ReactCSSTransitionGroup>
 			</div>
+		</div>
+
+		<div className="row">
+				<div className="container">
+					<ul className="nav nav-tabs" style={mobileNav}>
+							<li style={mobileNavItems}><a style={links} href="#">
+								<button style={astext} onClick={this.handleDepartments}><i className="fas fa-th-large" /><br />
+									<span>Aisles</span>
+								</button></a>
+							</li>
+
+							<li style={mobileNavItems}> <a style={links} href="#">
+								<button style={astext}><i className="fas fa-tag" /><br />
+									<span>Savings</span>
+								</button></a>
+							</li>
+
+							<li style={mobileNavItems}><a style={links} href="#">
+								<button style={astext}><i className="fas fa-history" /><br />
+									<span>History</span>
+								</button></a>
+							</li>
+					</ul>
+				</div>
+		</div>
+
 	</div>
 </div>
     );
@@ -239,7 +270,7 @@ handleZipClick = () => {
 		    </ul>
 		</div>
 	    <ul id="pills" className="nav nav-pills" style={center}>
-			<li role="navigation" style={pillsLi}><button className="primaryRedWithHover" style={astext}>Departments</button></li>
+			<li role="navigation" style={pillsLi}><button className="primaryRedWithHover" style={astext} onClick={this.handleDepartments} >Departments</button></li>
 			<li role="navigation" style={pillsLi}><button className="primaryRedWithHover" style={astext}>Savings</button></li>
 			<li role="navigation" style={pillsLi}><button className="primaryRedWithHover" style={astext}>History</button></li>
 	    </ul>

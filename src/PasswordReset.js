@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Form, TextField } from 'ic-snacks';
+import { Form, TextField } from 'ic-snacks';
 import background from './images/background.svg';
 import './App.css';
 import { withRouter } from "react-router-dom";
@@ -20,7 +20,7 @@ class PasswordReset extends Component {
     if(process.env.NODE_ENV === 'development'){
         poolData = require('./poolData').poolData;
     } else {
-      var poolData = {
+      poolData = {
         UserPoolId : process.env.REACT_APP_Auth_UserPoolId,
         ClientId : process.env.REACT_APP_Auth_ClientId
       };

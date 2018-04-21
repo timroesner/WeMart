@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import registerServiceWorker from './registerServiceWorker';
 import { BrowserRouter, Route } from 'react-router-dom';
-import {themer} from 'ic-snacks';
+import {themer} from "ic-snacks";
 import {wemartTheme} from './wemartTheme';
 
 import Router from './Router.js';

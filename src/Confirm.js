@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import { Button, Form, TextField } from 'ic-snacks';
+import { Form, TextField } from 'ic-snacks';
 import background from './images/background.svg';
 import './App.css';
-import registerServiceWorker from './registerServiceWorker';
 import { withRouter } from "react-router-dom";
 
 var AmazonCognitoIdentity = require('amazon-cognito-identity-js');
@@ -21,7 +20,7 @@ class Confirm extends Component {
     if(process.env.NODE_ENV === 'development'){
         poolData = require('./poolData').poolData;
     } else {
-      var poolData = {
+        poolData = {
         UserPoolId : process.env.REACT_APP_Auth_UserPoolId,
         ClientId : process.env.REACT_APP_Auth_ClientId
       };
@@ -99,8 +98,7 @@ class Confirm extends Component {
 
   render() {
     const txtStyle = {
-      margin: '6%',
-      marginBottom: '0%',
+      margin: '6% 6% 0% 6%',
       width: '88%'
     }
 
@@ -127,9 +125,9 @@ class Confirm extends Component {
             serverErrors={this.state.serverErrors}
             formProps={{}}
           >
-            <p style={{margin: '6%', width: '88%', marginBottom: '0%', textAlign: 'center', fontSize: '12px'}}>
+            <p style={{ width: '88%',  margin: '6% 6% 0% 6%', textAlign: 'center', fontSize: '12px'}}>
               We send the confirmation code to {email}. Please check your spam folder.
-              If you did not receive anyhthing we can <a href="#" onClick={this.handleClickOnResend}>resend the code</a>.
+              If you did not receive anyhthing we can <a onClick={this.handleClickOnResend}>resend the code</a>.
             </p>
             <TextField
               floatingLabelText="Confirmation Code"
