@@ -4,6 +4,75 @@ import { withRouter } from "react-router-dom";
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'; // ES6
 import './header.css'
 import Cart from './Cart'
+import {CognitoUserAttribute, CognitoUserPool} from 'amazon-cognito-identity-js';
+
+//Styles
+const astext = {
+		background:'none',
+		border:'none',
+		margin:'0',
+		padding:'0',
+		marginTop: '14px',
+		fontSize: '1.25em',
+		textAlign: 'center'
+}
+
+const dropdownButton = {
+	background:'none',
+	border:'none',
+	margin:'7.5px 0px',
+	padding:'0',
+	fontSize: '1.15em',
+	textAlign: 'center',
+	fontWeight: '200'
+}
+
+const center = {
+		display: 'flex',
+		justifyContent: 'center',
+		alignItems: 'center'
+}
+
+const pillsLi = {
+	margin: 'auto 44px',
+		fontSize: '1em',
+		marginBottom: '8px',
+		textAlign: 'center'
+}
+
+const searchBtn = {
+	position: 'absolute',
+	backgroundColor: '#D30707',
+	top: '0',
+	right: '0',
+	zIndex: '2',
+	height: '34px',
+	width: '50px'
+}
+
+const mobileNav = {
+	display: 'inline',
+	margin: '0 auto',
+	padding: '0',
+	display: 'block',
+	listStyleType: 'disc',
+	fontSize: '11px'
+}
+
+const mobileNavItems = {
+	display: 'inline-block',
+	height: '100%',
+	textAlign: 'center',
+	float: 'left',
+	margin: '0',
+	width: '33%'
+}
+
+const links = {
+	color: '#D30707',
+		fontSize: '1.25em',
+	textAlign: 'center'
+}
 
 var AmazonCognitoIdentity = require('amazon-cognito-identity-js');
 
@@ -16,17 +85,31 @@ class Header extends Component {
   		this.state = {
    			width: window.innerWidth,
 				value: '',
-				cartClicked: false
+				cartClicked: false,
+				isLoggedIn: false
  	 	};
+		var poolData;
 		this.handleSearch = this.handleSearch.bind(this);
 		this.handleSearchChange = this.handleSearchChange.bind(this);
-
 		this.getCurrentUser()
 		this.checkZip()
-	}
+		this.handleSignOut = this.handleSignOut.bind(this);
+}
+
+handleSignOut() {
+    if (window.confirm('Are you sure you want to log out?')) {
+      var userPool = new CognitoUserPool(this.poolData);
+      var cognitoUser = userPool.getCurrentUser();
+      cognitoUser.signOut();
+      console.log(this.props)
+    } else {
+      console.log('cancels')
+    }
+}
 
 componentWillMount() {
   window.addEventListener('resize', this.handleWindowSizeChange);
+	this.getCognitoUser();
 }
 
 // make sure to remove the listener
@@ -38,6 +121,16 @@ componentWillUnmount() {
 handleWindowSizeChange = () => {
   this.setState({ width: window.innerWidth });
 };
+
+getSearchValue() {
+	if(this.props.location !== undefined) {
+		const queryParams = new URLSearchParams(this.props.location.search);
+		let special = queryParams.get('special')
+		if(special != "true") {
+			query = queryParams.get('query')
+		}
+	}
+}
 
 checkZip() {
 	if(localStorage.getItem('zip') == null) {
@@ -68,40 +161,38 @@ getCurrentUser() {
 	cognitoUser = userPool.getCurrentUser();
 }
 
-renderAccount() {
-	if(cognitoUser === null) {
-		return("Log In")
-	} else {
-		return("Account")
-	}
-}
-
 handleSearch(event) {
 	//search logic
 	event.preventDefault();
 	this.props.history.push({
 		pathname: 'search',
-		search: '?query='+this.state.value
+		search: '?query='+query
 	})
+  window.location.reload()
 };
 
 handleSearchChange(event) {
-    this.setState({value: event.target.value});
-  }
+    query = event.target.value
+	  this.setState({value: event.target.value})
+ }
 
 showCart = () => {
 	//when cart button is clicked
 	console.log("cart is clicked");
 	const bool = !this.state.cartClicked
 	this.setState({cartClicked: bool});
+	var body = document.querySelector('#pageBody')
+	body.classList.add('overlay');
 };
 
-handleAccountClick = () => {
-	if(cognitoUser === null) {
-		this.props.history.push('/login')
-	} else {
-		this.props.history.push('/accountsettings')
-	}
+closeCart = (cartClicked) => {
+	this.setState({cartClicked});
+	var body = document.querySelector('#pageBody')
+	body.classList.remove('overlay');
+}
+
+handleDepartments = () => {
+	this.props.history.push('/departments')
 }
 
 handleZipClick = () => {
@@ -113,69 +204,76 @@ handleSavingsClick = () => {
 		pathname: 'search',
 		search: '?query=savings&special=true'
 	})
+  window.location.reload()
+}
+	
+    
+renderAccountButton() {
+	if(cognitoUser !== null) {
+		return (
+			<div className="dropdown">
+  			<button className="dropdown-toggle primaryRedWithHover" style={astext} type="button" id="dropdownMenuHeader" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+    			Account
+    			<span className="caret"></span>
+  			</button>
+  			<ul className="dropdown-menu" aria-labelledby="dropdownMenu1">
+			    <li><a href="/accountsettings">
+						<button className="primaryRedWithHover" style={dropdownButton}>
+							Account Settings</button></a></li>
+			    <li><a href="/shoppinglist">
+						<button className="primaryRedWithHover" style={dropdownButton}>
+							Shopping Lists</button></a></li>
+			    <li><a href="/login">
+						<button className="primaryRedWithHover" style={dropdownButton} onClick={this.handleSignOut}>
+							Sign Out</button></a></li>
+  			</ul>
+			</div>
+		);
+	} else {
+		return (
+			<button className="primaryRedWithHover" style={astext} onClick={() => this.props.history.push('/login')}>
+				LogIn
+			</button>
+		);
+	}
 }
 
+renderMobileAccountButton() {
+	if(cognitoUser !== null) {
+		return (
+			<div className="dropdown">
+				<button className="btn btn-danger btn-sm dropdown-toggle" type="button" id="dropdownMenuHeader" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style={{backgroundColor: 'red'}}>
+					<i class="fas fa-user"></i>
+					<span className="caret"></span>
+				</button>
+  			<ul className="dropdown-menu" aria-labelledby="dropdownMenu1">
+			    <li><a href="/accountsettings">
+						<button className="primaryRedWithHover" style={dropdownButton}>
+							Account Settings</button></a></li>
+			    <li><a href="/shoppinglist">
+						<button className="primaryRedWithHover" style={dropdownButton}>
+							Shopping Lists</button></a></li>
+			    <li><a href="/login">
+						<button className="primaryRedWithHover" style={dropdownButton} onClick={this.handleSignOut}>
+							Sign Out</button></a></li>
+  			</ul>
+			</div>
+		);
+	} else {
+		return (
+			<button onClick={() => this.props.history.push('/login')} className="btn btn-danger btn-sm" style={{backgroundColor: 'red'}} >
+				<i class="fas fa-sign-in-alt"></i>
+			</button>
+		);
+	}
+}
 
   render() {
-  const  {width}  = this.state;
-	const center = {
-		  display: 'flex',
-		  justifyContent: 'center',
-		  alignItems: 'center'
-	}
-	const astext = {
-	    background:'none',
-	    border:'none',
-	    margin:'0',
-	    padding:'0',
-	    marginTop: '14px',
-	    fontSize: '1.25em',
-		textAlign: 'center',
-	}
-
-	const pillsLi = {
-		margin: 'auto 44px',
-	    fontSize: '1em',
-	    marginBottom: '8px',
-	    textAlign: 'center'
-	}
-
-	const searchBtn = {
-		position: 'absolute',
-		backgroundColor: '#D30707',
-	  top: '0',
-	  right: '0',
-	  zIndex: '2',
-	  height: '34px',
-	  width: '50px'
-	}
-
-	const mobileNav = {
-		display: 'inline',
-	  margin: '0 auto',
-	  padding: '0',
-	  display: 'block',
-	  listStyleType: 'disc',
-	  fontSize: '11px'
-	}
-
-	const mobileNavItems = {
-		display: 'inline-block',
-	  height: '100%',
-	  textAlign: 'center',
-	  float: 'left',
-	  margin: '0',
-		width: '33%'
-	}
-
-	const links = {
-		color: '#D30707',
-	    fontSize: '1.25em',
-		textAlign: 'center'
-	}
-
+    
+	const  {width}  = this.state;
+  
   // At this value the header would be unusable anyway so better to switch to the mobile header
-  const isMobile = width <= 767;
+	const isMobile = width <= 767;
   if (isMobile) {
     return (
 			<div style={{paddingBottom: '200px'}}>
@@ -184,9 +282,7 @@ handleSavingsClick = () => {
 						<div className="container-fluid" style={center} >
 
 							<div style={{paddingLeft: '0'}} className="col-xs-2">
-								<button onClick={this.handleAccountClick} className="btn btn-danger btn-sm" style={{backgroundColor: '#D30707'}} >
-									<i className="far fa-user" />
-								</button>
+								{this.renderMobileAccountButton()}
 							</div>
 
 							<div className="col-xs-8" style={{textAlign: 'center', color: '#E6003D'}}>
@@ -219,7 +315,7 @@ handleSavingsClick = () => {
 							<div className="container">
 								<ul className="nav nav-tabs" style={mobileNav}>
 										<li style={mobileNavItems}><a style={links} href="#">
-											<button style={astext}><i className="fas fa-th-large" /><br />
+											<button style={astext} onClick={this.handleDepartments} ><i className="fas fa-th-large" /><br />
 												<span>Aisles</span>
 											</button></a>
 										</li>
@@ -246,7 +342,7 @@ handleSavingsClick = () => {
 
 						{this.state.cartClicked ?
 						 <Cart
-						 onCloseClick={(cartClicked) => this.setState({cartClicked})} /> :
+						 onCloseClick={(cartClicked) => this.closeCart(cartClicked)} /> :
 						 null
 						}
 					</ReactCSSTransitionGroup>
@@ -283,9 +379,7 @@ handleSavingsClick = () => {
 		    	</li>
 
 		      <li style={{width: '32%'}}>
-		      	<button className="primaryRedWithHover" onClick={this.handleAccountClick} style={astext}>
-		      		{this.renderAccount()}
-		      	</button>
+		      	{this.renderAccountButton()}
 		      </li>
 
 		      <li style={{width: '32%'}}>
@@ -299,20 +393,20 @@ handleSavingsClick = () => {
 		    </ul>
 		</div>
 	    <ul id="pills" className="nav nav-pills" style={center}>
-			<li role="navigation" style={pillsLi}><button className="primaryRedWithHover" style={astext}>Departments</button></li>
-			<li role="navigation" style={pillsLi}><button className="primaryRedWithHover" style={astext} onClick={this.handleSavingsClick} >Savings</button></li>
-			<li role="navigation" style={pillsLi}><button className="primaryRedWithHover" style={astext}>History</button></li>
+        <li role="navigation" style={pillsLi}><button className="primaryRedWithHover" style={astext} onClick={this.handleDepartments} >Departments</button></li>
+        <li role="navigation" style={pillsLi}><button className="primaryRedWithHover" style={astext} onClick={this.handleSavingsClick} >Savings</button></li>
+        <li role="navigation" style={pillsLi}><button className="primaryRedWithHover" style={astext}>History</button></li>
 	    </ul>
 	</nav>
 		<div>
 			<ReactCSSTransitionGroup
 				transitionName="slide"
-				transitionEnterTimeout={500}
+				transitionEnterTimeout={300}
 				transitionLeaveTimeout={300}>
 
 				{this.state.cartClicked ?
 				 <Cart
-				 onCloseClick={(cartClicked) => this.setState({cartClicked})} /> :
+				 onCloseClick={(cartClicked) => this.closeCart(cartClicked)} /> :
 				 null
 				}
 			</ReactCSSTransitionGroup>

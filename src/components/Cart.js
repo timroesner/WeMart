@@ -8,17 +8,18 @@ class Cart extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      width: window.innerWidth,
-    }
-
     if(localStorage.getItem('cart') != null) {
       var cartString = localStorage.getItem('cart')
       var cart = JSON.parse(cartString)
-      this.state ={cartItems: this.getItemsFromCart(cart)}
+      this.state ={cartItems: this.getItemsFromCart(cart), totalPrice: 0, width: window.innerWidth}
     } else {
-      this.state = {cartItems: []}
+      this.state = {cartItems: [], totalPrice: 0, width: window.innerWidth}
     }
+
+    this.getTotalPrice(this.state.cartItems);
+    this.handleRemove = this.handleRemove.bind(this)
+    this.handleIncrease = this.handleIncrease.bind(this)
+    this.handleDecrease = this.handleDecrease.bind(this)
   }
 
   getItemsFromCart = (cart) => {
@@ -44,13 +45,58 @@ class Cart extends Component {
   };
 
   getTotalPrice(items) {
-    console.log(items);
-    var totalPrice = 0
-    for (var item in items) {
-      totalPrice += item.price;
-      console.log(Number(item.price));
+    var tPrice = 0
+    items.forEach((item)=>{
+      var priceToBeAdded = Number(item.price)
+      if (item.salePrice != '0') {
+        priceToBeAdded = Number(item.salePrice)
+      }
+      tPrice += priceToBeAdded * item.quantityInCart
+    })
+    return tPrice
+  }
+
+  // Remove the item from the cart
+  handleRemove = (itemID) => {
+    if(localStorage.getItem('cart') != null) {
+      var cartString = localStorage.getItem('cart')
+      var cart = JSON.parse(cartString)
+      if(cart.hasOwnProperty(itemID)) {
+        delete cart[itemID]
+        localStorage.setItem('cart', JSON.stringify(cart))
+        this.setState({cartItems: this.getItemsFromCart(cart)})
+      }
     }
-    return totalPrice
+  }
+
+  //Increases item quantity in cart
+  handleIncrease = (itemID) => {
+    if(localStorage.getItem('cart') != null) {
+      var cartString = localStorage.getItem('cart')
+      var cart = JSON.parse(cartString)
+      if(cart.hasOwnProperty(itemID)) {
+        var item = cart[itemID]
+        item.quantityInCart += 1
+        cart[itemID] = item
+        localStorage.setItem('cart', JSON.stringify(cart))
+        this.setState({cartItems: this.getItemsFromCart(cart)})
+      }
+    }
+  };
+
+  // Decreases the quantity of this item by 1 in the cart.
+  handleDecrease = (itemID) => {
+    if(localStorage.getItem('cart') != null) {
+      var cartString = localStorage.getItem('cart')
+      var cart = JSON.parse(cartString)
+      if(cart.hasOwnProperty(itemID)) {
+        var item = cart[itemID]
+        item.quantityInCart -= 1
+        cart[itemID] = item
+        localStorage.setItem('cart', JSON.stringify(cart))
+        this.setState({cartItems: this.getItemsFromCart(cart)})
+      }
+    }
   }
 
   render() {
@@ -65,7 +111,7 @@ class Cart extends Component {
       top: '0',
       right: '0',
       zIndex: '11',
-      width: '40vw',
+      width: '35vw',
       height: '100vh',
       background: '#f7f7f7',
       boxShadow: '1px 2px 3px 0px rgba(0,0,0,0.10)',
@@ -96,6 +142,7 @@ class Cart extends Component {
       padding: '0',
       height: '82%'
     }
+
     const isMobile = this.state.width <= 700;
     if (isMobile) {
       return(
@@ -107,12 +154,15 @@ class Cart extends Component {
               </button>
             </div>
             <div style={{height: '80%', overflowY: 'scroll'}}>
-              <CartList items={this.state.cartItems}/>
+              <CartList items={this.state.cartItems}
+                handleRemove={(itemID) => this.handleRemove(itemID)}
+                handleIncrease={(itemID) => this.handleIncrease(itemID)}
+                handleDecrease={(itemID) => this.handleDecrease(itemID)}/>
             </div>
             <div style={{height: '10%', display: 'flex', justifyContent: 'center'}}>
               <button style={checkoutBtn} className="primary">Checkout
-                <span style={{position: 'absolute', right: '25px',bottom: '15px', padding: '4px 7px', borderRadius: '4px' ,background: 'linear-gradient(#d82929, #d82929)'}}>
-                  {this.getTotalPrice(this.state.cartItems)}
+                <span style={{position: 'absolute', right: '7%', padding: '4px 7px', borderRadius: '4px' ,background: 'linear-gradient(#d82929, #d82929)'}}>
+                  {'$'+this.getTotalPrice(this.state.cartItems).toFixed(2)}
                 </span>
               </button>
             </div>
@@ -128,12 +178,15 @@ class Cart extends Component {
               </button>
             </div>
             <div style={{height: '80%', overflowY: 'scroll'}}>
-              <CartList items={this.state.cartItems}/>
+              <CartList items={this.state.cartItems}
+                        handleRemove={(itemID) => this.handleRemove(itemID)}
+                        handleIncrease={(itemID) => this.handleIncrease(itemID)}
+                        handleDecrease={(itemID) => this.handleDecrease(itemID)}/>
             </div>
             <div style={{height: '10%', display: 'flex', justifyContent: 'center'}}>
               <button style={checkoutBtn} className="primary">Checkout
-                <span style={{position: 'absolute', right: '25px',bottom: '15px', padding: '4px 7px', borderRadius: '4px' ,background: 'linear-gradient(#d82929, #d82929)'}}>
-                  {this.getTotalPrice(this.state.cartItems)}
+                <span style={{position: 'absolute', right: '7%', padding: '4px 7px', borderRadius: '4px' ,background: 'linear-gradient(#d82929, #d82929)'}}>
+                  {'$'+this.getTotalPrice(this.state.cartItems).toFixed(2)}
                 </span>
               </button>
             </div>
