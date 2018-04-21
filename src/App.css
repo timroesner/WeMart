@@ -21,12 +21,12 @@ button.primary {
 	font-size: 1.2em; 
 	border: none;
 	color: white; 
-	border-radius: 10px; 
-	background-color: red;
+	border-radius: 5px; 
+	background-color: #D30707;
 }
 
 button.primary:hover { 
-	background-color: #d82929;
+	background-color: #DC0808;
 }
 
 button.primary:disabled {
@@ -35,11 +35,11 @@ button.primary:disabled {
 }
 
 .primaryRedWithHover {
-	color: red;
+	color: #D30707;
 }
 
 .primaryRedWithHover:hover {
-	color: #d82929;
+	color: #DC0808;
 }
 
 @keyframes App-logo-spin {
