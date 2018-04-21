@@ -13,19 +13,19 @@ let spanStyle = {
 export default class Counter extends React.Component{
 
     render(){
-        return(<div style={{height: '100%', width:'100%'}} >
-            <Button size="small" type="button" onClick={this.props.onDecrease}
-                    disabled={this.props.quantity === 1}>
-                <i class="fas fa-minus"></i>
-            </Button>
-            <span style={spanStyle}>{this.props.quantity}</span>
-            <Button style={{marginRight: '1rem'}} size="small" type="button" onClick={this.props.onIncrease}>
-                <i class="fas fa-plus"></i>
-            </Button>
-            <Button size="small" type="button" onClick={this.props.onRemove}>
-                <i class="far fa-trash-alt"></i>
-            </Button>
-        </div>);
+        return(<div style={{height: '100%'}} >
+               <button style={{height: '100%', width: '24%'}} class="primary" onClick={this.props.onDecrease}
+                           disabled={this.props.quantity === 1}>
+                       <i class="fa fa-minus" />
+                     </button>
+                    <span style={spanStyle}>{this.props.quantity}</span>
+                    <button style={{height: '100%', width: '24%', marginRight: '4%'}} class="primary" onClick={this.props.onIncrease}>
+                        <i class="fa fa-plus" />
+                    </button>
+                    <button style={{height: '100%', width: '24%'}} class="primary" onClick={this.props.onRemove}>
+                        <i class="fa fa-trash" />
+                    </button>
+              </div>);
     }
 }
 
