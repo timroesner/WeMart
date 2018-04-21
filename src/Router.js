@@ -16,6 +16,7 @@ import Privacy from './Privacy'
 import Terms from './Terms'
 
 
+
 const Router = () => (
 
   <main>

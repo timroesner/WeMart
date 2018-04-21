@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import TextFileReader from './components/TextFileReader'
 import aboutus from './images/aboutus.jpg'
 import Header from './components/header';
-import Footer from './components/Footer'
+import Footer from './components/Footer';
+
 
 class AboutUs extends Component {
 
@@ -62,6 +63,7 @@ class AboutUs extends Component {
       return (
         <div>
           <Header />
+
 
         <div style={{height: "10em",}}>
           <img src={aboutus} style={image}/>
