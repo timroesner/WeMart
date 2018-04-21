@@ -18,7 +18,9 @@ class Home extends Component {
       savingsItems: [],
       historyItems: [],
       isLoggedIn: false,
-      userid: '',
+      isLoaded: false,
+      orderHistory: new Set(),
+       user: null
     }
   }
 
@@ -95,48 +97,44 @@ class Home extends Component {
   }
 
   getCognitoUser(){
-
     var userPool = new CognitoUserPool(poolData);
     var cognitoUser = userPool.getCurrentUser();
-    console.log(cognitoUser.username);
     if (cognitoUser != null) {
-      this.setState({isLoggedIn: true, userid: cognitoUser.username})
+        cognitoUser.getSession(function(err, session) {
+            if (err) {
+                alert(err);
+                return;
+            }
+        });
+        // Necessary because the closure has no access to this.state
+        let self = this;
+        cognitoUser.getUserAttributes(function(err, result) {
+            if (err) {
+                alert(err);
+                //TODO remove these alerts
+                return;
+            }
+            self.setState({isLoggedIn: true})
+            console.log('[Cognito User Attributes]',result) //Logs user attributes
+
+            result.forEach((attribute) => {
+                if(attribute.Name === 'email'){
+                    self.setState({user: {...self.state.user , email: attribute.Value}}) // set the email
+                    self.setState({user: {...self.state.user , userId: attribute.Value}}) //set the userId
+                }
+            })
+            self.getUserDetails()
+        });
+
     }
-    // if (cognitoUser != null) {
-    //     cognitoUser.getSession(function(err, session) {
-    //         if (err) {
-    //             alert(err);
-    //             return;
-    //         }
-    //     });
-    //     // Necessary because the closure has no access to this.state
-    //     let self = this;
-    //     cognitoUser.getUserAttributes(function(err, result) {
-    //         if (err) {
-    //             alert(err);
-    //             //TODO remove these alerts
-    //             return;
-    //         }
-    //         self.setState({isLoggedIn: true})
-    //         console.log('[Cognito User Attributes]',result) //Logs user attributes
-    //
-    //         result.forEach((attribute) => {
-    //             if(attribute.Name === 'email'){
-    //                 self.setState({user: {...self.state.user , email: attribute.Value}}) // set the email
-    //                 self.setState({user: {...self.state.user , userId: attribute.Value}}) //set the userId
-    //             }
-    //         })
-    //         self.getUserDetails()
-    //     });
-    //
-    // }
     }
-    getUsersOrderHistory(){
+
+    getUserDetails(){
         var userParams = {
             Key: {
-                'userid': {S: this.state.userId}
+                'userid': {S: this.state.user.userId}
             },AttributesToGet: [
-                'history'
+                'history',
                 /* more items */
             ],
             TableName: "user"
@@ -144,50 +142,52 @@ class Home extends Component {
         dynamodb.getItem(userParams, (err, data) => {
             if(err) {console.log(err, err.stack)}
             else{
-                data.Item.history.L.forEach((order)=>{
-                    order.M.items.L.forEach((i)=>{
-                        let item = i
-                        console.log('[item]',item)
-                        var historyItems = []
-                        historyItems.push(item)
-                        this.setState({historyItems: historyItems})
+                data.Item.history.L.forEach((item)=>{
+                    item.M.items.L.forEach((i)=>{
+                        let itemId = i.M.itemid.S
+                        console.log('[itemids]',itemId)
+                        var set = this.state.orderHistory
+                        set.add(itemId)
+                        this.setState({orderHistory: set})
                     })
                 })
+                this.getItemsFromDB()
             }
         })
     }
 
-  // getHistoryItems() {
-  //   this.state.orderHistory.forEach((itemid)=>{
-  //           console.log('itemid',itemid)
-  //           var itemParams  = {
-  //               Key: {'itemid': {S:itemid}},
-  //               TableName: 'item'
-  //           }
-  //
-  //           dynamodb.getItem(itemParams,(err, data)=>{
-  //               if(err) {console.log(err, err.stack)}
-  //               else if(data.Item) {
-  //                   console.log(data);
-  //                   let image = data.Item.image.S;
-  //                   let itemid = data.Item.itemid.S;
-  //                   let name = data.Item.name.S;
-  //                   let price = (data.Item.price.N);
-  //                   let quantity = (data.Item.quantity.S);
-  //                   let sale = (data.Item.sale.N);
-  //
-  //                   let testItem = {
-  //                       key: itemid, itemid: itemid, name: name, image: image, price: price,
-  //                       quantity: quantity, sale: sale, inCart: 0};
-  //                   this.setState({
-  //                       items: [...this.state.items, testItem]
-  //                   });
-  //
-  //                   console.log('test item', testItem)
-  //               }
-  //           })
-  //       })
-  // }
+    getItemsFromDB(){
+          this.state.orderHistory.forEach((itemid)=>{
+              console.log('itemid',itemid)
+              var itemParams  = {
+                  Key: {'itemid': {S:itemid}},
+                  TableName: 'item'
+              }
+
+              dynamodb.getItem(itemParams,(err, data)=>{
+                  if(err) {console.log(err, err.stack)}
+                  else if(data.Item) {
+                      console.log(data);
+                      let image = data.Item.image.S;
+                      let itemid = data.Item.itemid.S;
+                      let name = data.Item.name.S;
+                      let price = (data.Item.price.N);
+                      let quantity = (data.Item.quantity.S);
+                      let sale = (data.Item.sale.N);
+
+                      let testItem = {
+                          key: itemid, itemid: itemid, name: name, image: image, price: price,
+                          quantity: quantity, sale: sale, inCart: 0};
+                      this.setState({
+                          historyItems: [...this.state.historyItems, testItem]
+                      });
+
+                      console.log('test item', testItem)
+                  }
+                  this.setState({isLoaded: true})
+              })
+          })
+      }
 
   componentDidMount = () =>  {
 
@@ -195,7 +195,6 @@ class Home extends Component {
     this.getCognitoUser()
     this.getDepartments()
     this.getSavingsItems()
-    this.getUsersOrderHistory()
 
   }
 
