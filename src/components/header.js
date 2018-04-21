@@ -78,6 +78,7 @@ var AmazonCognitoIdentity = require('amazon-cognito-identity-js');
 
 var zip;
 var cognitoUser;
+var query
 
 class Header extends Component {
 	constructor(props) {
@@ -88,18 +89,16 @@ class Header extends Component {
 				cartClicked: false,
 				isLoggedIn: false
  	 	};
-		var poolData;
 		this.handleSearch = this.handleSearch.bind(this);
 		this.handleSearchChange = this.handleSearchChange.bind(this);
 		this.getCurrentUser()
 		this.checkZip()
+		this.getSearchValue()
 		this.handleSignOut = this.handleSignOut.bind(this);
 }
 
 handleSignOut() {
     if (window.confirm('Are you sure you want to log out?')) {
-      var userPool = new CognitoUserPool(this.poolData);
-      var cognitoUser = userPool.getCurrentUser();
       cognitoUser.signOut();
       console.log(this.props)
     } else {
@@ -109,7 +108,6 @@ handleSignOut() {
 
 componentWillMount() {
   window.addEventListener('resize', this.handleWindowSizeChange);
-	this.getCognitoUser();
 }
 
 // make sure to remove the listener
@@ -232,7 +230,7 @@ renderAccountButton() {
 	} else {
 		return (
 			<button className="primaryRedWithHover" style={astext} onClick={() => this.props.history.push('/login')}>
-				LogIn
+				Log In
 			</button>
 		);
 	}
@@ -261,7 +259,7 @@ renderMobileAccountButton() {
 		);
 	} else {
 		return (
-			<button onClick={() => this.props.history.push('/login')} className="btn btn-danger btn-sm" style={{backgroundColor: 'red'}} >
+			<button onClick={() => this.props.history.push('/login')} className="btn btn-danger btn-sm" style={{backgroundColor: '#D30707'}} >
 				<i class="fas fa-sign-in-alt"></i>
 			</button>
 		);
