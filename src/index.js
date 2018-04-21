@@ -8,9 +8,11 @@ import {StyleRoot} from "radium";
 
 import Router from './Router.js';
 
+const fonts = 'https://s3-us-west-1.amazonaws.com/wemartimages/fonts'
+
 ReactDOM.render(
     <StyleRoot>
-        <SetStyles assetsUrl={'https://instacart.github.io/Snacks/src/fonts'} />
+        <SetStyles assetsUrl={fonts} />
         <BrowserRouter>
             <Router />
         </BrowserRouter>
