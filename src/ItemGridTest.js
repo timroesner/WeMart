@@ -28,7 +28,7 @@ export default class ItemGridTest extends React.Component{
         // Get the table whose name is "item"
         var params = {
             TableName: "item",
-            Limit: 15
+            Limit: 3
         };
 
         // Scan the DB and get the items

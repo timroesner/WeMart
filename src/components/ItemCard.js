@@ -31,8 +31,46 @@ class ItemCard extends React.Component{
     constructor(props) {
         super(props)
 
-        this.state = {inCart: 0}
+        this.state = {
+            quantityInCart: 0,
+            isMouseInside: false
+          }
     }
+
+    componentDidMount = () => {
+        this.updateQuantityFromCart()
+    }
+
+    updateQuantityFromCart = () => {
+        if(localStorage.getItem('cart') != null) {
+          var cartString = localStorage.getItem('cart')
+          var cart = JSON.parse(cartString)
+          if(cart.hasOwnProperty(this.props.itemID)) {
+            var quantityInCart = cart[this.props.itemID].quantityInCart
+            this.setState({
+              quantityInCart: quantityInCart
+            });
+          } else {
+            this.setState({
+              quantityInCart: 0
+            });
+          }
+        } else {
+          this.setState({
+            quantityInCart: 0
+          })
+        }
+     }
+
+     mouseEnter = () => {
+        this.updateQuantityFromCart()
+        this.setState({isMouseInside: true});
+      }
+    
+      mouseLeave = () => {
+        this.updateQuantityFromCart()
+        this.setState({isMouseInside: false});
+      }
 
     // Renders the item price.
     // If sale price is zero then it renders normally, otherwise
@@ -61,38 +99,71 @@ class ItemCard extends React.Component{
         }
     }
 
-    // Renders the items button bar. By default this includes the counter
-    renderButtonBar(){
-        if(this.state.inCart == 0){return(
-            <div style={itemCard_buttonBar}>
-                <Button style={addToCart} snacksStyle="secondary" size="small"
-                        onClick={() => {this.handleAddToCart()}}>Add To Cart</Button>
-            </div>
-        );} else {
-            return(
-                <div style={itemCard_buttonBar}>
-                    <Counter quantity={this.state.inCart}
-                             onIncrease={this.handleIncrease}
-                             onDecrease={this.handleDecrease}
-                             onRemove={this.handleRemove}/>
-                </div>
-            );
-        }
+     // Renders the items button bar. By default this includes the counter
+     renderButtonBar(){
+        return(
+          <div style={itemCard_buttonBar} onMouseEnter={this.mouseEnter} onMouseLeave={this.mouseLeave}>
+            {this.state.isMouseInside && (this.state.quantityInCart != 0) ? <Counter quantity={this.state.quantityInCart}
+                                 onIncrease={this.handleIncrease}
+                                 onDecrease={this.handleDecrease}
+                                 onRemove={this.handleRemove}/> :<Button style={addToCart} snacksStyle="secondary" size="small"
+                           onClick={() => {this.handleAddToCart()}}>Add To Cart</Button>}
+          </div>
+        )
     }
 
     // Increases the quantity of this item in the cart
     handleIncrease = () => {
-        // TODO handle increase
+        var quantityInCart = this.state.quantityInCart
+      if(localStorage.getItem('cart') != null) {
+        var cartString = localStorage.getItem('cart')
+        var cart = JSON.parse(cartString)
+        if(cart.hasOwnProperty(this.props.itemID)) {
+          var item = cart[this.props.itemID]
+          quantityInCart++
+          item.quantityInCart = quantityInCart
+          cart[this.props.itemID] = item
+          localStorage.setItem('cart', JSON.stringify(cart))
+          this.setState({quantityInCart: quantityInCart})
+        }
+      }
     };
 
     // Decreases teh quantity of this item by 1 in the cart.
     handleDecrease = () => {
-        // TODO handle decrease
+        var quantityInCart = this.state.quantityInCart
+        if(localStorage.getItem('cart') != null) {
+          var cartString = localStorage.getItem('cart')
+          var cart = JSON.parse(cartString)
+          if(cart.hasOwnProperty(this.props.itemID)) {
+            var item = cart[this.props.itemID]
+            quantityInCart--
+            item.quantityInCart = quantityInCart
+            cart[this.props.itemID] = item
+            localStorage.setItem('cart', JSON.stringify(cart))
+            console.log('Quantity of item with itemID '+this.props.itemID+ ' is ' + quantityInCart);
+            this.setState({quantityInCart: quantityInCart})
+            console.log("State " + this.state.quantityInCart);
+          }
+        }
     };
 
     // Remove the item from the cart
     handleRemove = () => {
-        this.setState({inCart: 0})
+        var quantityInCart = this.state.quantityInCart
+      if(localStorage.getItem('cart') != null) {
+        var cartString = localStorage.getItem('cart')
+        var cart = JSON.parse(cartString)
+        if(cart.hasOwnProperty(this.props.itemID)) {
+          quantityInCart = 0
+          // cart[this.props.itemID] = quantity
+          delete cart[this.props.itemID]
+          localStorage.setItem('cart', JSON.stringify(cart))
+          console.log('Quantity of item with itemID '+this.props.itemID+ ' is ' + quantityInCart);
+          this.setState({quantityInCart: quantityInCart})
+          console.log("State " + this.state.quantityInCart);
+        }
+      }
     };
 
     // Redirect to the item's product page.
@@ -104,7 +175,32 @@ class ItemCard extends React.Component{
     };
 
     handleAddToCart = () => {
-        this.setState({inCart: 1})
+        var quantityInCart = this.state.quantityInCart
+        var item = {
+          itemID: this.props.itemID,
+          image: this.props.image,
+          name: this.props.name,
+          price: this.props.price,
+          salePrice: this.props.salePrice,
+          weight: this.props.weight
+        }
+        console.log("Prop quantity is " +this.props.quantity);
+        if(localStorage.getItem('cart') != null) {
+          var cartString = localStorage.getItem('cart')
+          console.log(cartString);
+          var cart = JSON.parse(cartString)
+          quantityInCart += 1
+          item.quantityInCart = quantityInCart
+          cart[this.props.itemID] = item
+          localStorage.setItem('cart', JSON.stringify(cart))
+          this.setState({quantityInCart: quantityInCart})
+      } else {
+        var cart = {}
+        item.quantityInCart = ++quantityInCart
+        cart[this.props.itemID] = item
+        localStorage.setItem('cart', JSON.stringify(cart))
+        this.setState({quantityInCart: quantityInCart})
+      }
     };
 
     render(){
