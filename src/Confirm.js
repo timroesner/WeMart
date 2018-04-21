@@ -53,7 +53,7 @@ class Confirm extends Component {
       }
 
       alert("Confirmed user")
-      
+
       if(nestedProp.location.state.password) {
 
         var authenticationData = {
@@ -79,7 +79,7 @@ class Confirm extends Component {
       } else {
         nestedProp.history.push('/login')
       }
-      
+
     });
   }
 
@@ -103,19 +103,19 @@ class Confirm extends Component {
     }
 
     return (
-      <div style={{ 
-        height: window.innerHeight+'px', 
-        overflow: 'auto',  
-        backgroundImage: `url(${background})`, 
-        backgroundRepeat: 'repeat', 
-        backgroundColor: 'red', 
-        display: 'flex', 
-        alignItems: 'center' 
+      <div style={{
+        height: window.innerHeight+'px',
+        overflow: 'auto',
+        backgroundImage: `url(${background})`,
+        backgroundRepeat: 'repeat',
+        backgroundColor: 'red',
+        display: 'flex',
+        alignItems: 'center'
       }} >
 
         <div style={{
           margin: 'auto',
-          backgroundColor: 'white', 
+          backgroundColor: 'white',
           borderRadius: '10px',
           maxWidth: `${0.5*window.innerWidth}px`,
           minWidth: '250px'
@@ -126,7 +126,7 @@ class Confirm extends Component {
             formProps={{}}
           >
             <p style={{ width: '88%',  margin: '6% 6% 0% 6%', textAlign: 'center', fontSize: '12px'}}>
-              We send the confirmation code to {email}. Please check your spam folder. 
+              We send the confirmation code to {email}. Please check your spam folder.
               If you did not receive anyhthing we can <a onClick={this.handleClickOnResend}>resend the code</a>.
             </p>
             <TextField
@@ -137,8 +137,8 @@ class Confirm extends Component {
               required
               style={txtStyle}
             />
-            <button class="primary" type="submit" style={{margin: '6% 15% 3% 15%', width: '70%', height:'2.2em'}} > 
-              Submit 
+            <button class="primary" type="submit" style={{margin: '6% 15% 3% 15%', width: '70%', height:'2.2em'}} >
+              Submit
             </button>
           </Form>
         </div>
