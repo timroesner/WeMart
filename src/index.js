@@ -14,7 +14,7 @@ var stripeKey;
 if(process.env.NODE_ENV === 'development'){
     stripeKey = require('./stripeKey').stripeAPIKey;
 } else{
-    stripeKey = process.env.REACT_APP_STRIPE_PK
+    stripeKey = process.env.REACT_APP_Stripe_Key
 }
 
 ReactDOM.render(

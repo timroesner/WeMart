@@ -87,7 +87,7 @@ class AccountSettings extends React.Component{
                     accessKeyId: process.env.REACT_APP_DB_accessKeyId,
                     secretAccessKey: process.env.REACT_APP_DB_secretAccessKey},
             });
-            stripeKey = process.env.REACT_APP_STRIPE_PK
+            stripeKey = process.env.REACT_APP_Stripe_Key
         }
     }
 
