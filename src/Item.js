@@ -4,6 +4,8 @@ import { withRouter } from "react-router-dom";
 import HorizontalScroll from './components/HorizontalScroll';
 import {DynamoDB} from "aws-sdk/index";
 import Counter from "./components/Counter";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 var AmazonCognitoIdentity = require('amazon-cognito-identity-js');
 
@@ -172,6 +174,7 @@ class Item extends Component {
 				if(err) {
 			   		alert(JSON.stringify(err))
 			   	} else {
+			   		toast("Added to List")
 			   		console.log("Added to Shopping List: "+data)
 				} 
 			});
@@ -412,6 +415,7 @@ class Item extends Component {
 					</button>
 					</div>
 					<HorizontalScroll items={this.state.similarItems} title="Similar Items"/>
+					<ToastContainer hideProgressBar={true} autoClose={2000} />
 			    </div>
 			  </div>
 		);
