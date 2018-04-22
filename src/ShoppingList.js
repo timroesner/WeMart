@@ -188,7 +188,11 @@ class ShoppingList extends Component {
 		if(localStorage.getItem('cart') != null) {
 	        var cartString = localStorage.getItem('cart')
 	        var cart = JSON.parse(cartString)
-	        var quantity = cart[item.itemid]
+
+	        var quantity = 0
+	        if(cart.hasOwnProperty(item.itemid)) {
+	        	quantity = cart[item.itemid]
+	        }
 	        cart[item.itemid] = quantity+1
 	        localStorage.setItem('cart', JSON.stringify(cart))
 	        toast("Added to cart")
@@ -276,14 +280,14 @@ class ShoppingList extends Component {
 		if(item.sale != 0) {
 			return (
 				<p style={{color: '#D30707', fontSize: '1.2em'}}>
-					${item.sale} &nbsp;&nbsp;
-					<span style={{color: '#808080', textDecoration: 'line-through'}}>${item.price}</span>
+					${Number(item.sale).toFixed(2)} &nbsp;&nbsp;
+					<span style={{color: '#808080', textDecoration: 'line-through'}}>${Number(item.price).toFixed(2)}</span>
 				</p>
 			);
 		} else {
 			return (
 				<p style={{ fontSize: '1.2em'}}>
-					${item.price}
+					${Number(item.price).toFixed(2)}
 				</p>
 			);
 		}
