@@ -79,12 +79,12 @@ class ItemCard extends React.Component{
         if(this.props.salePrice !== "0") {
             return (
                 <div style={itemCard_price}>
-                    <span style={itemCard_price_sale}>${this.props.salePrice}</span>
-                    <span style={itemCard_price_crossedOut} >${this.props.price}</span>
+                    <span style={itemCard_price_sale}>${Number(this.props.salePrice).toFixed(2)}</span>
+                    <span style={itemCard_price_crossedOut} >${Number(this.props.price).toFixed(2)}</span>
                 </div>
             );
         } else {
-            return <span style={itemCard_price}>${this.props.price}</span>;
+            return <span style={itemCard_price}>${Number(this.props.price).toFixed(2)}</span>;
         }
     }
 
