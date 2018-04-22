@@ -27,12 +27,3 @@ poolData.js
 
 
 \.idea/
-
-# aws secret keys
-src/db\.js
-
-src/Tester\.js
-
-src/poolData\.js
-
-src/App\.js
