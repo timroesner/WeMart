@@ -23,7 +23,6 @@ class Search extends Component {
 		const queryParams = new URLSearchParams(this.props.location.search);
     	query = queryParams.get('query')
     	let special = queryParams.get('special')
-    	alert(query)
 
     	if(special == "true") {
     		if(query == "savings") {
