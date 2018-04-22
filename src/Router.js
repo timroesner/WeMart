@@ -1,6 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import { BrowserRouter, Link, Route, Switch } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 
 // All pages here
 import SignUp from './SignUp'
@@ -11,6 +10,7 @@ import ZipCodeCheck from './ZipCodeCheck'
 import Home from './Home'
 import Item from './Item'
 import Search from './Search'
+import Departments from './Departments'
 
 const Router = () => (
   <main>
@@ -22,6 +22,7 @@ const Router = () => (
       <Route path='/home' component={Home} />
       <Route path='/item' component={Item} />
       <Route path='/search' component={Search} />
+      <Route path='/departments' component={Departments}/>
       <Route path='/' component={ZipCodeCheck}/>
     </Switch>
   </main>
