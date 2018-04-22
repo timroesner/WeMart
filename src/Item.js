@@ -308,14 +308,14 @@ class Item extends Component {
 		if(this.state.item.sale != 0) {
 			return (
 				<p style={{marginTop: '5%', color: 'red', fontSize: '1.8em'}}>
-					${this.state.item.sale} &nbsp;&nbsp;
-					<span style={{color: '#808080', textDecoration: 'line-through'}}>${this.state.item.price}</span>
+					${Number(this.state.item.sale).toFixed(2)} &nbsp;&nbsp;
+					<span style={{color: '#808080', textDecoration: 'line-through'}}>${Number(this.state.item.price).toFixed(2)}</span>
 				</p>
 			);
 		} else {
 			return (
 				<p style={{marginTop: '5%', fontSize: '1.8em'}}>
-					${this.state.item.price}
+					${Number(this.state.item.price).toFixed(2)}
 				</p>
 			);
 		}
