@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import TextFileReader from './components/TextFileReader'
-import location from './images/SanJose.jpg'
+import location from './images/SanJose2.jpg'
 import Header from './components/header';
 import Footer from './components/Footer'
 
@@ -33,18 +33,27 @@ class Locations extends Component {
     console.log(width);
     const  {width}  = this.state;
     var myTxt = require("./text/Locations.txt");
+
+
     const title={
       width: "100%",
       textAlign: 'center',
       fontFamily: 'calibri',
-      marginTop:"0.5em"
+      marginTop:"0.5em",
     };
 
     const imageHolder={
       overflow: "hidden",
       height: "25em",
       clipPath: 'polygon(0% 0%, 100% 0%, 100% 30%, 50% 100%, 0% 30%)',
-        };
+    };
+
+    const imageHolderSmall={
+      overflow: "hidden",
+      height: "10em",
+      clipPath: 'polygon(0% 0%, 100% 0%, 100% 30%, 50% 100%, 0% 30%)',
+    };
+
 
     const image={
       width: "100%",
@@ -61,12 +70,12 @@ class Locations extends Component {
         <div>
           <Header />
 
-        <div style={{height: "10em",}}>
+        <div style={imageHolderSmall}>
           <img src={location} style={image}/>
         </div>
 
         <div>
-          <h1 style={title}> About Us </h1>
+          <h1 style={title}>Locations</h1>
         </div>
 
         <div style={text}>
@@ -83,7 +92,7 @@ class Locations extends Component {
 
        <div style={imageHolder}>
          <img src={location} style={image}/>
-         </div>
+      </div>
 
        <div>
          <h1 style={title}>Locations</h1>

@@ -12,6 +12,7 @@ class Footer extends Component {
 
     this.state = {
       modalIsOpen: false,
+      width: window.innerWidth,
     };
 
     this.openModal = this.openModal.bind(this);
@@ -34,6 +35,7 @@ class Footer extends Component {
   }
 
   render() {
+    const  {width}  = this.state;
     const customStyles = {
       content : {
         top                   : '50%',
@@ -42,6 +44,7 @@ class Footer extends Component {
         bottom                : 'auto',
         marginRight           : '-50%',
         transform             : 'translate(-50%, -50%)',
+        width                 : '360px',
       },
 
       overlay : {
@@ -60,21 +63,13 @@ class Footer extends Component {
         borderRadius: "4px",
         resize: "none",
         ':focus': {
-          border: "1px solid red",
+          border: "1px solid rgb(211, 7, 7)",
           outline: "0",
         }
       }
     }
 
-    const divStyle={
-      paddingTop: "10px",
-      backgroundColor: 'white',
-      bottom: 0,
-      width: "100%",
-      color: "#D30707", //change to header grey
-      textAlign: 'center',
 
-    };
 
     const Links={
       color: "#D30707",
@@ -86,100 +81,118 @@ class Footer extends Component {
       paddingBottom: "10px",
     }
 
+    const footerStyle={
+      paddingTop: "10px",
+      backgroundColor: '#F5F5F5',
+      width: "100%",
+      color: "#D30707",
+      textAlign: 'center',
+      zIndex: "10",
+    };
 
+    const footerPosition ={
+      position: "relative",
+      bottom: "0",
+      left: "0",
+      width: "100%",
+    };
 
-
-    return (
-      <div style={divStyle}>
-
+      return (
         <div>
-            <Link to={"./AboutUs"} style={Links}>About Us</Link> &nbsp;&nbsp;&nbsp;&nbsp;
+          <div style={footerPosition}>
+            <div style={footerStyle}>
+              <div style={{margin:"auto", textAlign:"center"}}>
+                  <Link to={"./AboutUs"} style={Links}>About Us</Link>&nbsp;&nbsp;&nbsp;&nbsp;
 
-            <a onClick={this.openModal}  style={Links}>Contact Us</a> &nbsp;&nbsp;&nbsp;&nbsp;
+                  <a onClick={this.openModal}  style={Links}>Contact Us</a>&nbsp;&nbsp;&nbsp;&nbsp;
 
-            <Link to={"./Locations"} style={Links}>Locations</Link> &nbsp;&nbsp;&nbsp;&nbsp;
+                  <Link to={"./Locations"} style={Links}>Locations</Link>&nbsp;&nbsp;&nbsp;&nbsp;
 
-            <Link to={"./Privacy"} style={Links}>Privacy</Link> &nbsp;&nbsp;&nbsp;&nbsp;
+                  <Link to={"./Privacy"} style={Links}>Privacy</Link>&nbsp;&nbsp;&nbsp;&nbsp;
 
-            <Link to={"./Terms"} style={Links}>Terms</Link> &nbsp;&nbsp;&nbsp;&nbsp;
-        </div>
+                  <Link to={"./Terms"} style={Links}>Terms</Link>&nbsp;&nbsp;&nbsp;&nbsp;
+              </div>
 
-        <div style={Spacing}>
-          Copyright © 2018 WeMart Inc.
-        </div>
+              <div style={Spacing}>
+                Copyright © 2018 WeMart Inc.
+              </div>
 
-        <Modal
-         isOpen={this.state.modalIsOpen}
-         onAfterOpen={this.afterOpenModal}
-         onRequestClose={this.closeModal}
-         style={customStyles}>
-
-         <h2 ref={subtitle => this.subtitle = subtitle} style={{textAlign: 'center',}}>Email us</h2>
-
-         <div style={{textAlign: 'center',}}>We'll get back to you in 2 working hours</div>
-
-
-           <Form
-             onSubmit={(model) => ( console.log(model) ) }
-             serverErrors={{}}
-             formProps={{}}>
-
-            <div style={{marginBottom: '10px'}}>
-              <TextField
-                name="Subject"
-                type="password"
-                floatingLabelText="Subject"
-                hintText="Enter the subject of your message"
-                validations={{isSubject: null, isLength: {min: 3, max: 50}}}
-                validationErrorText="Please enter a subject"
-                fullWidth
-                required
-              />
             </div>
+          </div>
 
-            <div style={{width: '335px'}}>
+
+
+
+          <Modal
+           isOpen={this.state.modalIsOpen}
+           onAfterOpen={this.afterOpenModal}
+           onRequestClose={this.closeModal}
+           style={customStyles}>
+
+           <h2 ref={subtitle => this.subtitle = subtitle} style={{textAlign: 'center',}}>Email us</h2>
+
+           <div style={{textAlign: 'center',}}>We'll get back to you in 2 working hours</div>
+
+
+             <Form
+               onSubmit={(model) => ( console.log(model) ) }
+               serverErrors={{}}
+               formProps={{}}>
+
               <div style={{marginBottom: '10px'}}>
                 <TextField
-                  name="email"
-                  type="email"
-                  floatingLabelText="Email"
-                  hintText="Enter your email address"
-                  validations={{isEmail: null, isLength: {min: 3, max: 50}}}
-                  validationErrorText="Please enter a valid email"
+                  name="Subject"
+                  floatingLabelText="Subject"
+                  hintText="Enter the subject of your message"
+                  validations={{isSubject: null, isLength: {min: 3, max: 50}}}
+                  validationErrorText="Please enter a subject"
                   fullWidth
                   required
                 />
               </div>
-            </div>
 
-            <div style={{width: '335px'}}>
-              <div style={{marginBottom: '10px'}}>
-                <label>Your Message</label>
-                <textarea
-                  className = "message"
-                  placeholder="Please write your message"
-                  onFocus={ () => console.log("clicked textarea") }
-                  style={textarea.base}
-                  required
-                />
+
+                <div style={{marginBottom: '10px'}}>
+                  <TextField
+                    name="email"
+                    type="email"
+                    floatingLabelText="Email"
+                    hintText="Enter your email address"
+                    validations={{isEmail: null, isLength: {min: 3, max: 50}}}
+                    validationErrorText="Please enter a valid email"
+                    fullWidth
+                    required
+                  />
+                </div>
+
+
+
+                <div style={{marginBottom: '10px'}}>
+                  <label>Your Message</label>
+                  <textarea
+                    className = "message"
+                    placeholder="Please write your message"
+                    onFocus={ () => console.log("clicked textarea") }
+                    style={textarea.base}
+                    required
+                  />
+                </div>
+
+              <div style={{margin:"auto", width:"100%", paddingTop:"10px", display:"flex", justifyContent: "center", marginLeft:"0"}}>
+                <div style={{ margin:"auto", display:"inline-block"}}>
+                  <Button   type="submit" className="primary" style={{height:"30px"}}>Submit</Button>
+                </div>
+                <div style={{ margin:"auto", display:"inline-block"}}>
+                  <Button onClick={this.closeModal} snacksStyle="secondary" style={{height:"30px"}}>Close</Button>
+                </div>
               </div>
-            </div>
 
-            <div style={{margin:"auto", width:"100%", paddingTop:"10px", display:"flex", justifyContent: "center", marginLeft:"0"}}>
-              <div style={{ margin:"auto", display:"inline-block"}}>
-                <Button   type="submit" className="primary" style={{height:"30px"}}>Submit</Button>
-              </div>
-              <div style={{ margin:"auto", display:"inline-block"}}>
-                <Button onClick={this.closeModal} snacksStyle="secondary" style={{height:"30px"}}>Close</Button>
-              </div>
-            </div>
+            </Form>
+         </Modal>
+          </div>
+      );
 
-          </Form>
-       </Modal>
-
-      </div>
-    );
   }
 }
 
-export default withRouter(Footer);
+export default withRouter(Radium(Footer));
