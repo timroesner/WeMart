@@ -168,16 +168,15 @@ class Search extends Component {
 			this.setState({items: this.state.items.sort(function(a, b){
 				let priceA = a.sale != 0 ? a.sale : a.price;
 				let priceB = b.sale != 0 ? b.sale : b.price;
-
-				return((priceA > priceB) ? 1 : ((priceA < priceB) ? -1 : 0))
+				console.log(priceB)
+				return(priceA - priceB)
 			})})
 
 		} else if(option.value == "hightolow") {
 			this.setState({items: this.state.items.sort(function(a, b){
 				let priceA = a.sale != 0 ? a.sale : a.price;
 				let priceB = b.sale != 0 ? b.sale : b.price;
-
-				return((priceA < priceB) ? 1 : ((priceA > priceB) ? -1 : 0))
+				return(priceB - priceA)
 			})})
 
 		} else if(option.value == "name") {
@@ -189,7 +188,7 @@ class Search extends Component {
 		return(
 				<div style={{ margin: '16px'}}>
 				<DropdownMenu onSelect={this.sortBy} triggerElement={<Button snacksStyle="secondary" size="small" >Sorting by&nbsp;
-				   <span class="caret"></span></Button>}>
+				   <span className="caret"></span></Button>}>
 				   <MenuItem label="Price: Low to High" value="lowtohigh" style={{padding: '6px'}} labelStyles={{padding: '0'}} />
 					<MenuItem label="Price: High to Low" value="hightolow" style={{padding: '6px'}} labelStyles={{padding: '0'}} />
 					<MenuItem label="Name" value="name" style={{padding: '6px'}} labelStyles={{padding: '0'}} />
