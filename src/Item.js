@@ -391,7 +391,7 @@ class Item extends Component {
 					height: '500px',
 					float: 'left' 
 				}}>
-			    	<img className="img-responsive" style={{width: '100%', width: '100%'}} src={this.state.item.image} />
+			    	<img className="img-responsive" style={{width: '100%', width: '100%', maxWidth: '500px', margin: '0 auto 0 auto'}} src={this.state.item.image} />
 			    </div>
 			    <div style={{
 			    	margin: '3%',
