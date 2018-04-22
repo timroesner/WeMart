@@ -9,9 +9,9 @@ export default class OrderItems extends React.Component{
 
     renderPrice =(item) =>{
         if(item.sale !== '0'){
-            return item.sale
+            return Number(item.sale).toFixed(2)
         } else {
-            return item.price
+            return Number(item.price).toFixed(2)
         }
     }
 

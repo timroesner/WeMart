@@ -106,7 +106,7 @@ export default class Checkout extends React.Component {
                     else if(data.Item){
                         let image = data.Item.image.S;
                         let itemid = (data.Item.itemid.S);
-                        let price = (data.Item.price.N);
+                        let price = data.Item.price.N;
                         let sale = (data.Item.sale.N);
                         let testItem = {key: itemid, itemId:itemid, image: image, price: price, sale: sale};
 
@@ -122,9 +122,8 @@ export default class Checkout extends React.Component {
                         })
                         //TODO calculate using sale price
                         var itemTotalPrice = sale != 0 ? sale : price;
-                        console.log('[item total price]', Number(itemTotalPrice))
                         this.setState({
-                            subtotal: (this.state.subtotal + Number(itemTotalPrice))
+                            subtotal: this.state.subtotal + Number(itemTotalPrice)
                         })
                     }
                 })
@@ -230,8 +229,7 @@ export default class Checkout extends React.Component {
     calculateTotal(){
         var total = this.state.subtotal + this.state.deliveryFee + this.state.serviceFee;
         total = Math.round(total * 100) / 100;
-        console.log('[calculate total]',total)
-        return total
+        return Number(total).toFixed(2)
     }
 
     handleNewAddress = (model) =>{
@@ -559,7 +557,7 @@ export default class Checkout extends React.Component {
                             <CheckoutPanel title={'Order Total'} icon={'note'}>
                                 <div style={{margin:'1.5rem'}}>
                                     <div style={{overflow:'hidden', lineHeight:'2.rem', display:'flex', alignItems:'center'}}>
-                                        Subtotal <div style={{flexGrow:'1', textAlign:'end'}}>${this.state.subtotal}</div>
+                                        Subtotal <div style={{flexGrow:'1', textAlign:'end'}}>${Number(this.state.subtotal).toFixed(2)}</div>
                                     </div>
                                     <div style={{overflow:'hidden', lineHeight:'2.rem', display:'flex', alignItems:'center'}}>
                                         Delivery <div style={{flexGrow:'1', textAlign:'end'}}>${this.state.deliveryFee}</div>
