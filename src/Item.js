@@ -141,7 +141,7 @@ class Item extends Component {
 			   			itemsInList = data.Item.lists.M.shoppingList.SS
 			   			this.updateList()
 			   		} catch(error) {
-			   			alert("shoppingList not yet created  "+error.message)
+			   			console.log("shoppingList not yet created  "+error.message)
 			   		}
 			   	}
 			}.bind(this));
