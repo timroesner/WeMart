@@ -31,7 +31,6 @@ class Item extends Component {
     	this.initializeDB()
     	this.getCurrentUser()
     	this.getItem()
-    	this.getCart()
 	}
 
 	initializeDB() {
@@ -106,18 +105,6 @@ class Item extends Component {
 		   		this.getSimilarItems()
 		   	}
 		 }.bind(this));
-	}
-
-	getCart() {
-		if(localStorage.getItem('cart') != null) {
-	      var cartString = localStorage.getItem('cart')
-	      var cart = JSON.parse(cartString)
-
-	    	if(cart.hasOwnProperty(this.state.item.itemid)) {
-	        	var quantity = cart[this.state.item.itemid]
-	        	this.setState({quantityInCart: quantity})
-	    	}
-	    }
 	}
 
 	addToList() {
@@ -269,21 +256,26 @@ class Item extends Component {
     };
 
     handleAddToCart = () => {
-      var quantity = this.state.quantityInCart
-      if(localStorage.getItem('cart') != null) {
-        var cartString = localStorage.getItem('cart')
-        console.log(cartString);
-        var cart = JSON.parse(cartString)
-        quantity += 1
-        cart[this.state.item.itemid] = quantity
-        localStorage.setItem('cart', JSON.stringify(cart))
-        this.setState({quantityInCart: quantity})
-    } else {
-      var cart = {}
-      cart[this.state.item.itemid] = ++quantity
-      localStorage.setItem('cart', JSON.stringify(cart))
-      this.setState({quantityInCart: quantity})
-    }
+     	var quantity = this.state.quantityInCart
+    	if(localStorage.getItem('cart') != null) {
+        	var cartString = localStorage.getItem('cart')
+        	console.log(cartString);
+        	var cart = JSON.parse(cartString)
+
+        	if(cart.hasOwnProperty(this.state.item.itemid)) {
+	        	quantity = cart[this.state.item.itemid]
+	    	}
+
+        	quantity += 1
+        	cart[this.state.item.itemid] = quantity
+        	localStorage.setItem('cart', JSON.stringify(cart))
+        	this.setState({quantityInCart: quantity})
+    	} else {
+      		var cart = {}
+      		cart[this.state.item.itemid] = ++quantity
+      		localStorage.setItem('cart', JSON.stringify(cart))
+      		this.setState({quantityInCart: quantity})
+    	}
     };
 
 	getSimilarItems() {
