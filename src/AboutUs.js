@@ -63,42 +63,39 @@ class AboutUs extends Component {
       return (
         <div>
           <Header />
+          <div style={{height: "10em",}}>
+            <img src={aboutus} style={image}/>
+          </div>
 
+          <div>
+            <h1 style={title}> About Us </h1>
+          </div>
 
-        <div style={{height: "10em",}}>
-          <img src={aboutus} style={image}/>
+          <div style={text}>
+            <TextFileReader txt={myTxt}/>
+          </div>
+
+          <Footer />
         </div>
-
-        <div>
-          <h1 style={title}> About Us </h1>
-        </div>
-
-        <div style={text}>
-          <TextFileReader txt={myTxt}/>
-        </div>
-
-        <Footer />
-      </div>
     );
   }else{
      return (
        <div>
          <Header />
-
-       <div style={imageHolder}>
-         <img src={aboutus} style={image}/>
+         <div style={imageHolder}>
+           <img src={aboutus} style={image}/>
          </div>
 
-       <div>
-         <h1 style={title}> About Us </h1>
-       </div>
+         <div>
+           <h1 style={title}> About Us </h1>
+         </div>
 
-       <div style={text}>
-         <TextFileReader txt={myTxt}/>
-       </div>
+         <div style={text}>
+           <TextFileReader txt={myTxt}/>
+         </div>
 
-       <Footer />
-     </div>
+         <Footer />
+       </div>
      );
   }
 }
