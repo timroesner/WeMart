@@ -1,4 +1,5 @@
 import React from 'react';
+import ItemCard from './ItemCard';
 
 const ScrollItem = ({item}) => {
 
@@ -27,18 +28,23 @@ const panelStyle = {
 }
 
     return (
+      // <li style={liStyle}>
+      //     <div className="panel panel-default" style={{panelStyle}}>
+      //       <div style={{backgroundColor: 'white', padding: '2.5px 15px'}} className="panel-heading">
+      //         <h5>{item.name}</h5>
+      //       </div>
+      //       <div className="panel-body" style={{height: '14.1rem', padding: '0'}}>
+      //         <img style={{width: '100%', height: '100%'}} className="img-responsive" src={item.image} />
+      //       </div>
+      //       <div className="panel-footer" style={{footer}}>
+      //         <p><span style={{float: 'left'}}>${item.price}</span><span style={{float: 'right'}}>{item.quantity}</span></p>
+      //       </div>
+      //     </div>
+      // </li>
       <li style={liStyle}>
-          <div className="panel panel-default" style={{panelStyle}}>
-            <div style={{backgroundColor: 'white', padding: '2.5px 15px'}} className="panel-heading">
-              <h5>{item.name}</h5>
-            </div>
-            <div className="panel-body" style={{height: '14.1rem', padding: '0'}}>
-              <img style={{width: '100%', height: '100%'}} className="img-responsive" src={item.image} />
-            </div>
-            <div className="panel-footer" style={{footer}}>
-              <p><span style={{float: 'left'}}>${item.price}</span><span style={{float: 'right'}}>{item.quantity}</span></p>
-            </div>
-          </div>
+        <ItemCard
+            itemID={item.itemid} name={item.name} image={item.image} price={item.price} inCart={item.inCart}
+            weight={item.quantity} salePrice={item.sale} departmentid={item.departmentid} />
       </li>
     );
 };

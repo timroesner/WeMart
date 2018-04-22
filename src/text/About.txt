@@ -1,0 +1,1 @@
+WeMart is an e-commerce website that delivers groceries from Safeway to your home.

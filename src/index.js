@@ -12,7 +12,7 @@ themer.themeConfig = wemartTheme; //IC-Snacks theme for WeMart
 ReactDOM.render(
   <BrowserRouter>
     <Router />
-  </BrowserRouter>, 
+  </BrowserRouter>,
   document.getElementById('root')
 );
 

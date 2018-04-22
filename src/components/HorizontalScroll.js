@@ -6,33 +6,35 @@ const HorizontalScroll = (props) => {
 
   const items = props.items.map(item => {
     return <ScrollItem
-      //onItemSelect={props.onVideoSelect}
-      key={item.itemid}
-      item={item} />
+        item={item}
+          key={item.itemid} />
   });
 
   const scrollWrapper = {
+        backgroundColor: 'white',
         border: '2px solid #efefef',
-        height: '275px',
-        marginTop: '5%',
-        marginBottom: '5%',
+        margin: '30px',
         borderRadius: '5px', /* 5px rounded corners */
         boxShadow: '0 4px 8px 0 rgba(0,0,0,0.2)'
   }
 
   const scrollerTitle = {
-    color: '#E6003D',
-    height: '10%',
-    paddingLeft: '30px',
-    marginLeft:'12px'
+    color: 'red',
+    position: 'relative',
+    height: '20%',
+    backgroundColor: 'white',
+    padding: '0',
+    paddingTop: '30px',
+    borderRadius: '0',
+    paddingLeft : '60px',
+    margin: '0'
   }
 
   const wrapper = {
         position:'relative',
         margin:'0 auto',
         overflow:'hidden',
-      	height:'90%',
-        padding: '5px 0',
+        paddingTop: '20px',
         overflowX: 'scroll',
         overflowY: 'hidden',
         whiteSpace: 'nowrap',
@@ -51,8 +53,8 @@ const HorizontalScroll = (props) => {
 
   return (
     <div style={scrollWrapper}>
-      <div style={scrollerTitle}>
-        <h4>{props.title}</h4>
+      <div className="jumbotron jumbotron-fluid" style={scrollerTitle}>
+        <h4 className="lead">{props.title}</h4>
       </div>
       <div style={wrapper}>
         <ul className="nav" style={list}>
