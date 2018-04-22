@@ -14,10 +14,11 @@ import {CognitoUserPool} from "amazon-cognito-identity-js";
 
 var dynamodb;
 var poolData;
+var stripeKey;
 //STYLES
 const checkout = {margin:' 1rem auto', maxWidth:'71rem',};
 const checkoutForm = {width:'100%',overflow: 'hidden', borderTopLeftRadius:'.6rem',
-    borderTopRightRadius:'.6rem'};
+    borderTopRightRadius:'.6rem', border:'1px solid red'};
 const validEntry = {margin:'1.5rem', fontWeight:'600',border:'1px solid red', padding:'1.5rem',borderRadius:'.6rem'}
 
 export default class Checkout extends React.Component {
@@ -62,11 +63,11 @@ export default class Checkout extends React.Component {
 
     componentDidMount(){
         if (window.Stripe) {
-            this.setState({stripe: window.Stripe(require('./stripeKey').stripeAPIKey)});
+            this.setState({stripe: window.Stripe(stripeKey)});
         } else {
             document.querySelector('#stripe-js').addEventListener('load', () => {
                 // Create Stripe instance once Stripe.js loads
-                this.setState({stripe: window.Stripe(require('./stripeKey').stripeAPIKey)});
+                this.setState({stripe: window.Stripe(stripeKey)});
             });
         }
     }
@@ -75,6 +76,7 @@ export default class Checkout extends React.Component {
         if(process.env.NODE_ENV === 'development'){
             dynamodb = require('./db').db;
             poolData =require('./poolData').poolData;
+            stripeKey = require('./stripeKey').stripeAPIKey
         } else {
             dynamodb = new DynamoDB({
                 region: "us-west-1",
@@ -86,6 +88,7 @@ export default class Checkout extends React.Component {
                 UserPoolId : process.env.REACT_APP_Auth_UserPoolId,
                 ClientId : process.env.REACT_APP_Auth_ClientId
             }
+            stripeKey = process.env.REACT_APP_Stripe_Key
         }
     }
 
