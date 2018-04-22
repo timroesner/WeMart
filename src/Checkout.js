@@ -305,6 +305,8 @@ export default class Checkout extends React.Component {
                 console.log('[Order Placed]',data);
             }
         })
+
+        this.clearCart()
         //TODO send the token to the back end
         // paymentRequest.on('token', function(ev) {
         //     // Send the token to your server to charge it!
@@ -326,6 +328,13 @@ export default class Checkout extends React.Component {
         //             }
         //         });
         // });
+    }
+
+    clearCart = () =>{
+         if(localStorage.getItem('cart') != null) {
+            localStorage.removeItem("myCat");
+            console.log('Local Storage',localStorage)
+        }
     }
 
     hashCode() {
