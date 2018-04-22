@@ -8,6 +8,7 @@ import {wemartTheme} from './wemartTheme';
 
 import Router from './Router.js';
 import {StripeProvider} from "react-stripe-elements";
+
 themer.themeConfig = wemartTheme; //IC-Snacks theme for WeMart
 const stripeKey = require('./stripeKey').stripeAPIKey;
 
