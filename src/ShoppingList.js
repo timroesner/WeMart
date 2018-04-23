@@ -193,12 +193,14 @@ class ShoppingList extends Component {
 	        if(cart.hasOwnProperty(item.itemid)) {
 	        	quantity = cart[item.itemid]
 	        }
-	        cart[item.itemid] = quantity+1
+	        item.quantityInCart = quantity+1
+	        cart[item.itemid] = item
 	        localStorage.setItem('cart', JSON.stringify(cart))
 	        toast("Added to cart")
 	    } else {
 			var cart = {}
-			cart[item.itemid] = 1
+			item.quantityInCart = 1
+	        cart[item.itemid] = item
 			localStorage.setItem('cart', JSON.stringify(cart))
 			toast("Added to cart")
 	    }
