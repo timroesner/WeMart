@@ -5,6 +5,8 @@ import registerServiceWorker from './registerServiceWorker';
 import { BrowserRouter, Route } from 'react-router-dom';
 import {themer} from "ic-snacks";
 import {wemartTheme} from './wemartTheme';
+import {SetStyles} from "ic-snacks";
+import {StyleRoot} from "radium";
 
 import Router from './Router.js';
 import {StripeProvider} from "react-stripe-elements";
@@ -17,12 +19,18 @@ if(process.env.NODE_ENV === 'development'){
     stripeKey = process.env.REACT_APP_Stripe_Key
 }
 
+const fonts = 'https://s3-us-west-1.amazonaws.com/wemartimages/fonts'
+
 ReactDOM.render(
     <StripeProvider apiKey={stripeKey}>
-        <BrowserRouter>
+       <StyleRoot>
+        <SetStyles assetsUrl={fonts} />
+          <BrowserRouter>
             <Router />
-        </BrowserRouter>
+          </BrowserRouter>
+      </StyleRoot>,
     </StripeProvider>,
+
   document.getElementById('root')
 );
 
