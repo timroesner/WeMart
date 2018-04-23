@@ -29,6 +29,11 @@ button.primary:hover {
 	background-color: #DC0808;
 }
 
+button.primary:disabled {
+	background-color: gray;
+	cursor: no-drop;
+}
+
 .primaryRedWithHover {
 	color: #D30707;
 }
