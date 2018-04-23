@@ -8,16 +8,16 @@ import {withRouter} from "react-router-dom";
 
 //STYLES
 //Add To cart button Style
-const addToCart = {width: "100%", display: "inherit"};
+const addToCart = {display: "inherit", margin:'0 0 auto', width:'100%'};
 
 //Item Card Styles
-const itemCard = {background:'#ffffff', height:'35.2rem'};
-const itemCard_cardContents = {cursor:'pointer', margin:'0 5% 1rem 5%',maxWidth:'15.8rem',display:'block'};
+const itemCard = {background:'#ffffff', width:'100%', marginBottom: '5%'};
+const itemCard_cardContents = {cursor:'pointer', margin:'0 5% 1rem 5%',width:'90%',display:'block'};
 const itemCard_badge = {position: 'absolute', top: '.8rem', left: '.8rem', height: '2rem', width:'10rem',
     backgroundRepeat:'no-repeat'};
 const itemCard_badge_onSale = {...itemCard_badge,  backgroundImage: `url(${onSaleBadge})`, backgroundSize: 'auto 2rem'};
 const itemCard_media = {margin: '0 auto'};
-const itemCard_media_image = {margin:'0 auto 01rem auto', display:'block', maxHeight:'15.5rem', maxWidth: '15.5rem', paddingTop:'1rem'};
+const itemCard_media_image = {margin:'0 auto 01rem auto', display:'block', maxWidth: '100%', paddingTop:'1rem'};
 const itemCard_itemInfo = {padding: '.5rem 0 0',fontSize:'1.3rem',};
 const itemCard_itemInfo_weight = {color: '#808080', fontSize:'1.1rem', margin:'0'};
 const itemCard_fullItemName = {marginTop:'0', paddingBottom:'0',color:'#393939', fontWeight:'400', height:'3.6rem', overflow: 'hidden'};
@@ -26,52 +26,52 @@ const itemCard_price_sale = {color: '#FF0000', fontSize:'1.8rem',fontWeight:'600
 const itemCard_price_crossedOut = {textDecoration:'line-through',color:'#808080'};
 const itemCard_buttonBar = {margin:'4% 5% 0% 5%'};
 
-
 class ItemCard extends React.Component{
 
-  constructor(props) {
-    super(props)
+    constructor(props) {
+        super(props)
 
-    this.state = {
-      quantityInCart: 0,
-      isMouseInside: false
+        this.state = {
+            quantityInCart: 0,
+            isMouseInside: false
+          }
     }
-  }
 
-  componentDidMount = () => {
-    this.updateQuantityFromCart()
-  }
+    componentDidMount = () => {
+        this.updateQuantityFromCart()
+    }
 
-  updateQuantityFromCart = () => {
-    if(localStorage.getItem('cart') != null) {
-      var cartString = localStorage.getItem('cart')
-      var cart = JSON.parse(cartString)
-      if(cart.hasOwnProperty(this.props.itemID)) {
-        var quantityInCart = cart[this.props.itemID].quantityInCart
-        this.setState({
-          quantityInCart: quantityInCart
-        });
-      } else {
-        this.setState({
-          quantityInCart: 0
-        });
+    updateQuantityFromCart = () => {
+        if(localStorage.getItem('cart') != null) {
+          var cartString = localStorage.getItem('cart')
+          var cart = JSON.parse(cartString)
+          if(cart.hasOwnProperty(this.props.itemID)) {
+            var quantityInCart = cart[this.props.itemID].quantityInCart
+            this.setState({
+              quantityInCart: quantityInCart
+            });
+          } else {
+            this.setState({
+              quantityInCart: 0
+            });
+          }
+        } else {
+          this.setState({
+            quantityInCart: 0
+          })
+        }
+     }
+
+     mouseEnter = () => {
+        this.updateQuantityFromCart()
+        this.setState({isMouseInside: true});
       }
-    } else {
-      this.setState({
-        quantityInCart: 0
-      })
-    }
-  }
+    
+      mouseLeave = () => {
+        this.updateQuantityFromCart()
+        this.setState({isMouseInside: false});
+      }
 
-  mouseEnter = () => {
-    this.updateQuantityFromCart()
-    this.setState({isMouseInside: true});
-  }
-
-  mouseLeave = () => {
-    this.updateQuantityFromCart()
-    this.setState({isMouseInside: false});
-  }
     // Renders the item price.
     // If sale price is zero then it renders normally, otherwise
     // it renders the sale price in red and the original MSRP with a strike-through.
@@ -79,12 +79,12 @@ class ItemCard extends React.Component{
         if(this.props.salePrice !== "0") {
             return (
                 <div style={itemCard_price}>
-                    <span style={itemCard_price_sale}>${this.props.salePrice}</span>
-                    <span style={itemCard_price_crossedOut} >${this.props.price}</span>
+                    <span style={itemCard_price_sale}>${Number(this.props.salePrice).toFixed(2)}</span>
+                    <span style={itemCard_price_crossedOut} >${Number(this.props.price).toFixed(2)}</span>
                 </div>
             );
         } else {
-            return <span style={itemCard_price}>${this.props.price}</span>;
+            return <span style={itemCard_price}>${Number(this.props.price).toFixed(2)}</span>;
         }
     }
 
@@ -99,8 +99,8 @@ class ItemCard extends React.Component{
         }
     }
 
-    // Renders the items button bar. By default this includes the counter
-    renderButtonBar(){
+     // Renders the items button bar. By default this includes the counter
+     renderButtonBar(){
         return(
           <div style={itemCard_buttonBar} onMouseEnter={this.mouseEnter} onMouseLeave={this.mouseLeave}>
             {this.state.isMouseInside && (this.state.quantityInCart != 0) ? <Counter quantity={this.state.quantityInCart}
@@ -131,21 +131,21 @@ class ItemCard extends React.Component{
 
     // Decreases teh quantity of this item by 1 in the cart.
     handleDecrease = () => {
-      var quantityInCart = this.state.quantityInCart
-      if(localStorage.getItem('cart') != null) {
-        var cartString = localStorage.getItem('cart')
-        var cart = JSON.parse(cartString)
-        if(cart.hasOwnProperty(this.props.itemID)) {
-          var item = cart[this.props.itemID]
-          quantityInCart--
-          item.quantityInCart = quantityInCart
-          cart[this.props.itemID] = item
-          localStorage.setItem('cart', JSON.stringify(cart))
-          console.log('Quantity of item with itemID '+this.props.itemID+ ' is ' + quantityInCart);
-          this.setState({quantityInCart: quantityInCart})
-          console.log("State " + this.state.quantityInCart);
+        var quantityInCart = this.state.quantityInCart
+        if(localStorage.getItem('cart') != null) {
+          var cartString = localStorage.getItem('cart')
+          var cart = JSON.parse(cartString)
+          if(cart.hasOwnProperty(this.props.itemID)) {
+            var item = cart[this.props.itemID]
+            quantityInCart--
+            item.quantityInCart = quantityInCart
+            cart[this.props.itemID] = item
+            localStorage.setItem('cart', JSON.stringify(cart))
+            console.log('Quantity of item with itemID '+this.props.itemID+ ' is ' + quantityInCart);
+            this.setState({quantityInCart: quantityInCart})
+            console.log("State " + this.state.quantityInCart);
+          }
         }
-      }
     };
 
     // Remove the item from the cart
@@ -175,32 +175,32 @@ class ItemCard extends React.Component{
     };
 
     handleAddToCart = () => {
-      var quantityInCart = this.state.quantityInCart
-      var item = {
-        itemID: this.props.itemID,
-        image: this.props.image,
-        name: this.props.name,
-        price: this.props.price,
-        salePrice: this.props.salePrice,
-        weight: this.props.weight
-      }
-      console.log("Prop quantity is " +this.props.quantity);
-      if(localStorage.getItem('cart') != null) {
-        var cartString = localStorage.getItem('cart')
-        console.log(cartString);
-        var cart = JSON.parse(cartString)
-        quantityInCart += 1
-        item.quantityInCart = quantityInCart
+        var quantityInCart = this.state.quantityInCart
+        var item = {
+          itemID: this.props.itemID,
+          image: this.props.image,
+          name: this.props.name,
+          price: this.props.price,
+          salePrice: this.props.salePrice,
+          weight: this.props.weight
+        }
+        console.log("Prop quantity is " +this.props.quantity);
+        if(localStorage.getItem('cart') != null) {
+          var cartString = localStorage.getItem('cart')
+          console.log(cartString);
+          var cart = JSON.parse(cartString)
+          quantityInCart += 1
+          item.quantityInCart = quantityInCart
+          cart[this.props.itemID] = item
+          localStorage.setItem('cart', JSON.stringify(cart))
+          this.setState({quantityInCart: quantityInCart})
+      } else {
+        var cart = {}
+        item.quantityInCart = ++quantityInCart
         cart[this.props.itemID] = item
         localStorage.setItem('cart', JSON.stringify(cart))
         this.setState({quantityInCart: quantityInCart})
-    } else {
-      var cart = {}
-      item.quantityInCart = ++quantityInCart
-      cart[this.props.itemID] = item
-      localStorage.setItem('cart', JSON.stringify(cart))
-      this.setState({quantityInCart: quantityInCart})
-    }
+      }
     };
 
     render(){
