@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { Button, Form, TextField } from 'ic-snacks';
+import { Form, TextField } from 'ic-snacks';
 import background from './images/background.svg';
 import './App.css';
-import registerServiceWorker from './registerServiceWorker';
 import { withRouter } from "react-router-dom";
+import wemartLogo from './images/logo.png'
 
-var AmazonCognitoIdentity = require('amazon-cognito-identity-js');
-var AWS = require('aws-sdk')
+const logo = {maxWidth:'20rem'}
+const greeting = {margin:'2.5rem auto', textAlign:'center'}
 
 class ZipCodeCheck extends Component {
   state = {
@@ -23,8 +23,7 @@ class ZipCodeCheck extends Component {
 
   render() {
     const txtStyle = {
-      margin: '6%',
-      marginBottom: '0%',
+        margin: '6% 6% 0% 6%',
       width: '88%'
     }
 
@@ -46,7 +45,11 @@ class ZipCodeCheck extends Component {
           maxWidth: `${0.5*window.innerWidth}px`,
           minWidth: '250px'
         }} >
-
+            <div style={greeting}>
+            <img src={wemartLogo} style={logo}/>
+            <h3 style={{margin:'1rem 2rem'}}>Groceries delivered to your door</h3>
+                <h5>Enter your zip code below to continue</h5>
+            </div>
           <Form
             onSubmit={this.handleFormSubmit}
             serverErrors={this.state.serverErrors}
