@@ -42,7 +42,7 @@ const pillsLi = {
 
 const searchBtn = {
 	position: 'absolute',
-	backgroundColor: 'red',
+	backgroundColor: '#D30707',
 	top: '0',
 	right: '0',
 	zIndex: '2',
@@ -69,64 +69,45 @@ const mobileNavItems = {
 }
 
 const links = {
-	color: 'red',
+	color: '#D30707',
 		fontSize: '1.25em',
 	textAlign: 'center'
 }
 
-class Header extends Component {
+var AmazonCognitoIdentity = require('amazon-cognito-identity-js');
 
-	constructor() {
-  		super();
+var zip;
+var cognitoUser;
+var query
+
+class Header extends Component {
+	constructor(props) {
+  		super(props);
   		this.state = {
    			width: window.innerWidth,
 				value: '',
 				cartClicked: false,
 				isLoggedIn: false
  	 	};
-		var poolData;
 		this.handleSearch = this.handleSearch.bind(this);
 		this.handleSearchChange = this.handleSearchChange.bind(this);
+		this.getCurrentUser()
+		this.checkZip()
+		this.getSearchValue()
 		this.handleSignOut = this.handleSignOut.bind(this);
-	}
+}
 
-	handleSignOut(){
+handleSignOut() {
     if (window.confirm('Are you sure you want to log out?')) {
-      var userPool = new CognitoUserPool(this.poolData);
-      var cognitoUser = userPool.getCurrentUser();
       cognitoUser.signOut();
       console.log(this.props)
     } else {
       console.log('cancels')
-      }
     }
-
-	getCognitoUser = () => {
-
-		if(process.env.NODE_ENV === 'development'){
-    	this.poolData =require('../poolData').poolData;
-      } else {
-        	this.poolData = {
-            UserPoolId : process.env.REACT_APP_Auth_UserPoolId,
-            ClientId : process.env.REACT_APP_Auth_ClientId
-          }
-      }
-
-      var userPool = new CognitoUserPool(this.poolData);
-      var cognitoUser = userPool.getCurrentUser();
-
-      //If there is a cognito user then set isLoggedIn
-      if (cognitoUser != null) {
-          this.setState({isLoggedIn: true})
-					console.log(cognitoUser);
-      } else {
-				this.setState({isLoggedIn: false})
-			}
-    }
+}
 
 componentWillMount() {
   window.addEventListener('resize', this.handleWindowSizeChange);
-	this.getCognitoUser();
 }
 
 // make sure to remove the listener
@@ -139,15 +120,59 @@ handleWindowSizeChange = () => {
   this.setState({ width: window.innerWidth });
 };
 
+getSearchValue() {
+	if(this.props.location !== undefined) {
+		const queryParams = new URLSearchParams(this.props.location.search);
+		let special = queryParams.get('special')
+		if(special != "true") {
+			query = queryParams.get('query')
+		}
+	}
+}
+
+checkZip() {
+	if(localStorage.getItem('zip') == null) {
+		if(cognitoUser === null) {
+			this.props.history.push('/')
+		} else {
+			localStorage.setItem('zip', '95112')
+			zip = '95112'
+		}
+	} else {
+		zip = localStorage.getItem('zip')
+	}
+}
+
+getCurrentUser() {
+	// Get poolData
+	var poolData;
+	if(process.env.NODE_ENV === 'development'){
+		poolData = require('../poolData').poolData;
+	} else {
+		var poolData = {
+	        UserPoolId : process.env.REACT_APP_Auth_UserPoolId,
+	        ClientId : process.env.REACT_APP_Auth_ClientId
+	      };
+	}
+	var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+
+	cognitoUser = userPool.getCurrentUser();
+}
+
 handleSearch(event) {
 	//search logic
-	console.log("search for "+ this.state.value);
 	event.preventDefault();
+	this.props.history.push({
+		pathname: 'search',
+		search: '?query='+query
+	})
+  window.location.reload()
 };
 
 handleSearchChange(event) {
-    this.setState({value: event.target.value});
-  }
+    query = event.target.value
+	  this.setState({value: event.target.value})
+ }
 
 showCart = () => {
 	//when cart button is clicked
@@ -164,11 +189,6 @@ closeCart = (cartClicked) => {
 	body.classList.remove('overlay');
 }
 
-handleAccountClick = () => {
-	//when account button is clicked
-	console.log("account button clicked");
-}
-
 handleDepartments = () => {
 	this.props.history.push('/departments')
 }
@@ -177,8 +197,17 @@ handleZipClick = () => {
 	this.props.history.push('/')
 }
 
+handleSavingsClick = () => {
+	this.props.history.push({
+		pathname: 'search',
+		search: '?query=savings&special=true'
+	})
+  window.location.reload()
+}
+	
+    
 renderAccountButton() {
-	if(this.state.isLoggedIn) {
+	if(cognitoUser !== null) {
 		return (
 			<div className="dropdown">
   			<button className="dropdown-toggle primaryRedWithHover" style={astext} type="button" id="dropdownMenuHeader" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
@@ -201,14 +230,14 @@ renderAccountButton() {
 	} else {
 		return (
 			<button className="primaryRedWithHover" style={astext} onClick={() => this.props.history.push('/login')}>
-				LogIn
+				Log In
 			</button>
 		);
 	}
 }
 
 renderMobileAccountButton() {
-	if(this.state.isLoggedIn) {
+	if(cognitoUser !== null) {
 		return (
 			<div className="dropdown">
 				<button className="btn btn-danger btn-sm dropdown-toggle" type="button" id="dropdownMenuHeader" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style={{backgroundColor: 'red'}}>
@@ -230,17 +259,19 @@ renderMobileAccountButton() {
 		);
 	} else {
 		return (
-			<button onClick={() => this.props.history.push('/login')} className="btn btn-danger btn-sm" style={{backgroundColor: 'red'}} >
+			<button onClick={() => this.props.history.push('/login')} className="btn btn-danger btn-sm" style={{backgroundColor: '#D30707'}} >
 				<i class="fas fa-sign-in-alt"></i>
 			</button>
 		);
 	}
 }
 
-
   render() {
+    
 	const  {width}  = this.state;
-	const isMobile = width <= 500;
+  
+  // At this value the header would be unusable anyway so better to switch to the mobile header
+	const isMobile = width <= 767;
   if (isMobile) {
     return (
 			<div style={{paddingBottom: '200px'}}>
@@ -253,11 +284,13 @@ renderMobileAccountButton() {
 							</div>
 
 							<div className="col-xs-8" style={{textAlign: 'center', color: '#E6003D'}}>
-								<img src={logo} style={{height: '35px', backgroundColor: 'clear'}} />
+								<a href="/home">
+									<img src={logo} style={{height: '35px', backgroundColor: 'clear'}} />
+								</a>
 							</div>
 
 							<div style={{paddingRight: '0'}} className="col-xs-2">
-								<button onClick={this.showCart} style={{float: 'right', backgroundColor: 'red'}} className="btn btn-danger btn-sm">
+								<button onClick={this.showCart} style={{float: 'right', backgroundColor: '#D30707'}} className="btn btn-danger btn-sm">
 									<i className="fas fa-shopping-cart" />
 								</button>
 							</div>
@@ -280,13 +313,13 @@ renderMobileAccountButton() {
 							<div className="container">
 								<ul className="nav nav-tabs" style={mobileNav}>
 										<li style={mobileNavItems}><a style={links} href="#">
-											<button style={astext}><i className="fas fa-th-large" /><br />
+											<button style={astext} onClick={this.handleDepartments} ><i className="fas fa-th-large" /><br />
 												<span>Aisles</span>
 											</button></a>
 										</li>
 
 										<li style={mobileNavItems}> <a style={links} href="#">
-											<button style={astext}><i className="fas fa-tag" /><br />
+											<button style={astext} onClick={this.handleSavingsClick} ><i className="fas fa-tag" /><br />
 												<span>Savings</span>
 											</button></a>
 										</li>
@@ -322,7 +355,7 @@ renderMobileAccountButton() {
 
 		<div className="container-fluid" style={center}>
 			<div className="navbar-header" style={{width: '15%', paddingTop: '3px'}}>
-    			<a className="navbar-brand" style={center} href="/">
+    			<a className="navbar-brand" style={center} href="/home">
     				<img src={logo} style={{height: '35px', backgroundColor: 'clear'}} />
     			</a>
 			</div>
@@ -338,9 +371,8 @@ renderMobileAccountButton() {
 
 		    	<li style={{width: '36%'}}>
 		      		<button className="primaryRedWithHover" style={astext} onClick={this.handleZipClick}>
-		      			<i className="fas fa-map-marker" style={{marginRight: '5px'}} />
-		      			<span style={{ marginRight: '4px' }} />
-		      			95112
+		      			<i className="fas fa-map-marker" /> &nbsp;
+		      			{zip}
 		      		</button>
 		    	</li>
 
@@ -359,9 +391,9 @@ renderMobileAccountButton() {
 		    </ul>
 		</div>
 	    <ul id="pills" className="nav nav-pills" style={center}>
-			<li role="navigation" style={pillsLi}><button className="primaryRedWithHover" style={astext} onClick={this.handleDepartments} >Departments</button></li>
-			<li role="navigation" style={pillsLi}><button className="primaryRedWithHover" style={astext}>Savings</button></li>
-			<li role="navigation" style={pillsLi}><button className="primaryRedWithHover" style={astext}>History</button></li>
+        <li role="navigation" style={pillsLi}><button className="primaryRedWithHover" style={astext} onClick={this.handleDepartments} >Departments</button></li>
+        <li role="navigation" style={pillsLi}><button className="primaryRedWithHover" style={astext} onClick={this.handleSavingsClick} >Savings</button></li>
+        <li role="navigation" style={pillsLi}><button className="primaryRedWithHover" style={astext}>History</button></li>
 	    </ul>
 	</nav>
 		<div>
