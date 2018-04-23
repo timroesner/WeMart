@@ -10,6 +10,11 @@ import ZipCodeCheck from './ZipCodeCheck'
 import Home from './Home'
 import Item from './Item'
 import Departments from './Departments'
+import AboutUs from './AboutUs'
+import Locations from './Locations'
+import Privacy from './Privacy'
+import Terms from './Terms'
+import Departments from './Departments'
 
 const Router = () => (
   <main>
@@ -21,6 +26,12 @@ const Router = () => (
       <Route path='/home' component={Home} />
       <Route path='/item' component={Item} />
       <Route path='/departments' component={Departments}/>
+
+      <Route path='/aboutus' component={AboutUs} />
+      <Route path='/locations' component={Locations} />
+      <Route path='/privacy' component={Privacy} />
+      <Route path='/terms' component={Terms} />
+
       <Route path='/' component={ZipCodeCheck}/>
     </Switch>
   </main>
