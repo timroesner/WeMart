@@ -209,30 +209,29 @@ class Item extends Component {
       if(localStorage.getItem('cart') != null) {
         var cartString = localStorage.getItem('cart')
         var cart = JSON.parse(cartString)
+
         if(cart.hasOwnProperty(this.state.item.itemid)) {
-          quantity++
-          cart[this.state.item.itemid] = quantity
+          item.quantityInCart = quantity + 1
+          cart[this.state.item.itemid] = item
           localStorage.setItem('cart', JSON.stringify(cart))
-          console.log('Quantity of item with itemID '+this.state.item.itemid+ ' is ' + quantity);
           this.setState({quantityInCart: quantity})
-          console.log("State " + this.state.quantityInCart);
         }
       }
     };
 
-    // Decreases teh quantity of this item by 1 in the cart.
+    // Decreases the quantity of this item by 1 in the cart.
     handleDecrease = () => {
       var quantity = this.state.quantityInCart
+
       if(localStorage.getItem('cart') != null) {
         var cartString = localStorage.getItem('cart')
         var cart = JSON.parse(cartString)
+
         if(cart.hasOwnProperty(this.state.item.itemid)) {
-          quantity--
-          cart[this.state.item.itemid] = quantity
+          item.quantityInCart = quantity - 1
+          cart[this.state.item.itemid] = item
           localStorage.setItem('cart', JSON.stringify(cart))
-          console.log('Quantity of item with itemID '+this.state.item.itemid+ ' is ' + quantity);
           this.setState({quantityInCart: quantity})
-          console.log("State " + this.state.quantityInCart);
         }
       }
     };
@@ -243,20 +242,19 @@ class Item extends Component {
       if(localStorage.getItem('cart') != null) {
         var cartString = localStorage.getItem('cart')
         var cart = JSON.parse(cartString)
+
         if(cart.hasOwnProperty(this.state.item.itemid)) {
           quantity = 0
-          // cart[this.props.itemID] = quantity
           delete cart[this.state.item.itemid]
           localStorage.setItem('cart', JSON.stringify(cart))
-          console.log('Quantity of item with itemID '+this.state.item.itemid+ ' is ' + quantity);
           this.setState({quantityInCart: quantity})
-          console.log("State " + this.state.quantityInCart);
         }
       }
     };
 
     handleAddToCart = () => {
      	var quantity = this.state.quantityInCart
+
     	if(localStorage.getItem('cart') != null) {
         	var cartString = localStorage.getItem('cart')
         	console.log(cartString);
@@ -266,13 +264,14 @@ class Item extends Component {
 	        	quantity = cart[this.state.item.itemid]
 	    	}
 
-        	quantity += 1
-        	cart[this.state.item.itemid] = quantity
+        	item.quantityInCart = quantity + 1
+        	cart[this.state.item.itemid] = item
         	localStorage.setItem('cart', JSON.stringify(cart))
         	this.setState({quantityInCart: quantity})
     	} else {
       		var cart = {}
-      		cart[this.state.item.itemid] = ++quantity
+      		item.quantityInCart = ++quantity
+      		cart[this.state.item.itemid] = item
       		localStorage.setItem('cart', JSON.stringify(cart))
       		this.setState({quantityInCart: quantity})
     	}
