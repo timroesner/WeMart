@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import {Button, Icon} from "ic-snacks";
 
 let spanStyle = {
-    width: "3rem",
-    fontSize: "1.7rem",
+    width: "24%",
+    fontSize: "1.4em",
     alignItems: "center",
     justifyContent: "center",
     display: "inline-flex"
@@ -13,19 +13,19 @@ let spanStyle = {
 export default class Counter extends React.Component{
 
     render(){
-        return(<div>
-            <Button size="small" type="button" onClick={this.props.onDecrease}
-                    disabled={this.props.quantity === 1}>
-                <Icon name="minus"/>
-            </Button>
-            <span style={spanStyle}>{this.props.quantity}</span>
-            <Button style={{marginRight: '1rem'}} size="small" type="button" onClick={this.props.onIncrease}>
-                <Icon name="plus"/>
-            </Button>
-            <Button size="small" type="button" onClick={this.props.onRemove}>
-                <Icon name="trash"/>
-            </Button>
-        </div>);
+        return(<div style={{height: '100%'}} >
+               <button style={{height: '100%', width: '24%'}} class="primary" onClick={this.props.onDecrease}
+                           disabled={this.props.quantity === 1}>
+                       <i class="fa fa-minus" />
+                     </button>
+                    <span style={spanStyle}>{this.props.quantity}</span>
+                    <button style={{height: '100%', width: '24%', marginRight: '4%'}} class="primary" onClick={this.props.onIncrease}>
+                        <i class="fa fa-plus" />
+                    </button>
+                    <button style={{height: '100%', width: '24%'}} class="primary" onClick={this.props.onRemove}>
+                        <i class="fa fa-trash" />
+                    </button>
+              </div>);
     }
 }
 

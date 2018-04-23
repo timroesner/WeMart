@@ -10,7 +10,6 @@ const gridContainer = {
     margin: '2%',
     width: '95%',
 }
-
 const itemGrid_itemCard = {display:'inline-block', position:'relative', verticalAlign:'top', margin: '3%'};
 
 export default class ItemsGrid extends React.Component{
@@ -23,7 +22,6 @@ export default class ItemsGrid extends React.Component{
     }
 
     renderChildren() {
-        if(this.props.items){
             return(this.props.items.map((item)=>
                 <li style={itemGrid_itemCard}>
                     <ItemCard
@@ -37,21 +35,6 @@ export default class ItemsGrid extends React.Component{
                     />
                 </li>
             ))
-        } else {
-            const { children, onSelect } = this.props;
-            const { currentTabIndex } = this.state;
-            let index = 0;
-
-            return React.Children.map(children, (child) => {
-                const component = React.cloneElement(child, {
-                    index: index,
-                    focus: currentTabIndex === index,
-                    onClick: onSelect,
-                });
-                index += 1;
-                return <li style={itemGrid_itemCard}>{component}</li>;
-            })
-        }
     }
 
     render(){

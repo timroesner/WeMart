@@ -3,9 +3,11 @@ import { Form, TextField } from 'ic-snacks';
 import background from './images/background.svg';
 import './App.css';
 import { withRouter } from "react-router-dom";
+import wemartLogo from './images/logo.png'
 
+const logo = {maxWidth:'20rem'}
+const greeting = {margin:'2.5rem auto', textAlign:'center'}
 var AmazonCognitoIdentity = require('amazon-cognito-identity-js');
-var AWS = require('aws-sdk')
 
 class LogIn extends Component {
   state = {
@@ -24,7 +26,7 @@ class LogIn extends Component {
     if(process.env.NODE_ENV === 'development'){
         poolData = require('./poolData').poolData;
     } else {
-      var poolData = {
+       poolData = {
         UserPoolId : process.env.REACT_APP_Auth_UserPoolId,
         ClientId : process.env.REACT_APP_Auth_ClientId
       };
@@ -78,7 +80,7 @@ class LogIn extends Component {
     if(process.env.NODE_ENV === 'development'){
         poolData = require('./poolData').poolData;
     } else {
-      var poolData = {
+      poolData = {
         UserPoolId : process.env.REACT_APP_Auth_UserPoolId,
         ClientId : process.env.REACT_APP_Auth_ClientId
       };
@@ -114,8 +116,7 @@ class LogIn extends Component {
 
   render() {
     const txtStyle = {
-      margin: '6%',
-      marginBottom: '0%',
+        margin: '6% 6% 0% 6%',
       width: '88%'
     }
 
@@ -139,7 +140,11 @@ class LogIn extends Component {
           maxWidth: `${0.5*window.innerWidth}px`,
           minWidth: '250px'
         }} >
-
+            <div style={greeting}>
+                <img src={wemartLogo} style={logo} alt={'logo'}/>
+                <h3 style={{margin:'1rem 2rem'}}>Welcome Back</h3>
+                <h5>Log in with your email address and password</h5>
+            </div>
           <Form
             onSubmit={this.handleFormSubmit}
             serverErrors={this.state.serverErrors}
@@ -176,7 +181,7 @@ class LogIn extends Component {
               color: '#696969',
             }}>
             Don't have an Account? <a href="/signup">Sign Up</a> <br /><br />
-            Forgot your password? <a href="#" onClick={this.handlePasswordReset}>Reset It</a>
+            Forgot your password? <a onClick={this.handlePasswordReset}>Reset It</a>
             </p>
         </div>
       </div>
