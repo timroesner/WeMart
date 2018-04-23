@@ -14,7 +14,6 @@ import AboutUs from './AboutUs'
 import Locations from './Locations'
 import Privacy from './Privacy'
 import Terms from './Terms'
-import Departments from './Departments'
 
 const Router = () => (
   <main>

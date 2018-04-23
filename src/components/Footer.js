@@ -14,7 +14,7 @@ class Footer extends Component {
      this.handleCloseContactUsModal = this.handleCloseContactUsModal.bind(this);
 
     this.state = {
-      contactUsModal: true,
+      contactUsModal: false,
     };
 
 
