@@ -49,6 +49,12 @@ class AboutUs extends Component {
       clipPath: 'polygon(0% 0%, 100% 0%, 100% 30%, 50% 100%, 0% 30%)',
         };
 
+        const imageHolderSmall={
+          overflow: "hidden",
+          height: "10em",
+          clipPath: 'polygon(0% 0%, 100% 0%, 100% 30%, 50% 100%, 0% 30%)',
+            };
+
     const image={
       width: "100%",
     };
@@ -63,7 +69,7 @@ class AboutUs extends Component {
       return (
         <div>
           <Header />
-          <div style={{height: "10em",}}>
+          <div style={imageHolderSmall}>
             <img src={aboutus} style={image}/>
           </div>
 
