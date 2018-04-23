@@ -9,7 +9,7 @@ class Departments extends Component {
 		super(props)
 
 		this.state = { departments: [] }
-		
+
 		this.getDepartments()
 	}
 
@@ -91,9 +91,10 @@ class Departments extends Component {
 			<Header />
 
 			<div style={gridContainer}>
-			  {this.renderDepartments(this.state.departments)} 
+			  {this.renderDepartments(this.state.departments)}
 			</div>
 
+			<Footer />
 		</div>
 		)
 	}
