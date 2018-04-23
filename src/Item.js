@@ -211,10 +211,11 @@ class Item extends Component {
         var cart = JSON.parse(cartString)
 
         if(cart.hasOwnProperty(this.state.item.itemid)) {
-          item.quantityInCart = quantity + 1
-          cart[this.state.item.itemid] = item
-          localStorage.setItem('cart', JSON.stringify(cart))
-          this.setState({quantityInCart: quantity})
+        	var item = this.state.item
+          	item.quantityInCart = quantity + 1
+          	cart[this.state.item.itemid] = item
+          	localStorage.setItem('cart', JSON.stringify(cart))
+          	this.setState({quantityInCart: quantity + 1})
         }
       }
     };
@@ -228,26 +229,25 @@ class Item extends Component {
         var cart = JSON.parse(cartString)
 
         if(cart.hasOwnProperty(this.state.item.itemid)) {
+          var item = this.state.item
           item.quantityInCart = quantity - 1
           cart[this.state.item.itemid] = item
           localStorage.setItem('cart', JSON.stringify(cart))
-          this.setState({quantityInCart: quantity})
+          this.setState({quantityInCart: quantity - 1})
         }
       }
     };
 
     // Remove the item from the cart
     handleRemove = () => {
-      var quantity = this.state.quantityInCart
       if(localStorage.getItem('cart') != null) {
         var cartString = localStorage.getItem('cart')
         var cart = JSON.parse(cartString)
 
         if(cart.hasOwnProperty(this.state.item.itemid)) {
-          quantity = 0
           delete cart[this.state.item.itemid]
           localStorage.setItem('cart', JSON.stringify(cart))
-          this.setState({quantityInCart: quantity})
+          this.setState({quantityInCart: 0})
         }
       }
     };
@@ -264,16 +264,18 @@ class Item extends Component {
 	        	quantity = cart[this.state.item.itemid]
 	    	}
 
-        	item.quantityInCart = quantity + 1
-        	cart[this.state.item.itemid] = item
+        	var item = this.state.item
+          	item.quantityInCart = quantity + 1
+          	cart[this.state.item.itemid] = item
         	localStorage.setItem('cart', JSON.stringify(cart))
-        	this.setState({quantityInCart: quantity})
+        	this.setState({quantityInCart: quantity + 1})
     	} else {
       		var cart = {}
-      		item.quantityInCart = ++quantity
+      		var item = this.state.item
+      		item.quantityInCart = quantity + 1
       		cart[this.state.item.itemid] = item
       		localStorage.setItem('cart', JSON.stringify(cart))
-      		this.setState({quantityInCart: quantity})
+      		this.setState({quantityInCart: quantity + 1})
     	}
     };
 
