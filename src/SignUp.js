@@ -5,6 +5,8 @@ import './App.css';
 import { withRouter } from "react-router-dom";
 import {DynamoDB} from "aws-sdk/index";
 import wemartLogo from './images/logo.png'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const logo = {maxWidth:'200px', padding:'1.5rem'}
 const greeting = {margin:'2.5rem auto', textAlign:'center'}
@@ -56,7 +58,14 @@ class SignUp extends Component {
 
     userPool.signUp(model.email, model.password, attributeList, null, function(err, result) {
         if (err) {
-            alert(err.message);
+          toast.error(err.message, {
+            position: "top-center",
+            autoClose: false,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            });
             return;
         }
 
@@ -176,6 +185,15 @@ class SignUp extends Component {
               color: '#696969',
             }}> Already have an Account? <a href="/login">Log In</a></p>
         </div>
+        <ToastContainer
+          position="top-center"
+          autoClose={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnVisibilityChange
+          draggable
+        />
       </div>
     )
   }
