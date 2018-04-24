@@ -10,14 +10,19 @@ import ZipCodeCheck from './ZipCodeCheck'
 import Home from './Home'
 import Item from './Item'
 import Departments from './Departments'
+
 import AboutUs from './AboutUs'
 import Locations from './Locations'
 import Privacy from './Privacy'
 import Terms from './Terms'
 
+import ItemGridTest from './ItemGridTest'
+
+
 const Router = () => (
   <main>
     <Switch>
+      <Route path='/itemgridtest' component={ItemGridTest}/>
       <Route exact path='/signup' component={SignUp}/>
       <Route path='/login' component={LogIn}/>
       <Route path='/confirm' component={Confirm}/>
