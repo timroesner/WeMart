@@ -83,55 +83,60 @@ class Privacy extends Component {
       return (
         <div>
           <Header />
-            <div style={styles}>
-              <h1 style={pageTitle}> Privacy </h1>
-            </div>
 
-            <div>
+        <div>
+          <div style={styles}>
+            <h1 style={pageTitle}> Privacy </h1>
+          </div>
 
-              <div style={divBorderW}>
-                <div style={divSpacing}>
-                  <h3 style={heading}>Last Updated: April 19, 2018</h3>
-                  <TextFileReader txt={Last}/>
-                </div>
-              </div>
+          <div>
 
-              <div style={divBorderG}>
-                <div style={divSpacing}>
-                  <h3 style={heading}>Information we collect</h3>
-                  <TextFileReader txt={Info}/>
-                </div>
-              </div>
-
-              <div style={divBorderW}>
-                <div style={divSpacing}>
-                  <h3 style={heading}>How we use your information</h3>
-                  <TextFileReader txt={How}/>
-                </div>
-              </div>
-
-
-              <div style={divBorderG}>
-                <div style={divSpacing}>
-                  <h3 style={heading}>What We Share</h3>
-                  <TextFileReader txt={What}/>
-                </div>
-              </div>
-
-              <div style={divBorderW}>
-                <div style={divSpacing}>
-                  <h3 style={heading}>Changes to this Policy</h3>
-                  <TextFileReader txt={Changes}/>
-                </div>
-              </div>
-
-              <div style={divBorderG}>
-                <div style={divSpacing}>
-                  <h3 style={heading}>For Californian Residents</h3>
-                  <TextFileReader txt={Cali}/>
-                </div>
+            <div style={divBorderW}>
+              <div style={divSpacing}>
+                <h3 style={heading}>Last Updated: April 19, 2018</h3>
+                <TextFileReader txt={Last}/>
               </div>
             </div>
+
+            <div style={divBorderG}>
+              <div style={divSpacing}>
+                <h3 style={heading}>Information we collect</h3>
+                <TextFileReader txt={Info}/>
+              </div>
+            </div>
+
+            <div style={divBorderW}>
+              <div style={divSpacing}>
+                <h3 style={heading}>How we use your information</h3>
+                <TextFileReader txt={How}/>
+              </div>
+            </div>
+
+
+            <div style={divBorderG}>
+              <div style={divSpacing}>
+                <h3 style={heading}>What We Share</h3>
+                <TextFileReader txt={What}/>
+              </div>
+            </div>
+
+            <div style={divBorderW}>
+              <div style={divSpacing}>
+                <h3 style={heading}>Changes to this Policy</h3>
+                <TextFileReader txt={Changes}/>
+              </div>
+            </div>
+
+            <div style={divBorderG}>
+              <div style={divSpacing}>
+                <h3 style={heading}>For Californian Residents</h3>
+                <TextFileReader txt={Cali}/>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
         <Footer />
       </div>
     );

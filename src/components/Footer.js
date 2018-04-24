@@ -67,40 +67,37 @@ class Footer extends Component {
           />
           </div>
 
+          <div style={{marginBottom: '10px'}}>
+            <TextField
+            name="email"
+            type="email"
+            floatingLabelText="Email"
+            hintText="Enter your email address"
+            validations={{isEmail: null, isLength: {min: 3, max: 50}}}
+            validationErrorText="Please enter a valid email"
+            fullWidth
+            required
+            />
+          </div>
 
-                        <div style={{marginBottom: '10px'}}>
-                          <TextField
-                            name="email"
-                            type="email"
-                            floatingLabelText="Email"
-                            hintText="Enter your email address"
-                            validations={{isEmail: null, isLength: {min: 3, max: 50}}}
-                            validationErrorText="Please enter a valid email"
-                            fullWidth
-                            required
-                          />
-                        </div>
+          <div style={{marginBottom: '10px'}}>
+            <label>Your Message</label>
+            <textarea
+            className = "message"
+            placeholder="Please write your message"
+            style={textarea.base}
+            required
+            ></textarea>
+          </div>
 
-
-
-                        <div style={{marginBottom: '10px'}}>
-                          <label>Your Message</label>
-                          <textarea
-                            className = "message"
-                            placeholder="Please write your message"
-                            style={textarea.base}
-                            required
-                          ></textarea>
-                        </div>
-
-                      <div style={{margin:"auto", width:"100%", paddingTop:"10px", display:"flex", justifyContent: "center", marginLeft:"0"}}>
-                        <div style={{ margin:"auto", display:"inline-block"}}>
-                          <Button type="submit" className="primary" style={{height:"30px"}}>Submit</Button>
-                        </div>
-                        <div style={{ margin:"auto", display:"inline-block"}}>
-                          <Button onClick={this.handleCloseContactUsModal} snacksStyle="secondary" style={{height:"30px"}}>Close</Button>
-                        </div>
-                      </div>
+          <div style={{margin:"auto", width:"100%", paddingTop:"10px", display:"flex", justifyContent: "center", marginLeft:"0"}}>
+            <div style={{ margin:"auto", display:"inline-block"}}>
+              <Button type="submit" className="primary" style={{height:"30px"}}>Submit</Button>
+            </div>
+            <div style={{ margin:"auto", display:"inline-block"}}>
+              <Button onClick={this.handleCloseContactUsModal} snacksStyle="secondary" style={{height:"30px"}}>Close</Button>
+            </div>
+          </div>
 
                     </Form>
                    </Modal.Body>
@@ -117,16 +114,17 @@ class Footer extends Component {
     const Links={
       color: "#D30707",
       cursor:'pointer',
+      margin:"5px"
     }
 
     const Spacing={
       paddingTop: "15px",
       paddingBottom: "10px",
+      textAlign:"center"
     }
 
     const footerStyle={
       paddingTop: "10px",
-      backgroundColor: '#F5F5F5',
       width: "100%",
       color: "#D30707",
       textAlign: 'center',
@@ -134,26 +132,38 @@ class Footer extends Component {
     };
 
     const footerPosition ={
-      position: "relative",
+      position: "absolute",
       bottom: "0",
-      left: "0",
       width: "100%",
+      height: "auto",
+      backgroundColor: '#F5F5F5',
+      overflow: "visible",
     };
 
-      return (
-        <div>
+    const footerLinksContainer = {
+      display: "flex",
+      flexWrap: "wrap",
+      justifyContent: "center",
+      alignItems: "center",
+    };
+
+    return (
+
           <div style={footerPosition}>
             <div style={footerStyle}>
-              <div style={{margin:"auto", textAlign:"center"}}>
-                  <Link to={"./AboutUs"} style={Links}>About Us</Link>&nbsp;&nbsp;&nbsp;&nbsp;
+              <div>
+                <div style={footerLinksContainer}>
 
-                  <a onClick={this.handleShowContactUsModal}  style={Links}>Contact Us</a>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <Link to={"./AboutUs"} style={Links}>About Us</Link>
 
-                  <Link to={"./Locations"} style={Links}>Locations</Link>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a onClick={this.handleShowContactUsModal}  style={Links}>Contact Us</a>
 
-                  <Link to={"./Privacy"} style={Links}>Privacy</Link>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <Link to={"./Locations"} style={Links}>Locations</Link>
 
-                  <Link to={"./Terms"} style={Links}>Terms</Link>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <Link to={"./Privacy"} style={Links}>Privacy</Link>
+
+                    <Link to={"./Terms"} style={Links}>Terms</Link>&nbsp;&nbsp;&nbsp;&nbsp;
+
               </div>
 
               <div style={Spacing}>
@@ -161,9 +171,11 @@ class Footer extends Component {
               </div>
 
             </div>
+            {this.contactUsModal()}
           </div>
-          {this.contactUsModal()}
-          </div>
+        </div>
+
+
       );
 
   }

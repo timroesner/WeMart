@@ -12,6 +12,7 @@ class AboutUs extends Component {
     super();
     this.state = {
       width: window.innerWidth,
+      height: window.innerHeight,
     };
   }
 
@@ -27,15 +28,18 @@ class AboutUs extends Component {
   }
 
   handleWindowSizeChange = () => {
-    this.setState({ width: window.innerWidth });
+    this.setState({ width: window.innerWidth, height: window.innerHeight, });
   };
 
 
 
   render() {
+    const  width  = this.state.width;
+    const  height  = this.state.height;
     console.log(width);
-    const  {width}  = this.state;
+    console.log(height);
     var myTxt = require("./text/About.txt");
+
     const title={
       width: "100%",
       textAlign: 'center',
@@ -47,13 +51,13 @@ class AboutUs extends Component {
       overflow: "hidden",
       height: "25em",
       clipPath: 'polygon(0% 0%, 100% 0%, 100% 30%, 50% 100%, 0% 30%)',
-        };
+    };
 
-        const imageHolderSmall={
-          overflow: "hidden",
-          height: "10em",
-          clipPath: 'polygon(0% 0%, 100% 0%, 100% 30%, 50% 100%, 0% 30%)',
-            };
+    const imageHolderSmall={
+      overflow: "hidden",
+      height: "10em",
+      clipPath: 'polygon(0% 0%, 100% 0%, 100% 30%, 50% 100%, 0% 30%)',
+    };
 
     const image={
       width: "100%",
@@ -69,16 +73,19 @@ class AboutUs extends Component {
       return (
         <div>
           <Header />
-          <div style={imageHolderSmall}>
-            <img src={aboutus} style={image}/>
-          </div>
 
-          <div>
-            <h1 style={title}> About Us </h1>
-          </div>
+          <div style ={{minHeight:(this.state.height-260)}}>
+            <div style={imageHolderSmall}>
+              <img src={aboutus} style={image}/>
+            </div>
 
-          <div style={text}>
-            <TextFileReader txt={myTxt}/>
+            <div>
+              <h1 style={title}> About Us </h1>
+            </div>
+
+            <div style={text}>
+              <TextFileReader txt={myTxt}/>
+            </div>
           </div>
 
           <Footer />
@@ -86,18 +93,21 @@ class AboutUs extends Component {
     );
   }else{
      return (
-       <div>
+       <div >
          <Header />
-         <div style={imageHolder}>
-           <img src={aboutus} style={image}/>
-         </div>
 
-         <div>
-           <h1 style={title}> About Us </h1>
-         </div>
+         <div style ={{minHeight:this.state.height-190}}>
+           <div style={imageHolder}>
+             <img src={aboutus} style={image}/>
+           </div>
 
-         <div style={text}>
-           <TextFileReader txt={myTxt}/>
+           <div>
+             <h1 style={title}> About Us </h1>
+           </div>
+
+           <div style={text}>
+             <TextFileReader txt={myTxt}/>
+           </div>
          </div>
 
          <Footer />

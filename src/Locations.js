@@ -9,6 +9,7 @@ class Locations extends Component {
     super();
     this.state = {
       width: window.innerWidth,
+      height: window.innerHeight
     };
   }
 
@@ -24,7 +25,7 @@ class Locations extends Component {
   }
 
   handleWindowSizeChange = () => {
-    this.setState({ width: window.innerWidth });
+    this.setState({ width: window.innerWidth, height: window.innerHeight});
   };
 
 
@@ -70,17 +71,19 @@ class Locations extends Component {
         <div>
           <Header />
 
-        <div style={imageHolderSmall}>
-          <img src={location} style={image}/>
-        </div>
+          <div style ={{minHeight:(this.state.height-260)}}>
+            <div style={imageHolderSmall}>
+              <img src={location} style={image}/>
+            </div>
 
-        <div>
-          <h1 style={title}>Locations</h1>
-        </div>
+            <div>
+              <h1 style={title}>Locations</h1>
+            </div>
 
-        <div style={text}>
-          <TextFileReader txt={myTxt}/>
-        </div>
+            <div style={text}>
+              <TextFileReader txt={myTxt}/>
+            </div>
+          </div>
 
         <Footer />
       </div>
@@ -90,19 +93,21 @@ class Locations extends Component {
        <div>
          <Header />
 
-       <div style={imageHolder}>
-         <img src={location} style={image}/>
-      </div>
+         <div style ={{minHeight:this.state.height-190}}>
+           <div style={imageHolder}>
+             <img src={location} style={image}/>
+           </div>
 
-       <div>
-         <h1 style={title}>Locations</h1>
-       </div>
+           <div>
+             <h1 style={title}>Locations</h1>
+           </div>
 
-       <div style={text}>
-         <TextFileReader txt={myTxt}/>
-       </div>
+           <div style={text}>
+             <TextFileReader txt={myTxt}/>
+           </div>
+         </div>
 
-       <Footer />
+         <Footer />
      </div>
      );
   }
