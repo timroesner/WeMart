@@ -26,6 +26,7 @@ const pageTitle = {textAlign:'center', padding:'1.5rem' ,fontFamily:' "Open Sans
 var dynamodb;
 var poolData;
 var stripeKey;
+var cognitoUser;
 
 class AccountSettings extends React.Component{
 
@@ -94,7 +95,7 @@ class AccountSettings extends React.Component{
 
     getCognitoUser(){
         var userPool = new CognitoUserPool(poolData);
-        var cognitoUser = userPool.getCurrentUser();
+        cognitoUser = userPool.getCurrentUser();
 
         //If there is a cognito user then get his data from the DB otherwise do nothing
         if (cognitoUser != null) {
@@ -299,7 +300,7 @@ class AccountSettings extends React.Component{
 
     handleEmailChange = (model) => {
         var email = model.newEmail;
-        this.state.cognitoUser.changePassword(model.password ,model.password,(err,data)=>{
+        cognitoUser.changePassword(model.password ,model.password,(err,data)=>{
             if(err){console.log(err, err.stack); this.setState({isPasswordValid:false})}
             else{
                 console.log(data)
@@ -358,7 +359,7 @@ class AccountSettings extends React.Component{
     };
 
     handlePasswordChange = (model) => {
-        this.state.cognitoUser.changePassword(model.password ,model.newPassword,(err,data)=>{
+        cognitoUser.changePassword(model.password ,model.newPassword,(err,data)=>{
             if(err){console.log(err, err.stack); this.setState({isPasswordValid:false})}
             else{this.handleClose();}}
             )
