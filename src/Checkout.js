@@ -294,9 +294,7 @@ export default class Checkout extends React.Component {
 
         var orderParams = {
             Item: {
-                'orderid':{
-                    S: this.hashCode().toString()
-                },
+                'orderId':{ S: this.hashCode().toString()},
                 'userid':{S:userid},
                 'date':{S:date},
                 'deliveryDate': {S:this.state.deliveryDay},
@@ -338,7 +336,7 @@ export default class Checkout extends React.Component {
             else { console.log('Order placed', data)}
         } )
 
-        this.clearCart()
+        // this.clearCart()
         //TODO send the token to the back end
         // paymentRequest.on('token', function(ev) {
         //     // Send the token to your server to charge it!
