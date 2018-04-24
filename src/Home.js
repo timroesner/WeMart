@@ -43,7 +43,7 @@ class Home extends Component {
             data.Items.forEach((element) => {
 
                 //TODO Clean this up into a one liner.
-                let departmentid = element.departmentid.N;
+                let departmentid = element.department.S;
                 let image = element.image.S;
                 let itemid = (element.itemid.S);
                 let name = (element.name.S);
