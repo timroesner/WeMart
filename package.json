@@ -8,7 +8,7 @@
     "aws-sdk": "^2.218.1",
     "ic-snacks": "github:instacart/Snacks#master",
     "radium": "^0.22.1",
-    "react": "^16.3.0",
+    "react": "^16.3.2",
     "react-addons-css-transition-group": "^15.6.2",
     "react-dom": "^16.3.0",
     "react-router": "^4.2.0",
