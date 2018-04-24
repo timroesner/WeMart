@@ -130,20 +130,36 @@ class Home extends Component {
     }
 
     getUserDetails(){
-        var userParams = {
-            Key: {
-                'userid': {S: this.state.user.userId}
-            },AttributesToGet: [
-                'history',
-                /* more items */
-            ],
-            TableName: "user"
-        };
-        dynamodb.getItem(userParams, (err, data) => {
+        var orderParams = {
+            ExpressionAttributeValues: {
+                ":u": {
+                  S: this.state.user.userId
+                 }
+            },
+            ExpressionAttributeNames: {
+                "#S": "items", 
+               },
+            FilterExpression: "userid = :u", 
+            ProjectionExpression: "#S", 
+            TableName: 'orders'
+        }
+        // var userParams = {
+        //     Key: {
+        //         'userid': {S: this.state.user.userId}
+        //     },AttributesToGet: [
+        //         'history',
+        //         /* more items */
+        //     ],
+        //     TableName: "user"
+        // };
+
+        dynamodb.scan(orderParams,(err, data) => {
             if(err) {console.log(err, err.stack)}
             else{
-                data.Item.history.L.forEach((item)=>{
-                    item.M.items.L.forEach((i)=>{
+                console.log('order history',data)
+                data.Items.forEach((order) => {
+                    console.log('ORDER', order)
+                    order.items.L.forEach((i)=>{
                         let itemId = i.M.itemid.S
                         console.log('[itemids]',itemId)
                         var set = this.state.orderHistory
@@ -153,7 +169,22 @@ class Home extends Component {
                 })
                 this.getItemsFromDB()
             }
-        })
+        } )
+        // dynamodb.getItem(userParams, (err, data) => {
+        //     if(err) {console.log(err, err.stack)}
+        //     else{
+        //         data.Item.history.L.forEach((item)=>{
+        //             item.M.items.L.forEach((i)=>{
+        //                 let itemId = i.M.itemid.S
+        //                 console.log('[itemids]',itemId)
+        //                 var set = this.state.orderHistory
+        //                 set.add(itemId)
+        //                 this.setState({orderHistory: set})
+        //             })
+        //         })
+        //         this.getItemsFromDB()
+        //     }
+        // })
     }
 
     getItemsFromDB(){
