@@ -20,7 +20,7 @@ class SignUp extends Component {
     // Get the dynamoDB database
     var dynamodb;
     if(process.env.NODE_ENV === 'development'){
-        dynamodb = require('./components/db').db;
+        dynamodb = require('./db').db;
     } else {
         dynamodb = new DynamoDB({
             region: "us-west-1",

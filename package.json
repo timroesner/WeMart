@@ -9,7 +9,7 @@
     "ic-snacks": "github:instacart/Snacks#master",
     "prop-types": "^15.6.1",
     "radium": "^0.22.1",
-    "react": "^16.3.0",
+    "react": "^16.3.2",
     "react-addons-css-transition-group": "^15.6.2",
     "react-bootstrap": "^0.32.1",
     "react-dom": "^16.3.0",
