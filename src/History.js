@@ -108,10 +108,10 @@ class History extends React.Component{
                  }
             },
             ExpressionAttributeNames: {
-                "IS": "items", 
+                "#S": "items", 
                },
             FilterExpression: "userid = :u", 
-            ProjectionExpression: "#IS", 
+            ProjectionExpression: "#S", 
             TableName: 'orders'
         }
         // var userParams = {
@@ -127,7 +127,8 @@ class History extends React.Component{
             else{
                 console.log('order history',data)
                 data.Items.forEach((order) => {
-                    order.L.forEach((i)=>{
+                    console.log('ORDER', order)
+                    order.items.L.forEach((i)=>{
                         let itemId = i.M.itemid.S
                         console.log('[itemids]',itemId)
                         var set = this.state.orderHistory
