@@ -176,7 +176,7 @@ handleHistory = () =>{
 							</li>
 
 							<li style={mobileNavItems}><a style={links} href="#">
-								<button style={astext}><i className="fas fa-history" /><br />
+								<button style={astext}><i className="fas fa-history" onClick={this.handleHistory} /><br />
 									<span>History</span>
 								</button></a>
 							</li>

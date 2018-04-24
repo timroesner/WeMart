@@ -107,8 +107,11 @@ class History extends React.Component{
                   S: this.state.user.userId
                  }
             },
-            Select:'ALL_ATTRIBUTES',
+            ExpressionAttributeNames: {
+                "IS": "items", 
+               },
             FilterExpression: "userid = :u", 
+            ProjectionExpression: "#IS", 
             TableName: 'orders'
         }
         // var userParams = {
@@ -123,7 +126,15 @@ class History extends React.Component{
             if(err) {console.log(err, err.stack)}
             else{
                 console.log('order history',data)
-                //TODO update items
+                data.Items.forEach((order) => {
+                    order.L.forEach((i)=>{
+                        let itemId = i.M.itemid.S
+                        console.log('[itemids]',itemId)
+                        var set = this.state.orderHistory
+                        set.add(itemId)
+                        this.setState({orderHistory: set})
+                    })
+                })
                 this.getItemsFromDB()
             }
         } )
