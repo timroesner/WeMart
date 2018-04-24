@@ -59,6 +59,9 @@ handleDepartments = () => {
 handleZipClick = () => {
 	this.props.history.push('/')
 }
+handleHistory = () =>{
+	this.props.history.push('/history')
+}
 
 
   render() {
@@ -231,7 +234,7 @@ handleZipClick = () => {
 	    <ul id="pills" className="nav nav-pills" style={center}>
 			<li role="navigation" style={pillsLi}><button className="primaryRedWithHover" style={astext} onClick={this.handleDepartments} >Departments</button></li>
 			<li role="navigation" style={pillsLi}><button className="primaryRedWithHover" style={astext}>Savings</button></li>
-			<li role="navigation" style={pillsLi}><button className="primaryRedWithHover" style={astext}>History</button></li>
+			<li role="navigation" style={pillsLi}><button className="primaryRedWithHover" style={astext} onClick={this.handleHistory}>History</button></li>
 	    </ul>
 	</nav>
 	</div>
