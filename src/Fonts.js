@@ -1,6 +1,8 @@
 import React, { Component }       from 'react'
 import PropTypes                  from 'prop-types'
-import Radium, { Style }          from 'radium'
+import { Style }          from 'radium'
+
+// Code adapted from https://github.com/instacart/Snacks/blob/master/src/styles/SetStyles.js
 
 const getFonts = (assetsUrl) => {
   return (
