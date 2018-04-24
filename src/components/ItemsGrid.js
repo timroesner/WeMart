@@ -10,7 +10,7 @@ const gridContainer = {
     margin: '2%',
     width: '95%',
 }
-const itemGrid_itemCard = {display:'inline-block', position:'relative', verticalAlign:'top', margin: '3%'};
+const itemGrid_itemCard = {display:'inline-block', position:'relative', verticalAlign:'top', margin: '3%', maxWidth:'256px'};
 
 export default class ItemsGrid extends React.Component{
 
