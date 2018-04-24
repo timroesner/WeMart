@@ -11,6 +11,7 @@ import {DynamoDB} from "aws-sdk/index";
 import PropTypes from 'prop-types';
 import NewCardForm from "./components/NewCardForm";
 import {CognitoUserPool} from "amazon-cognito-identity-js";
+import md5 from 'md5'
 
 var dynamodb;
 var poolData;
@@ -268,9 +269,16 @@ export default class Checkout extends React.Component {
         var date = new Date().toJSON().slice(0,10).replace(/-/g,'/');
         var address = this.state.deliveryAddress.street + ' ' + this.state.deliveryAddress.city +', ' +
             this.state.deliveryAddress.state + ' ' + this.state.deliveryAddress.zipCode;
+        var userid;
+        if(this.state.userId){
+            userid = this.state.userId
+        } else {
+            userid = 'guest'
+        }
 
         var order = {
             'orderId': {'N':this.hashCode().toString()},
+            'userid': {'S':userid},
             'date':{'S':date},
             'deliveryDate': {'S':this.state.deliveryDay},
             'deliveryTime':{'S':this.state.deliveryTime},
@@ -283,29 +291,52 @@ export default class Checkout extends React.Component {
 
         console.log('[order]',order)
         var history = [{'M': order}]
-        var userParams = {
-            ExpressionAttributeNames: {
-                "#H": "history",
+
+        var orderParams = {
+            Item: {
+                'orderid':{
+                    S: this.hashCode().toString()
+                },
+                'userid':{S:userid},
+                'date':{S:date},
+                'deliveryDate': {S:this.state.deliveryDay},
+                'deliveryTime':{S:this.state.deliveryTime},
+                'deliveryAddress':{S:address},
+                'status':{S:'inProgress'},
+                'total':{N:this.calculateTotal().toString()},
+                'phoneNumber':{N:this.state.phoneNumber},
+                'items':{L:this.state.orderItems}
             },
-            ExpressionAttributeValues: {
-                ":h": {
-                    L: history
-                }
-            },
-            Key: {
-                'userid': {S: this.state.userId}
-            },
-            ReturnValues: "ALL_NEW",
-            UpdateExpression: "SET #H = list_append( :h, #H) ",
-            TableName: "user"
-        };
-        // Scan the DB and get the user
-        dynamodb.updateItem(userParams, (err, data) => {
+            TableName:'orders'
+        }
+        // var userParams = {
+        //     ExpressionAttributeNames: {
+        //         "#H": "history",
+        //     },
+        //     ExpressionAttributeValues: {
+        //         ":h": {
+        //             L: history
+        //         }
+        //     },
+        //     Key: {
+        //         'userid': {S: this.state.userId}
+        //     },
+        //     ReturnValues: "ALL_NEW",
+        //     UpdateExpression: "SET #H = list_append( :h, #H) ",
+        //     TableName: "orders"
+        // };
+        // // Scan the DB and get the user
+        // dynamodb.updateItem(userParams, (err, data) => {
+        //     if(err) {console.log(err, err.stack)}
+        //     else{
+        //         console.log('[Order Placed]',data);
+        //     }
+        // })
+
+        dynamodb.putItem(orderParams,(err, data)=>{
             if(err) {console.log(err, err.stack)}
-            else{
-                console.log('[Order Placed]',data);
-            }
-        })
+            else { console.log('Order placed', data)}
+        } )
 
         this.clearCart()
         //TODO send the token to the back end
@@ -333,14 +364,15 @@ export default class Checkout extends React.Component {
 
     clearCart = () =>{
          if(localStorage.getItem('cart') != null) {
-            localStorage.removeItem("myCat");
+            localStorage.removeItem("cart");
             console.log('Local Storage',localStorage)
         }
     }
 
     hashCode() {
-        var s = new Date().toUTCString();
-        return s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);
+        var hash = md5(new Date().toUTCString)
+        console.log(hash)
+        return hash
     };
 
     renderAddress(){
