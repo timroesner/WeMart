@@ -101,30 +101,47 @@ class History extends React.Component{
     }
 
     getUserDetails(){
-        var userParams = {
-            Key: {
-                'userid': {S: this.state.user.userId}
-            },AttributesToGet: [
-                'history',
-                /* more items */
-            ],
-            TableName: "user"
-        };
-        dynamodb.getItem(userParams, (err, data) => {
+        var orderParams = {
+            ExpressionAttributeValues: {
+                ":u": {
+                  S: this.state.user.userId
+                 }
+            },
+            Select:'ALL_ATTRIBUTES',
+            FilterExpression: "userid = :u", 
+            TableName: 'orders'
+        }
+        // var userParams = {
+        //     Key: {
+        //         'userid': {S: this.state.user.userId}
+        //     },AttributesToGet: [
+        //         'history',
+        //     ],
+        //     TableName: "user"
+        // };
+        dynamodb.scan(orderParams,(err, data) => {
             if(err) {console.log(err, err.stack)}
             else{
-                data.Item.history.L.forEach((item)=>{
-                    item.M.items.L.forEach((i)=>{
-                        let itemId = i.M.itemid.S
-                        console.log('[itemids]',itemId)
-                        var set = this.state.orderHistory
-                        set.add(itemId)
-                        this.setState({orderHistory: set})
-                    })
-                })
+                console.log('order history',data)
+                //TODO update items
                 this.getItemsFromDB()
             }
-        })
+        } )
+        // dynamodb.getItem(userParams, (err, data) => {
+        //     if(err) {console.log(err, err.stack)}
+        //     else{
+        //         data.Item.history.L.forEach((item)=>{
+        //             item.M.items.L.forEach((i)=>{
+        //                 let itemId = i.M.itemid.S
+        //                 console.log('[itemids]',itemId)
+        //                 var set = this.state.orderHistory
+        //                 set.add(itemId)
+        //                 this.setState({orderHistory: set})
+        //             })
+        //         })
+        //         this.getItemsFromDB()
+        //     }
+        // })
     }
 
     renderHistory(){
