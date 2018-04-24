@@ -10,10 +10,10 @@ import ItemsGrid from "./components/ItemsGrid";
 var poolData;
 var dynamodb;
 //Styles
-const history = {fontFamily:'"Open Sans", "Helvetica Neue", Helvetica, sans-serif', maxWidth:'145.6rem',
-    height:'auto !important', margin:'3rem auto', background:'#ffffff', borderRadius:'.6rem'};
+const history = {fontFamily:'"Open Sans", "Helvetica Neue", Helvetica, sans-serif', maxWidth:'120rem',
+    height:'auto !important', margin:'3rem auto', background:'#ffffff', borderRadius:'.6rem',border:'1px solid red'};
 const pageTitle = {textAlign:'center', padding:'1.5rem', fontWeight:'600'};
-const panel = {backgroundColor:'#FFFFFF',border:'1px solid #F0EFEC',borderRadius:'.6rem',
+const panel = {backgroundColor:'#FFFFFF',
     marginBottom:'2rem',marginRight:'2rem',marginLeft:'2rem', padding:'4rem 0'}
 const noItems = {textAlign:'center', marginBottom: '2rem'};
 const noItemsButton = {paddingLeft:'4rem', paddingRight:'4rem'}
