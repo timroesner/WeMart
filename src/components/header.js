@@ -13,7 +13,11 @@ class Header extends Component {
    			width: window.innerWidth,
 				value: '',
 				cartClicked: false
- 	 	};
+		  };
+		  
+		  this.props.history.listen((location, action) => {
+			this.getSearchValue()
+		})
 
 		this.handleSearch = this.handleSearch.bind(this);
 		this.handleSearchChange = this.handleSearchChange.bind(this);

@@ -17,9 +17,16 @@ class Search extends Component {
 			items: [],
 			finishedLoading: false,
 		}
+		this.props.history.listen((location, action) => {
+			this.getQuerry()
+		})
 
 		this.initializeDatabase()
+		this.getQuerry()
+	
+	}
 
+	getQuerry(){
 		const queryParams = new URLSearchParams(this.props.location.search);
     	query = queryParams.get('query')
     	let special = queryParams.get('special')
