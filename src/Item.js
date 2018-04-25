@@ -351,36 +351,38 @@ class Item extends Component {
 			}
 
 			return (
-			  <div>
+			<div>
 			    <Header />
-			    <div style={{
-			    	marginTop: '3%',
-			    	marginLeft: '25%',
-			    	marginRight: '25%',
-					width: '50%',
-					float: 'left' 
-				}}>
-			    	<img className="img-responsive" style={{width: '100%', width: '100%'}} src={this.state.item.image} />
-			    </div>
-			    <div style={{
-			    	margin: '3%',
-					width: '94%',
-					float: 'right',
-				}}>
+			    <div id="pageBody">
+				    <div style={{
+				    	marginTop: '3%',
+				    	marginLeft: '25%',
+				    	marginRight: '25%',
+						width: '50%',
+						float: 'left' 
+					}}>
+				    	<img className="img-responsive" style={{width: '100%', width: '100%'}} src={this.state.item.image} />
+				    </div>
+				    <div style={{
+				    	margin: '3%',
+						width: '94%',
+						float: 'right',
+					}}>
 
-					<h1 style={{marginTop: '0', fontSize: '2em'}}>{this.state.item.name}</h1>
-					<p style={{marginTop: '3%', color: 'grey', fontSize: '1.4em'}} >{this.state.item.quantity}</p>
-					{this.renderPrice()}
-					<button className="primaryRedWithHover" style={astext} onClick={this.addToList} >
-						<i class="fa fa-th-list" style={{width: '20%'}}/>&nbsp;
-						Add to List
-					</button>
-					{this.renderButtonBar()}
-					<div style={{marginLeft: '-30px', marginRight: '-30px'}}>
-						<HorizontalScroll items={this.state.similarItems} title="Similar Items"/>
-					</div>
-			    </div>
-			  </div>
+						<h1 style={{marginTop: '0', fontSize: '2em'}}>{this.state.item.name}</h1>
+						<p style={{marginTop: '3%', color: 'grey', fontSize: '1.4em'}} >{this.state.item.quantity}</p>
+						{this.renderPrice()}
+						<button className="primaryRedWithHover" style={astext} onClick={this.addToList} >
+							<i class="fa fa-th-list" style={{width: '20%'}}/>&nbsp;
+							Add to List
+						</button>
+						{this.renderButtonBar()}
+						<div style={{marginLeft: '-30px', marginRight: '-30px'}}>
+							<HorizontalScroll items={this.state.similarItems} title="Similar Items"/>
+						</div>
+				    </div>
+				</div>
+			</div>
 			);
 		} else {
 			const astext = {
@@ -395,40 +397,42 @@ class Item extends Component {
 			}
 
 			return (
-			  <div>
+			<div>
 			    <Header />
-			    <div style={{
-			    	margin: '3%',
-					width: '45%',
-					height: '500px',
-					float: 'left' 
-				}}>
-			    	<img className="img-responsive" style={{width: '100%', width: '100%', maxWidth: '500px', margin: '0 auto 0 auto'}} src={this.state.item.image} />
-			    </div>
-			    <div style={{
-			    	margin: '3%',
-			    	marginLeft: '0%',
-					width: '45%',
-					height: '500px',
-					float: 'right',
-				}}>
+			    <div id="pageBody">
+				    <div id="pageBody" style={{
+				    	margin: '3%',
+						width: '45%',
+						height: '500px',
+						float: 'left' 
+					}}>
+				    	<img className="img-responsive" style={{width: '100%', width: '100%', maxWidth: '500px', margin: '0 auto 0 auto'}} src={this.state.item.image} />
+				    </div>
+				    <div style={{
+				    	margin: '3%',
+				    	marginLeft: '0%',
+						width: '45%',
+						height: '500px',
+						float: 'right',
+					}}>
 
-					<h1 style={{marginTop: '0', fontSize: '2em'}}>{this.state.item.name}</h1>
-					<p style={{marginTop: '5%', color: 'grey', fontSize: '1.4em'}} >{this.state.item.quantity}</p>
-					{this.renderPrice()}
-					{this.renderButtonBar()}
-					<div>
-					<button className="primaryRedWithHover" style={astext} onClick={this.addToList.bind(this)} >
-						<i class="fa fa-th-list fa-2x" style={{width: '80px'}}/>
-						Add to List
-					</button>
-					</div>
-					<div style={{marginLeft: '-30px', marginRight: '-30px'}}>
-						<HorizontalScroll items={this.state.similarItems} title="Similar Items"/>
-					</div>
-					<ToastContainer hideProgressBar={true} autoClose={2000} />
-			    </div>
-			  </div>
+						<h1 style={{marginTop: '0', fontSize: '2em'}}>{this.state.item.name}</h1>
+						<p style={{marginTop: '5%', color: 'grey', fontSize: '1.4em'}} >{this.state.item.quantity}</p>
+						{this.renderPrice()}
+						{this.renderButtonBar()}
+						<div>
+						<button className="primaryRedWithHover" style={astext} onClick={this.addToList.bind(this)} >
+							<i class="fa fa-th-list fa-2x" style={{width: '80px'}}/>
+							Add to List
+						</button>
+						</div>
+						<div style={{marginLeft: '-30px', marginRight: '-30px'}}>
+							<HorizontalScroll items={this.state.similarItems} title="Similar Items"/>
+						</div>
+						<ToastContainer hideProgressBar={true} autoClose={2000} />
+				    </div>
+				</div>
+			</div>
 		);
 	}
   }
