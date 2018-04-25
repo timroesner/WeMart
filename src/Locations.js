@@ -39,8 +39,8 @@ class Locations extends Component {
     const title={
       width: "100%",
       textAlign: 'center',
-      fontFamily: 'calibri',
       marginTop:"0.5em",
+      fontWeight: "500",
     };
 
     const imageHolder={
@@ -93,7 +93,7 @@ class Locations extends Component {
        <div>
          <Header />
 
-         <div style ={{minHeight:this.state.height-190}}>
+         <div style ={{minHeight:this.state.height-201}}>
            <div style={imageHolder}>
              <img src={location} style={image}/>
            </div>

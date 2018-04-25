@@ -124,6 +124,7 @@ class Footer extends Component {
     }
 
     const footerStyle={
+
       paddingTop: "10px",
       width: "100%",
       color: "#D30707",
@@ -132,7 +133,7 @@ class Footer extends Component {
     };
 
     const footerPosition ={
-      position: "absolute",
+      position: "relative",
       bottom: "0",
       width: "100%",
       height: "auto",
