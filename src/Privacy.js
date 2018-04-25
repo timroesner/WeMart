@@ -80,9 +80,9 @@ class Privacy extends Component {
       height: "12em",
     }
 
-      return (
-        <div>
-          <Header />
+    return (
+      <div>
+        <Header />
 
         <div>
           <div style={styles}>
@@ -141,7 +141,7 @@ class Privacy extends Component {
       </div>
     );
 
-}
+  }
 }
 
 
