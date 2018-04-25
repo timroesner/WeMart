@@ -80,6 +80,8 @@ var zip;
 var cognitoUser;
 var query
 
+var query;
+
 class Header extends Component {
 	constructor(props) {
   		super(props);
@@ -89,6 +91,11 @@ class Header extends Component {
 				cartClicked: false,
 				isLoggedIn: false
  	 	};
+    
+    this.props.history.listen((location, action) => {
+			this.getSearchValue()
+		})
+    
 		this.handleSearch = this.handleSearch.bind(this);
 		this.handleSearchChange = this.handleSearchChange.bind(this);
 		this.getCurrentUser()
@@ -166,13 +173,13 @@ handleSearch(event) {
 		pathname: 'search',
 		search: '?query='+query
 	})
-  window.location.reload()
+	window.location.reload()
 };
 
 handleSearchChange(event) {
-    query = event.target.value
-	  this.setState({value: event.target.value})
- }
+	query = event.target.value
+	this.setState({value: event.target.value})
+}
 
 showCart = () => {
 	//when cart button is clicked
@@ -362,7 +369,7 @@ renderMobileAccountButton() {
 
 			<ul className="nav navbar-nav" style={{width: '55%'}} >
 				<form className="form-inline" onSubmit={this.handleSearch} style={{position: 'relative', margin: '15px 0'}}>
-					<input name="search" value={this.state.value} onChange={this.handleSearchChange} type="text" placeholder="Search" className="form-control" style={{width: '80%'}} />
+					<input name="search" value={query} onChange={this.handleSearchChange} type="text" placeholder="Search" className="form-control" style={{width: '80%'}} />
 					<button type="submit" className="primary" style={{height: '34px', width: '44px', borderRadius: '4px'}}><i className="fas fa-search" /></button>
 				</form>
 		    </ul>
