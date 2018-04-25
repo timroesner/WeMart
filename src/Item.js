@@ -3,8 +3,17 @@ import React, { Component } from 'react';
 import { withRouter } from "react-router-dom";
 import HorizontalScroll from './components/HorizontalScroll';
 import {DynamoDB} from "aws-sdk/index";
+import Counter from "./components/Counter";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+var AmazonCognitoIdentity = require('amazon-cognito-identity-js');
 
 var id;
+var cognitoUser;
+var email;
+var dynamodb;
+var itemsInList = [];
 
 class Item extends Component {
 
@@ -12,19 +21,31 @@ class Item extends Component {
     	super(props);
 
     	this.state = {
-    		item: {}
+    		item: {},
+    		similarItems: [],
+    		quantityInCart: 0
     	}
+
     	const queryParams = new URLSearchParams(this.props.location.search);
     	id = queryParams.get('id')
 
+    	this.initializeDB()
+    	this.getCurrentUser()
     	this.getItem()
+
+    	this.props.history.listen((location, action) => {
+    		// This 100ms delay is necessary for the id to change
+    		setTimeout(function() {
+      			const queryParams = new URLSearchParams(this.props.location.search);
+    			id = queryParams.get('id')
+    			this.getItem()
+  			}.bind(this), 100)
+		})
+    	
 	}
 
-	getItem() {
-
-		// Get the dynamoDB database
-	    var dynamodb;
-	    if(process.env.NODE_ENV === 'development'){
+	initializeDB() {
+		if(process.env.NODE_ENV === 'development'){
 	        dynamodb = require('./db').db;
 	    } else {
 	        dynamodb = new DynamoDB({
@@ -34,7 +55,49 @@ class Item extends Component {
 	                secretAccessKey: process.env.REACT_APP_DB_secretAccessKey},
 	        });
 	    }
+	}
 
+	getCurrentUser() {
+		// Get poolData
+	    var poolData;
+	    if(process.env.NODE_ENV === 'development'){
+	        poolData = require('./poolData').poolData;
+	    } else {
+	      var poolData = {
+	        UserPoolId : process.env.REACT_APP_Auth_UserPoolId,
+	        ClientId : process.env.REACT_APP_Auth_ClientId
+	      };
+	    }
+	    var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+
+	    cognitoUser = userPool.getCurrentUser();
+
+	    if (cognitoUser != null) {
+	        cognitoUser.getSession(function(err, session) {
+	            if (err) {
+	                alert(err.message || JSON.stringify(err));
+	                return;
+	            }
+	            console.log('session validity: ' + session.isValid());
+
+	            // NOTE: getSession must be called to authenticate user before calling getUserAttributes
+	            cognitoUser.getUserAttributes(function(err, attributes) {
+	                if (err) {
+	                    console.log(err)
+	                } else {
+	                	attributes.forEach(function(att){
+	                		if(att.Name == 'email') {
+	                			email = att.Value
+	                		}
+	                	});
+	                }
+	            });
+	        });
+    	}
+	}
+
+	getItem() {
+	    
 		var params = {
 		  Key: {
 		   "itemid": {
@@ -50,7 +113,209 @@ class Item extends Component {
 		   	} else { 
 		   		this.setState({ item: { itemid: data.Item.itemid.S, name: data.Item.name.S, department: data.Item.department.S, 
 		   		image: data.Item.image.S, price: data.Item.price.N, quantity: data.Item.quantity.S, sale: data.Item.sale.N } })
+		   		this.getSimilarItems()
 		   	}
+		 }.bind(this));
+	}
+
+	addToList() {
+		if(cognitoUser == null) {
+			alert("You need to Sign Up for an Account first.")
+		} else {
+			var params = {
+			  Key: {
+			   "userid": {
+			     S: email
+			    }
+			  }, 
+			  TableName: "user"
+			};
+
+			dynamodb.getItem(params, function(err, data) {
+				if (err) {
+			   		console.log(err, err.stack)	
+			   	} else { 
+			   		try {
+			   			itemsInList = data.Item.lists.M.shoppingList.SS
+			   		} catch(error) {
+			   			console.log("shoppingList not yet created  "+error.message)
+			   		} finally {
+			   			this.updateList()
+			   		}
+			   	}
+			}.bind(this));
+		}
+	}
+
+	updateList() {
+		if(!itemsInList.includes(id)) {
+			itemsInList.push(id)
+			var params = {
+			    TableName: 'user',
+			    Key:{
+			        "userid": {
+			        	S: email
+			        }
+			    },
+			    UpdateExpression: "SET lists = :lists",
+			    ExpressionAttributeValues:{
+			        ":lists": { M: {
+			        		"shoppingList": {
+			        			SS: itemsInList
+			        		}
+			        	}
+			        }
+			    },
+			    ReturnValues:"UPDATED_NEW"
+			};
+
+			dynamodb.updateItem(params, function(err, data) {
+				if(err) {
+			   		alert(JSON.stringify(err))
+			   	} else {
+			   		toast("Added to List")
+			   		console.log("Added to Shopping List: "+data)
+				} 
+			});
+		} else {
+			alert("Already in List")
+		}
+	}
+
+	renderButtonBar() {
+
+		var buttonBarStyle;
+		// Mobile
+		if(window.innerWidth < 550) {
+			buttonBarStyle = { 
+				height:'46px', 
+				width: '100%',
+			}
+		} else {
+			buttonBarStyle = {
+				marginTop: '3%', 
+				height:'44px', 
+				width: '40%',
+				float: 'left'
+			}
+		}
+        if(this.state.quantityInCart == 0) {return(
+                <button style={buttonBarStyle} class="primary" onClick={() => {this.handleAddToCart()}}>
+                	Add to Cart
+                </button>
+        );} else {
+            return(
+            	<div style={buttonBarStyle}>
+                    <Counter quantity={this.state.quantityInCart}
+                             onIncrease={this.handleIncrease}
+                             onDecrease={this.handleDecrease}
+                             onRemove={this.handleRemove}/>
+                </div>
+            );
+        }
+    }
+
+    // Increases the quantity of this item in the cart
+    handleIncrease = () => {
+      var quantity = this.state.quantityInCart
+      if(localStorage.getItem('cart') != null) {
+        var cartString = localStorage.getItem('cart')
+        var cart = JSON.parse(cartString)
+
+        if(cart.hasOwnProperty(this.state.item.itemid)) {
+        	var item = this.state.item
+          	item.quantityInCart = quantity + 1
+          	cart[this.state.item.itemid] = item
+          	localStorage.setItem('cart', JSON.stringify(cart))
+          	this.setState({quantityInCart: quantity + 1})
+        }
+      }
+    };
+
+    // Decreases the quantity of this item by 1 in the cart.
+    handleDecrease = () => {
+      var quantity = this.state.quantityInCart
+
+      if(localStorage.getItem('cart') != null) {
+        var cartString = localStorage.getItem('cart')
+        var cart = JSON.parse(cartString)
+
+        if(cart.hasOwnProperty(this.state.item.itemid)) {
+          var item = this.state.item
+          item.quantityInCart = quantity - 1
+          cart[this.state.item.itemid] = item
+          localStorage.setItem('cart', JSON.stringify(cart))
+          this.setState({quantityInCart: quantity - 1})
+        }
+      }
+    };
+
+    // Remove the item from the cart
+    handleRemove = () => {
+      if(localStorage.getItem('cart') != null) {
+        var cartString = localStorage.getItem('cart')
+        var cart = JSON.parse(cartString)
+
+        if(cart.hasOwnProperty(this.state.item.itemid)) {
+          delete cart[this.state.item.itemid]
+          localStorage.setItem('cart', JSON.stringify(cart))
+          this.setState({quantityInCart: 0})
+        }
+      }
+    };
+
+    handleAddToCart = () => {
+     	var quantity = this.state.quantityInCart
+
+    	if(localStorage.getItem('cart') != null) {
+        	var cartString = localStorage.getItem('cart')
+        	console.log(cartString);
+        	var cart = JSON.parse(cartString)
+
+        	if(cart.hasOwnProperty(this.state.item.itemid)) {
+	        	quantity = cart[this.state.item.itemid]
+	    	}
+
+        	var item = this.state.item
+          	item.quantityInCart = quantity + 1
+          	cart[this.state.item.itemid] = item
+        	localStorage.setItem('cart', JSON.stringify(cart))
+        	this.setState({quantityInCart: quantity + 1})
+    	} else {
+      		var cart = {}
+      		var item = this.state.item
+      		item.quantityInCart = quantity + 1
+      		cart[this.state.item.itemid] = item
+      		localStorage.setItem('cart', JSON.stringify(cart))
+      		this.setState({quantityInCart: quantity + 1})
+    	}
+    };
+
+	getSimilarItems() {
+		var params = { 
+		  ExpressionAttributeValues: {
+		   ":d": {
+		     S: this.state.item.department
+		    }
+		  }, 
+		  FilterExpression: "department = :d",  
+		  TableName: "item"
+		 };
+
+		 var similarItems = []
+		 dynamodb.scan(params, function(err, data) {
+		 	if(err) {
+				alert(JSON.stringify(err))
+		 	} else {
+		 		data.Items.forEach((element) => {
+		 			let tempItem = { itemid: element.itemid.S, name: element.name.S, department: element.department.S, 
+		   		image: element.image.S, price: element.price.N, quantity: element.quantity.S, sale: element.sale.N }
+		   			if(tempItem.itemid !== this.state.item.itemid) {
+		   				similarItems.push(tempItem)
+		   			}
+		 		});
+		 		this.setState({similarItems: similarItems})
+		 	}
 		 }.bind(this));
 	}
 
@@ -58,14 +323,14 @@ class Item extends Component {
 		if(this.state.item.sale != 0) {
 			return (
 				<p style={{marginTop: '5%', color: 'red', fontSize: '1.8em'}}>
-					<span style={{color: 'black', textDecoration: 'line-through', webkitTextDecorationColor: 'red'}}>${this.state.item.price}</span>
-					&nbsp;&nbsp;${this.state.item.sale}
+					${Number(this.state.item.sale).toFixed(2)} &nbsp;&nbsp;
+					<span style={{color: '#808080', textDecoration: 'line-through'}}>${Number(this.state.item.price).toFixed(2)}</span>
 				</p>
 			);
 		} else {
 			return (
 				<p style={{marginTop: '5%', fontSize: '1.8em'}}>
-					${this.state.item.price}
+					${Number(this.state.item.price).toFixed(2)}
 				</p>
 			);
 		}
@@ -81,48 +346,43 @@ class Item extends Component {
 			    padding:'0',
 			    fontSize: '1.2em',
 				textAlign: 'center',
+				float: 'right',
+				marginTop: '-40px',
 			}
 
 			return (
-			  <div>
+			<div>
 			    <Header />
-			    <div style={{
-			    	marginTop: '3%',
-			    	marginLeft: '25%',
-			    	marginRight: '25%',
-					width: '50%',
-					float: 'left'
-				}}>
-			    	<img className="img-responsive" style={{width: '100%', width: '100%'}} src={this.state.item.image} />
-			    </div>
-			    <div style={{
-			    	margin: '3%',
-					width: '94%',
-					float: 'right',
-				}}>
+			    <div id="pageBody">
+				    <div style={{
+				    	marginTop: '3%',
+				    	marginLeft: '25%',
+				    	marginRight: '25%',
+						width: '50%',
+						float: 'left' 
+					}}>
+				    	<img className="img-responsive" style={{width: '100%', width: '100%'}} src={this.state.item.image} />
+				    </div>
+				    <div style={{
+				    	margin: '3%',
+						width: '94%',
+						float: 'right',
+					}}>
 
-					<h1 style={{marginTop: '0', fontSize: '2em'}}>{this.state.item.name}</h1>
-					<p style={{marginTop: '3%', color: 'grey', fontSize: '1.4em'}} >{this.state.item.quantity}</p>
-					{this.renderPrice()}
-					<select style={{marginTop: '3%', borderColor: '#CCCCCC', webkitAppearance: 'menulist-button', height: '44px', width: '60%'}}>
-						<option value="1">1</option>
-						<option value="2">2</option>
-						<option value="3">3</option>
-						<option value="4">4</option>
-						<option value="5">5</option>
-						<option value="6">6</option>
-						<option value="7">7</option>
-						<option value="8">8</option>
-						<option value="9">9</option>
-					</select>
-					<button className="primaryRedWithHover" style={astext}>
-						<i class="fa fa-th-list" style={{width: '20%'}}/>
-						Add to List
-					</button>
-					<button className="primary" style={{marginTop: '3%', height:'46px', width: '100%'}}>Add to Cart</button>
-					<HorizontalScroll items={[this.state.item]} title="Similar Items"/>
-			    </div>
-			  </div>
+						<h1 style={{marginTop: '0', fontSize: '2em'}}>{this.state.item.name}</h1>
+						<p style={{marginTop: '3%', color: 'grey', fontSize: '1.4em'}} >{this.state.item.quantity}</p>
+						{this.renderPrice()}
+						<button className="primaryRedWithHover" style={astext} onClick={this.addToList} >
+							<i class="fa fa-th-list" style={{width: '20%'}}/>&nbsp;
+							Add to List
+						</button>
+						{this.renderButtonBar()}
+						<div style={{marginLeft: '-30px', marginRight: '-30px'}}>
+							<HorizontalScroll items={this.state.similarItems} title="Similar Items"/>
+						</div>
+				    </div>
+				</div>
+			</div>
 			);
 		} else {
 			const astext = {
@@ -130,52 +390,49 @@ class Item extends Component {
 			    border:'none',
 			    width: '80px',
 			    marginLeft: '10%',
+			    marginTop: '3%',
 			    padding:'0',
 			    fontSize: '1em',
 				textAlign: 'center',
 			}
 
 			return (
-			  <div>
+			<div>
 			    <Header />
-			    <div style={{
-			    	margin: '3%',
-					width: '45%',
-					height: '500px',
-					float: 'left'
-				}}>
-			    	<img className="img-responsive" style={{width: '100%', width: '100%'}} src={this.state.item.image} />
-			    </div>
-			    <div style={{
-			    	margin: '3%',
-			    	marginLeft: '0%',
-					width: '45%',
-					height: '500px',
-					float: 'right',
-				}}>
+			    <div id="pageBody">
+				    <div style={{
+				    	margin: '3%',
+						width: '45%',
+						height: '500px',
+						float: 'left' 
+					}}>
+				    	<img className="img-responsive" style={{width: '100%', width: '100%', maxWidth: '500px', margin: '0 auto 0 auto'}} src={this.state.item.image} />
+				    </div>
+				    <div style={{
+				    	margin: '3%',
+				    	marginLeft: '0%',
+						width: '45%',
+						height: '500px',
+						float: 'right',
+					}}>
 
-					<h1 style={{marginTop: '0', fontSize: '2em'}}>{this.state.item.name}</h1>
-					<p style={{marginTop: '5%', color: 'grey', fontSize: '1.4em'}} >{this.state.item.quantity}</p>
-					{this.renderPrice()}
-					<select style={{marginTop: '5%', borderColor: '#CCCCCC', webkitAppearance: 'menulist-button', height: '44px', width: '64px'}}>
-						<option value="1">1</option>
-						<option value="2">2</option>
-						<option value="3">3</option>
-						<option value="4">4</option>
-						<option value="5">5</option>
-						<option value="6">6</option>
-						<option value="7">7</option>
-						<option value="8">8</option>
-						<option value="9">9</option>
-					</select>
-					<button className="primary" style={{marginLeft: '5%', height:'46px', width: '40%'}}>Add to Cart</button>
-					<button className="primaryRedWithHover" style={astext}>
-						<i class="fa fa-th-list fa-2x" style={{width: '80px'}}/>
-						Add to List
-					</button>
-					<HorizontalScroll items={[this.state.item]} title="Similar Items"/>
-			    </div>
-			  </div>
+						<h1 style={{marginTop: '0', fontSize: '2em'}}>{this.state.item.name}</h1>
+						<p style={{marginTop: '5%', color: 'grey', fontSize: '1.4em'}} >{this.state.item.quantity}</p>
+						{this.renderPrice()}
+						{this.renderButtonBar()}
+						<div>
+						<button className="primaryRedWithHover" style={astext} onClick={this.addToList.bind(this)} >
+							<i class="fa fa-th-list fa-2x" style={{width: '80px'}}/>
+							Add to List
+						</button>
+						</div>
+						<div style={{marginLeft: '-30px', marginRight: '-30px'}}>
+							<HorizontalScroll items={this.state.similarItems} title="Similar Items"/>
+						</div>
+						<ToastContainer hideProgressBar={true} autoClose={2000} />
+				    </div>
+				</div>
+			</div>
 		);
 	}
   }
