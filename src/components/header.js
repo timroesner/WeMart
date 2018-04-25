@@ -286,7 +286,7 @@ renderMobileAccountButton() {
 	const  {width}  = this.state;
   
   // At this value the header would be unusable anyway so better to switch to the mobile header
-	const isMobile = width <= 767;
+	const isMobile = width <= 904;
   if (isMobile) {
     return (
 			<div style={{paddingBottom: '200px'}}>
@@ -369,13 +369,13 @@ renderMobileAccountButton() {
 	<nav className="navbar navbar-light" style={{width: '100%', backgroundColor: '#F5F5F5', position: 'fixed', zIndex:'10', marginBottom: '115px'}}>
 
 		<div className="container-fluid" style={center}>
-			<div className="navbar-header" style={{width: '15%', paddingTop: '3px'}}>
+			<div className="navbar-header" style={{width: '15%', paddingTop: '3px', marginLeft: '2.5vw'}}>
     			<a className="navbar-brand" style={center} href="/home">
     				<img src={logo} style={{height: '35px', backgroundColor: 'clear'}} />
     			</a>
 			</div>
 
-			<ul className="nav navbar-nav" style={{width: '55%'}} >
+			<ul className="nav navbar-nav" style={{width: '55%', marginLeft: '25px'}} >
 				<form className="form-inline" onSubmit={this.handleSearch} style={{position: 'relative', margin: '15px 0'}}>
 					<input name="search" value={query} onChange={this.handleSearchChange} type="text" placeholder="Search" className="form-control" style={{width: '80%'}} />
 					<button type="submit" className="primary" style={{height: '34px', width: '44px', borderRadius: '4px'}}><i className="fas fa-search" /></button>
