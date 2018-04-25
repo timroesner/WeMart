@@ -11,12 +11,12 @@ import Home from './Home'
 import Item from './Item'
 import Search from './Search'
 import Departments from './Departments'
-import ItemGridTest from './ItemGridTest'
+import AccountSettings from "./AccountSettings";
 
 const Router = () => (
   <main>
     <Switch>
-      <Route path='/itemgridtest' component={ItemGridTest}/>
+      <Route path={'/accountsettings'} component={AccountSettings}/>
       <Route exact path='/signup' component={SignUp}/>
       <Route path='/login' component={LogIn}/>
       <Route path='/confirm' component={Confirm}/>
@@ -26,6 +26,7 @@ const Router = () => (
       <Route path='/search' component={Search} />
       <Route path='/departments' component={Departments}/>
       <Route path='/' component={ZipCodeCheck}/>
+
     </Switch>
   </main>
 )

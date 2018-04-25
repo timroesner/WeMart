@@ -71,7 +71,7 @@ showCart = () => {
 };
 
 handleAccountClick = () => {
-	//when account button is clicked
+	this.props.history.push('/accountsettings')
 	console.log("account button clicked");
 }
 
