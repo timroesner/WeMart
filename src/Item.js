@@ -25,12 +25,23 @@ class Item extends Component {
     		similarItems: [],
     		quantityInCart: 0
     	}
+
     	const queryParams = new URLSearchParams(this.props.location.search);
     	id = queryParams.get('id')
 
     	this.initializeDB()
     	this.getCurrentUser()
     	this.getItem()
+
+    	this.props.history.listen((location, action) => {
+    		// This 100ms delay is necessary for the id to change
+    		setTimeout(function() {
+      			const queryParams = new URLSearchParams(this.props.location.search);
+    			id = queryParams.get('id')
+    			this.getItem()
+  			}.bind(this), 100)
+		})
+    	
 	}
 
 	initializeDB() {
