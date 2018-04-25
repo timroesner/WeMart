@@ -11,7 +11,7 @@ import {withRouter} from "react-router-dom";
 const addToCart = {display: "inherit", margin:'0 0 auto', width:'100%'};
 
 //Item Card Styles
-const itemCard = {background:'#ffffff', width:'100%', marginBottom: '5%'};
+const itemCard = {background:'#ffffff', width:'100%', marginBottom: '25px'};
 const itemCard_cardContents = {cursor:'pointer', margin:'0 5% 1rem 5%',width:'90%',display:'block'};
 const itemCard_badge = {position: 'absolute', top: '.8rem', left: '.8rem', height: '2rem', width:'10rem',
     backgroundRepeat:'no-repeat'};
@@ -114,7 +114,7 @@ class ItemCard extends React.Component{
 
     // Increases the quantity of this item in the cart
     handleIncrease = () => {
-        var quantityInCart = this.state.quantityInCart
+      var quantityInCart = this.state.quantityInCart
       if(localStorage.getItem('cart') != null) {
         var cartString = localStorage.getItem('cart')
         var cart = JSON.parse(cartString)
@@ -150,7 +150,7 @@ class ItemCard extends React.Component{
 
     // Remove the item from the cart
     handleRemove = () => {
-        var quantityInCart = this.state.quantityInCart
+      var quantityInCart = this.state.quantityInCart
       if(localStorage.getItem('cart') != null) {
         var cartString = localStorage.getItem('cart')
         var cart = JSON.parse(cartString)
