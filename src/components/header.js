@@ -4,16 +4,24 @@ import { withRouter } from "react-router-dom";
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'; // ES6
 import './header.css'
 
+var query;
+
 class Header extends Component {
-	constructor() {
-  		super();
+	constructor(props) {
+  		super(props);
   		this.state = {
    			width: window.innerWidth,
 				value: '',
 				cartClicked: false
- 	 	};
+		  };
+		  
+		  this.props.history.listen((location, action) => {
+			this.getSearchValue()
+		})
+
 		this.handleSearch = this.handleSearch.bind(this);
 		this.handleSearchChange = this.handleSearchChange.bind(this);
+		this.getSearchValue()
 	}
 
 componentWillMount() {
@@ -30,15 +38,30 @@ handleWindowSizeChange = () => {
   this.setState({ width: window.innerWidth });
 };
 
+getSearchValue() {
+	if(this.props.location !== undefined) {
+		const queryParams = new URLSearchParams(this.props.location.search);
+		let special = queryParams.get('special')
+		if(special != "true") {
+			query = queryParams.get('query')
+		}
+	}
+}
+
 handleSearch(event) {
 	//search logic
-	console.log("search for "+ this.state.value);
 	event.preventDefault();
+	this.props.history.push({
+		pathname: 'search',
+		search: '?query='+query
+	})
+	window.location.reload()
 };
 
 handleSearchChange(event) {
-    this.setState({value: event.target.value});
-  }
+	query = event.target.value
+	this.setState({value: event.target.value})
+}
 
 showCart = () => {
 	//when cart button is clicked
@@ -48,7 +71,7 @@ showCart = () => {
 };
 
 handleAccountClick = () => {
-	//when account button is clicked
+	this.props.history.push('/accountsettings')
 	console.log("account button clicked");
 }
 
@@ -58,6 +81,14 @@ handleDepartments = () => {
 
 handleZipClick = () => {
 	this.props.history.push('/')
+}
+
+handleSavingsClick = () => {
+	this.props.history.push({
+		pathname: 'search',
+		search: '?query=savings&special=true'
+	})
+	window.location.reload()
 }
 
 
@@ -150,7 +181,7 @@ handleZipClick = () => {
 			<div className="container-fluid">
 				<div className="form-group"  style={{position: 'relative', margin: '15px 0'}}>
 					<form className="form-inline form-horizontal" onSubmit={this.handleSearch} >
-						<input name="search" value={this.state.value} onChange={this.handleSearchChange} type="text" placeholder="Search" className="form-control" style={{width: '100%'}}/>
+						<input name="search" value={query} onChange={this.handleSearchChange} type="text" placeholder="Search" className="form-control" style={{width: '100%'}}/>
 						<button type="submit" className="btn btn-danger btn-sm" style={searchBtn}><i className="fas fa-search" /></button>
 					</form>
 				</div>
@@ -167,7 +198,7 @@ handleZipClick = () => {
 							</li>
 
 							<li style={mobileNavItems}> <a style={links} href="#">
-								<button style={astext}><i className="fas fa-tag" /><br />
+								<button style={astext} onClick={this.handleSavingsClick}><i className="fas fa-tag" /><br />
 									<span>Savings</span>
 								</button></a>
 							</li>
@@ -197,7 +228,7 @@ handleZipClick = () => {
 
 			<ul className="nav navbar-nav" style={{width: '55%'}} >
 				<form className="form-inline" onSubmit={this.handleSearch} style={{position: 'relative', margin: '15px 0'}}>
-					<input name="search" value={this.state.value} onChange={this.handleSearchChange} type="text" placeholder="Search" className="form-control" style={{width: '80%'}} />
+					<input name="search" value={query} onChange={this.handleSearchChange} type="text" placeholder="Search" className="form-control" style={{width: '80%'}} />
 					<button type="submit" className="primary" style={{height: '34px', width: '44px', borderRadius: '4px'}}><i className="fas fa-search" /></button>
 				</form>
 		    </ul>
@@ -229,9 +260,9 @@ handleZipClick = () => {
 		    </ul>
 		</div>
 	    <ul id="pills" className="nav nav-pills" style={center}>
-			<li role="navigation" style={pillsLi}><button className="primaryRedWithHover" style={astext} onClick={this.handleDepartments} >Departments</button></li>
-			<li role="navigation" style={pillsLi}><button className="primaryRedWithHover" style={astext}>Savings</button></li>
-			<li role="navigation" style={pillsLi}><button className="primaryRedWithHover" style={astext}>History</button></li>
+        <li role="navigation" style={pillsLi}><button className="primaryRedWithHover" style={astext} onClick={this.handleDepartments} >Departments</button></li>
+        <li role="navigation" style={pillsLi}><button className="primaryRedWithHover" onClick={this.handleSavingsClick} style={astext}>Savings</button></li>
+        <li role="navigation" style={pillsLi}><button className="primaryRedWithHover" style={astext}>History</button></li>
 	    </ul>
 	</nav>
 	</div>
