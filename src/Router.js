@@ -12,6 +12,12 @@ import Item from './Item'
 import Search from './Search'
 import Departments from './Departments'
 import AccountSettings from "./AccountSettings";
+import AboutUs from './AboutUs'
+import Locations from './Locations'
+import Privacy from './Privacy'
+import Terms from './Terms'
+
+
 
 const Router = () => (
   <main>
@@ -25,6 +31,12 @@ const Router = () => (
       <Route path='/item' component={Item} />
       <Route path='/search' component={Search} />
       <Route path='/departments' component={Departments}/>
+
+      <Route path='/aboutus' component={AboutUs} />
+      <Route path='/locations' component={Locations} />
+      <Route path='/privacy' component={Privacy} />
+      <Route path='/terms' component={Terms} />
+
       <Route path='/' component={ZipCodeCheck}/>
 
     </Switch>
