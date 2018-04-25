@@ -400,7 +400,7 @@ class Item extends Component {
 			<div>
 			    <Header />
 			    <div id="pageBody">
-				    <div id="pageBody" style={{
+				    <div style={{
 				    	margin: '3%',
 						width: '45%',
 						height: '500px',
