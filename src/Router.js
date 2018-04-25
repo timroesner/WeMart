@@ -9,26 +9,27 @@ import PasswordReset from './PasswordReset'
 import ZipCodeCheck from './ZipCodeCheck'
 import Home from './Home'
 import Item from './Item'
+import Search from './Search'
 import Departments from './Departments'
-
+import AccountSettings from "./AccountSettings";
 import AboutUs from './AboutUs'
 import Locations from './Locations'
 import Privacy from './Privacy'
 import Terms from './Terms'
 
-import ItemGridTest from './ItemGridTest'
 
 
 const Router = () => (
   <main>
     <Switch>
-      <Route path='/itemgridtest' component={ItemGridTest}/>
+      <Route path={'/accountsettings'} component={AccountSettings}/>
       <Route exact path='/signup' component={SignUp}/>
       <Route path='/login' component={LogIn}/>
       <Route path='/confirm' component={Confirm}/>
       <Route path='/passwordreset' component={PasswordReset}/>
       <Route path='/home' component={Home} />
       <Route path='/item' component={Item} />
+      <Route path='/search' component={Search} />
       <Route path='/departments' component={Departments}/>
 
       <Route path='/aboutus' component={AboutUs} />
@@ -37,6 +38,7 @@ const Router = () => (
       <Route path='/terms' component={Terms} />
 
       <Route path='/' component={ZipCodeCheck}/>
+
     </Switch>
   </main>
 )
