@@ -73,7 +73,7 @@ class SignUp extends Component {
             }, 
            "lastName": {
              S: model.lastName
-            }
+            },
           }, 
           ReturnConsumedCapacity: "TOTAL", 
           TableName: "user"
