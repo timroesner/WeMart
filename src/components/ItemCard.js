@@ -114,7 +114,7 @@ class ItemCard extends React.Component{
 
     // Increases the quantity of this item in the cart
     handleIncrease = () => {
-        var quantityInCart = this.state.quantityInCart
+      var quantityInCart = this.state.quantityInCart
       if(localStorage.getItem('cart') != null) {
         var cartString = localStorage.getItem('cart')
         var cart = JSON.parse(cartString)
@@ -150,7 +150,7 @@ class ItemCard extends React.Component{
 
     // Remove the item from the cart
     handleRemove = () => {
-        var quantityInCart = this.state.quantityInCart
+      var quantityInCart = this.state.quantityInCart
       if(localStorage.getItem('cart') != null) {
         var cartString = localStorage.getItem('cart')
         var cart = JSON.parse(cartString)

@@ -103,7 +103,7 @@ class Item extends Component {
 		   "itemid": {
 		     S: id
 		    }
-		  }, 
+		  },
 		  TableName: "item"
 		 };
 
@@ -336,7 +336,7 @@ class Item extends Component {
 		}
 	}
 
-	render() { 
+	render() {
 
 		if(window.innerWidth < 550) {
 			const astext = {
