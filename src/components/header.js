@@ -255,7 +255,7 @@ renderMobileAccountButton() {
 	if(cognitoUser !== null) {
 		return (
 			<div className="dropdown">
-				<button className="btn btn-danger btn-sm dropdown-toggle" type="button" id="dropdownMenuHeader" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style={{backgroundColor: 'red'}}>
+				<button className="btn btn-danger btn-sm dropdown-toggle" type="button" id="dropdownMenuHeader" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style={{backgroundColor: '#D30707'}}>
 					<i class="fas fa-user"></i>
 					<span className="caret"></span>
 				</button>
