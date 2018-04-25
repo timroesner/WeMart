@@ -24,5 +24,6 @@ yarn-error.log*
 # Credentials for development
 db.js
 poolData.js
+stripeKey.js
 
 src/stripeKey\.js

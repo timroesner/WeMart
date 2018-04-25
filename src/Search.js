@@ -69,7 +69,7 @@ class Search extends Component {
 		 var items = [];
 		 dynamodb.scan(params, function(err, data) {
 		 	if(err) {
-				alert(JSON.stringify(err))
+				console.log(JSON.stringify(err))
 		 	} else {
 		 		data.Items.forEach((element) => {
 	            	items.push({
@@ -102,7 +102,7 @@ class Search extends Component {
 		 var items = [];
 		 dynamodb.scan(params, function(err, data) {
 		 	if(err) {
-				alert(JSON.stringify(err))
+				console.log(JSON.stringify(err))
 		 	} else {
 		 		data.Items.forEach((element) => {
 	            	items.push({
@@ -130,7 +130,7 @@ class Search extends Component {
 	    var items = [];
 	    dynamodb.scan(params, (err, data) => {
 	        if (err) {
-	        	alert(JSON.stringify(err))
+	        	console.log(JSON.stringify(err))
 	        } else {
 	            data.Items.forEach((element) => {
 

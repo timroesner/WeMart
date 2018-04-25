@@ -11,6 +11,7 @@ import Home from './Home'
 import Item from './Item'
 import Search from './Search'
 import Departments from './Departments'
+import ShoppingList from './ShoppingList'
 import AccountSettings from "./AccountSettings";
 
 const Router = () => (
@@ -25,6 +26,7 @@ const Router = () => (
       <Route path='/item' component={Item} />
       <Route path='/search' component={Search} />
       <Route path='/departments' component={Departments}/>
+      <Route path='/shoppinglist' component={ShoppingList}/>
       <Route path='/' component={ZipCodeCheck}/>
 
     </Switch>

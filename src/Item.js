@@ -173,7 +173,7 @@ class Item extends Component {
 				if(err) {
 			   		alert(JSON.stringify(err))
 			   	} else {
-			   		toast("Added to List")
+			   		toast.error("Added to List")
 			   		console.log("Added to Shopping List: "+data)
 				} 
 			});
