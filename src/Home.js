@@ -4,7 +4,6 @@ import Header from './components/header';
 import { withRouter } from 'react-router-dom';
 import AWS from "aws-sdk/index";
 import {DynamoDB} from "aws-sdk/index";
-import Footer from './components/Footer';
 
 
 class Home extends Component {
@@ -70,7 +69,6 @@ class Home extends Component {
           <HorizontalScroll items={this.state.savingsItems} title="History"/>
           <HorizontalScroll items={this.state.savingsItems} title="Savings"/>
       </div>
-        <Footer />
       </div>
     );
   }
