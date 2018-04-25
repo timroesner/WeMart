@@ -98,9 +98,10 @@ class ShoppingList extends Component {
 		   	} else { 
 		   		try {
 		   			itemIds = data.Item.lists.M.shoppingList.SS
-		   			this.getItems()
 		   		} catch(error) {
-		   			alert("shoppingList not yet created  "+error.message)
+		   			console.log("shoppingList not yet created  "+error.message)
+		   		} finally {
+		   			this.getItems()
 		   		}
 		   	}
 		}.bind(this));
@@ -111,34 +112,39 @@ class ShoppingList extends Component {
 		itemIds.map((itemId) => {
 			keys.push({"itemid":{S: itemId}})
 		})
+		
+		if(keys.length !== 0) {
+			var params = {
+			  RequestItems: {
+			   "item": {
+			     Keys: keys
+			    }
+			  }
+			};
 
-		var params = {
-		  RequestItems: {
-		   "item": {
-		     Keys: keys
-		    }
-		  }
-		};
+			dynamodb.batchGetItem(params, function(err, data) {
+				if (err) {
+			   		alert(err.message)	
+			   	} else {
+			   		var items = [];
+			   		data.Responses.item.forEach((item) => {
+			   			items.push({
+				   			itemid: item.itemid.S,
+				   			name: item.name.S, 
+				   			quantity: item.quantity.S, 
+				   			department: item.department.S, 
+				   			image: item.image.S, 
+				   			sale: item.sale.N,
+				   			price: item.price.N,
+				   		}) 
+			   		})
+			   		this.setState({finishedLoading: true, items: items})
+			   	}
+			}.bind(this));
 
-		dynamodb.batchGetItem(params, function(err, data) {
-			if (err) {
-		   		alert(err.message)	
-		   	} else {
-		   		var items = [];
-		   		data.Responses.item.forEach((item) => {
-		   			items.push({
-			   			itemid: item.itemid.S,
-			   			name: item.name.S, 
-			   			quantity: item.quantity.S, 
-			   			department: item.department.S, 
-			   			image: item.image.S, 
-			   			sale: item.sale.N,
-			   			price: item.price.N,
-			   		}) 
-		   		})
-		   		this.setState({finishedLoading: true, items: items})
-		   	}
-		}.bind(this));
+		} else {
+			this.setState({finishedLoading: true, items: []})
+		}
 	}
 
 	deleteItem(item) {
@@ -155,30 +161,45 @@ class ShoppingList extends Component {
 				itemIds.push(item.itemid)
 			)
 
-			var params = {
-			    TableName: 'user',
-			    Key:{
-			        "userid": {
-			        	S: email
-			        }
-			    },
-			    UpdateExpression: "SET lists = :lists",
-			    ExpressionAttributeValues:{
-			        ":lists": { M: {
-			        		"shoppingList": {
-			        			SS: itemIds
-			        		}
-			        	}
-			        }
-			    },
-			    ReturnValues:"UPDATED_NEW"
-			};
+			var params = {}
+			if(itemIds.length == 0) {
+				params = {
+				    TableName: 'user',
+				    Key:{
+				        "userid": {
+				        	S: email
+				        }
+				    },
+				    UpdateExpression : "REMOVE lists.shoppingList",
+        			ReturnValues : "UPDATED_NEW"
+				};
+
+			} else {
+				params = {
+				    TableName: 'user',
+				    Key:{
+				        "userid": {
+				        	S: email
+				        }
+				    },
+				    UpdateExpression: "SET lists = :lists",
+				    ExpressionAttributeValues:{
+				        ":lists": { M: {
+				        		"shoppingList": {
+				        			SS: itemIds
+				        		}
+				        	}
+				        }
+				    },
+				    ReturnValues:"UPDATED_NEW"
+				};
+			}
 
 			dynamodb.updateItem(params, function(err, data) {
 				if(err) {
 			   		alert(JSON.stringify(err))
 			   	} else {
-			   		console.log("Added to Shopping List: "+data)
+			   		console.log("Removed from Shopping List: "+data)
 				} 
 			});
 		}
