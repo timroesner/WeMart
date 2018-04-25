@@ -196,20 +196,28 @@ closeCart = (cartClicked) => {
 	body.classList.remove('overlay');
 }
 
-handleDepartments = () => {
+handleDepartments = (e) => {
+	e.preventDefault()
 	this.props.history.push('/departments')
 }
 
-handleZipClick = () => {
+handleHistoryClick = (e) => {
+	e.preventDefault()
+	this.props.history.push('/history')
+}
+
+handleZipClick = (e) => {
+	e.preventDefault()
 	this.props.history.push('/')
 }
 
-handleSavingsClick = () => {
+handleSavingsClick = (e) => {
+	e.preventDefault()
 	this.props.history.push({
 		pathname: 'search',
 		search: '?query=savings&special=true'
 	})
-  window.location.reload()
+  	window.location.reload()
 }
 	
     
@@ -309,7 +317,7 @@ renderMobileAccountButton() {
 						<div className="container-fluid">
 							<div className="form-group"  style={{position: 'relative', margin: '15px 0'}}>
 								<form className="form-inline form-horizontal" onSubmit={this.handleSearch} >
-									<input name="search" value={this.state.value} onChange={this.handleSearchChange} type="text" placeholder="Search" className="form-control" style={{width: '100%'}}/>
+									<input name="search" value={query} onChange={this.handleSearchChange} type="text" placeholder="Search" className="form-control" style={{width: '100%', fontSize: '16px'}}/>
 									<button type="submit" className="btn btn-danger btn-sm" style={searchBtn}><i className="fas fa-search" /></button>
 								</form>
 							</div>
@@ -319,20 +327,20 @@ renderMobileAccountButton() {
 					<div className="row">
 							<div className="container">
 								<ul className="nav nav-tabs" style={mobileNav}>
-										<li style={mobileNavItems}><a style={links} href="#">
+										<li style={mobileNavItems}><a style={links} href="">
 											<button style={astext} onClick={this.handleDepartments} ><i className="fas fa-th-large" /><br />
 												<span>Aisles</span>
 											</button></a>
 										</li>
 
-										<li style={mobileNavItems}> <a style={links} href="#">
+										<li style={mobileNavItems}> <a style={links} href="">
 											<button style={astext} onClick={this.handleSavingsClick} ><i className="fas fa-tag" /><br />
 												<span>Savings</span>
 											</button></a>
 										</li>
 
-										<li style={mobileNavItems}><a style={links} href="#">
-											<button style={astext}><i className="fas fa-history" /><br />
+										<li style={mobileNavItems}><a style={links} href="">
+											<button style={astext} onClick={this.handleHistoryClick} ><i className="fas fa-history" /><br />
 												<span>History</span>
 											</button></a>
 										</li>
@@ -400,7 +408,7 @@ renderMobileAccountButton() {
 	    <ul id="pills" className="nav nav-pills" style={center}>
         <li role="navigation" style={pillsLi}><button className="primaryRedWithHover" style={astext} onClick={this.handleDepartments} >Departments</button></li>
         <li role="navigation" style={pillsLi}><button className="primaryRedWithHover" style={astext} onClick={this.handleSavingsClick} >Savings</button></li>
-        <li role="navigation" style={pillsLi}><button className="primaryRedWithHover" style={astext}>History</button></li>
+        <li role="navigation" style={pillsLi}><button className="primaryRedWithHover" style={astext} onClick={this.handleHistoryClick} >History</button></li>
 	    </ul>
 	</nav>
 		<div>
