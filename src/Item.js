@@ -137,7 +137,6 @@ class Item extends Component {
 	}
 
 	updateList() {
-		alert(itemsInList)
 		if(!itemsInList.includes(id)) {
 			itemsInList.push(id)
 			var params = {
