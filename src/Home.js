@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import HorizontalScroll from './components/HorizontalScroll';
 import Header from './components/header';
+import Footer from './components/Footer';
 import { withRouter } from 'react-router-dom';
 import AWS from "aws-sdk/index";
 import {DynamoDB} from "aws-sdk/index";
@@ -69,6 +70,7 @@ class Home extends Component {
           <HorizontalScroll items={this.state.savingsItems} title="History"/>
           <HorizontalScroll items={this.state.savingsItems} title="Savings"/>
       </div>
+      <Footer />
       </div>
     );
   }
