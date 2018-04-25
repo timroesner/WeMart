@@ -126,9 +126,10 @@ class Item extends Component {
 			   	} else { 
 			   		try {
 			   			itemsInList = data.Item.lists.M.shoppingList.SS
-			   			this.updateList()
 			   		} catch(error) {
 			   			console.log("shoppingList not yet created  "+error.message)
+			   		} finally {
+			   			this.updateList()
 			   		}
 			   	}
 			}.bind(this));
@@ -136,6 +137,7 @@ class Item extends Component {
 	}
 
 	updateList() {
+		alert(itemsInList)
 		if(!itemsInList.includes(id)) {
 			itemsInList.push(id)
 			var params = {

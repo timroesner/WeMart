@@ -74,11 +74,6 @@ class SignUp extends Component {
            "lastName": {
              S: model.lastName
             },
-            "lists": { M: {
-                  "shoppingList": {
-                    SS: []
-                  }
-            } },
           }, 
           ReturnConsumedCapacity: "TOTAL", 
           TableName: "user"
