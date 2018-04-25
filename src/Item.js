@@ -299,7 +299,9 @@ class Item extends Component {
 		 		data.Items.forEach((element) => {
 		 			let tempItem = { itemid: element.itemid.S, name: element.name.S, department: element.department.S, 
 		   		image: element.image.S, price: element.price.N, quantity: element.quantity.S, sale: element.sale.N }
-		   			similarItems.push(tempItem)
+		   			if(tempItem.itemid !== this.state.item.itemid) {
+		   				similarItems.push(tempItem)
+		   			}
 		 		});
 		 		this.setState({similarItems: similarItems})
 		 	}
@@ -363,7 +365,9 @@ class Item extends Component {
 						Add to List
 					</button>
 					{this.renderButtonBar()}
-					<HorizontalScroll items={this.state.similarItems} title="Similar Items"/>
+					<div style={{marginLeft: '-30px', marginRight: '-30px'}}>
+						<HorizontalScroll items={this.state.similarItems} title="Similar Items"/>
+					</div>
 			    </div>
 			  </div>
 			);
@@ -408,7 +412,9 @@ class Item extends Component {
 						Add to List
 					</button>
 					</div>
-					<HorizontalScroll items={this.state.similarItems} title="Similar Items"/>
+					<div style={{marginLeft: '-30px', marginRight: '-30px'}}>
+						<HorizontalScroll items={this.state.similarItems} title="Similar Items"/>
+					</div>
 					<ToastContainer hideProgressBar={true} autoClose={2000} />
 			    </div>
 			  </div>
