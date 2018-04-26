@@ -11,13 +11,15 @@ import {DynamoDB} from "aws-sdk/index";
 import PropTypes from 'prop-types';
 import NewCardForm from "./components/NewCardForm";
 import {CognitoUserPool} from "amazon-cognito-identity-js";
-import md5 from 'md5'
+
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 var dynamodb;
 var poolData;
 var stripeKey;
+const orderid = require('order-id')('mysecret')
+
 //STYLES
 const checkout = {margin:' 1rem auto', maxWidth:'71rem',};
 const checkoutForm = {width:'100%',overflow: 'hidden', borderTopLeftRadius:'.6rem',
@@ -288,25 +290,9 @@ export default class Checkout extends React.Component {
             userid = 'guest'
         }
 
-        var order = {
-            'orderId': {'N':this.hashCode().toString()},
-            'userid': {'S':userid},
-            'date':{'S':date},
-            'deliveryDate': {'S':this.state.deliveryDay},
-            'deliveryTime':{'S':this.state.deliveryTime},
-            'deliveryAddress':{'S':address},
-            'status':{'S':'inProgress'},
-            'total':{'N':this.calculateTotal().toString()},
-            'phoneNumber':{'N':this.state.phoneNumber},
-            'items':{'L':this.state.orderItems}
-        }
-
-        console.log('[order]',order)
-        var history = [{'M': order}]
-
         var orderParams = {
             Item: {
-                'orderId':{ S: this.hashCode().toString()},
+                'orderId':{ S: orderid.generate()},
                 'userid':{S:userid},
                 'date':{S:date},
                 'deliveryDate': {S:this.state.deliveryDay},
@@ -317,8 +303,11 @@ export default class Checkout extends React.Component {
                 'phoneNumber':{N:this.state.phoneNumber},
                 'items':{L:this.state.orderItems}
             },
-            TableName:'orders'
+            TableName:'orders',
+            ReturnValues: 'ALL_OLD'
         }
+
+        console.log('[orderParams]',orderParams)
         // var userParams = {
         //     ExpressionAttributeNames: {
         //         "#H": "history",
@@ -345,7 +334,7 @@ export default class Checkout extends React.Component {
 
         dynamodb.putItem(orderParams,(err, data)=>{
             if(err) {console.log(err, err.stack); this.toastFail}
-            else { this.toastSuccess()}
+            else { this.toastSuccess(); console.log(data)}
         } )
 
         // this.clearCart()
@@ -378,12 +367,6 @@ export default class Checkout extends React.Component {
             console.log('Local Storage',localStorage)
         }
     }
-
-    hashCode() {
-        var hash = md5(new Date().toUTCString)
-        console.log(hash)
-        return hash
-    };
 
     renderAddress(){
         if(this.state.addressPanel && this.state.deliveryAddress){
