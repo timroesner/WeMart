@@ -135,6 +135,7 @@ export default class Checkout extends React.Component {
                         })
                         //TODO calculate using sale price
                         var itemTotalPrice = sale != 0 ? sale : price;
+                        itemTotalPrice =+ itemTotalPrice * item.quantityInCart
                         this.setState({
                             subtotal: this.state.subtotal + Number(itemTotalPrice)
                         })
