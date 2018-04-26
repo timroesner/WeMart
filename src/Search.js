@@ -198,7 +198,7 @@ class Search extends Component {
 				   <span className="caret"></span></Button>}>
 				   <MenuItem label="Price: Low to High" value="lowtohigh" style={{padding: '6px'}} labelStyles={{padding: '0'}} />
 					<MenuItem label="Price: High to Low" value="hightolow" style={{padding: '6px'}} labelStyles={{padding: '0'}} />
-					<MenuItem label="Name" value="name" style={{padding: '6px'}} labelStyles={{padding: '0'}} />
+					<MenuItem label="Alphabetical" value="name" style={{padding: '6px'}} labelStyles={{padding: '0'}} />
     			</DropdownMenu>
     			</div>
 		)
