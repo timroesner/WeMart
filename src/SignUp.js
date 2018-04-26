@@ -20,7 +20,7 @@ class SignUp extends Component {
     // Get the dynamoDB database
     var dynamodb;
     if(process.env.NODE_ENV === 'development'){
-        dynamodb = require('./components/db').db;
+        dynamodb = require('./db').db;
     } else {
         dynamodb = new DynamoDB({
             region: "us-west-1",
@@ -67,13 +67,13 @@ class SignUp extends Component {
             },
            "username": {
             S: model.email
-           }, 
+           },
            "firstName": {
              S: model.firstName
-            }, 
+            },
            "lastName": {
              S: model.lastName
-            }
+            },
           }, 
           ReturnConsumedCapacity: "TOTAL", 
           TableName: "user"
@@ -102,19 +102,19 @@ class SignUp extends Component {
     }
 
     return (
-      <div style={{ 
-        height: window.innerHeight+'px', 
-        overflow: 'auto',  
-        backgroundImage: `url(${background})`, 
-        backgroundRepeat: 'repeat', 
-        backgroundColor: 'red', 
-        display: 'flex', 
-        alignItems: 'center' 
+      <div style={{
+        height: window.innerHeight+'px',
+        overflow: 'auto',
+        backgroundImage: `url(${background})`,
+        backgroundRepeat: 'repeat',
+        backgroundColor: 'red',
+        display: 'flex',
+        alignItems: 'center'
       }} >
 
         <div style={{
           margin: 'auto',
-          backgroundColor: 'white', 
+          backgroundColor: 'white',
           borderRadius: '10px',
           maxWidth: `${0.5*window.innerWidth}px`,
           minWidth: '250px'
@@ -165,8 +165,8 @@ class SignUp extends Component {
               required
               style={txtStyle}
             />
-            <button class="primary" type="submit" style={{margin: '6% 15% 3% 15%', width: '70%', height:'2.2em'}} > 
-              Sign Up 
+            <button class="primary" type="submit" style={{margin: '6% 15% 3% 15%', width: '70%', height:'2.2em'}} >
+              Sign Up
             </button>
           </Form>
           <p style={{

@@ -11,7 +11,7 @@ import {withRouter} from "react-router-dom";
 const addToCart = {display: "inherit", margin:'0 0 auto', width:'100%'};
 
 //Item Card Styles
-const itemCard = {background:'#ffffff', width:'100%', marginBottom: '5%'};
+const itemCard = {background:'#ffffff', width:'100%', marginBottom: '25px'};
 const itemCard_cardContents = {cursor:'pointer', margin:'0 5% 1rem 5%',width:'90%',display:'block'};
 const itemCard_badge = {position: 'absolute', top: '.8rem', left: '.8rem', height: '2rem', width:'10rem',
     backgroundRepeat:'no-repeat'};
@@ -101,20 +101,42 @@ class ItemCard extends React.Component{
 
      // Renders the items button bar. By default this includes the counter
      renderButtonBar(){
-        return(
+      
+        // Mobile has traditional state
+        if(window.innerWidth < 550) {
+          if(this.state.quantityInCart == 0){return(
+            <div style={itemCard_buttonBar}>
+                <Button style={addToCart} snacksStyle="secondary" size="small"
+                        onClick={() => {this.handleAddToCart()}}>Add To Cart</Button>
+            </div>
+          );} else {
+              return(
+                  <div style={itemCard_buttonBar}>
+                      <Counter quantity={this.state.quantityInCart}
+                               onIncrease={this.handleIncrease}
+                               onDecrease={this.handleDecrease}
+                               onRemove={this.handleRemove}/>
+                  </div>
+              );
+          }
+
+        // On desktop we use this fancy mouse hover stuff
+        } else {
+          return(
           <div style={itemCard_buttonBar} onMouseEnter={this.mouseEnter} onMouseLeave={this.mouseLeave}>
             {this.state.isMouseInside && (this.state.quantityInCart != 0) ? <Counter quantity={this.state.quantityInCart}
                                  onIncrease={this.handleIncrease}
                                  onDecrease={this.handleDecrease}
-                                 onRemove={this.handleRemove}/> :<Button style={addToCart} snacksStyle="secondary" size="small"
+                                 onRemove={this.handleRemove}/> : <Button style={addToCart} snacksStyle="secondary" size="small"
                            onClick={() => {this.handleAddToCart()}}>Add To Cart</Button>}
           </div>
-        )
+          )
+        }
     }
 
     // Increases the quantity of this item in the cart
     handleIncrease = () => {
-        var quantityInCart = this.state.quantityInCart
+      var quantityInCart = this.state.quantityInCart
       if(localStorage.getItem('cart') != null) {
         var cartString = localStorage.getItem('cart')
         var cart = JSON.parse(cartString)
@@ -150,7 +172,7 @@ class ItemCard extends React.Component{
 
     // Remove the item from the cart
     handleRemove = () => {
-        var quantityInCart = this.state.quantityInCart
+      var quantityInCart = this.state.quantityInCart
       if(localStorage.getItem('cart') != null) {
         var cartString = localStorage.getItem('cart')
         var cart = JSON.parse(cartString)

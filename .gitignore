@@ -10,6 +10,7 @@
 /build
 
 # misc
+.idea
 .DS_Store
 .env.local
 .env.development.local
@@ -23,6 +24,6 @@ yarn-error.log*
 # Credentials for development
 db.js
 poolData.js
+stripeKey.js
 
-
-\.idea/
+src/stripeKey\.js
