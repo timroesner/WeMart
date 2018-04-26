@@ -11,6 +11,7 @@ import Home from './Home'
 import Item from './Item'
 import Search from './Search'
 import Departments from './Departments'
+import ShoppingList from './ShoppingList'
 import AccountSettings from "./AccountSettings";
 import AboutUs from './AboutUs'
 import Locations from './Locations'
@@ -36,6 +37,8 @@ const Router = () => (
       <Route path='/locations' component={Locations} />
       <Route path='/privacy' component={Privacy} />
       <Route path='/terms' component={Terms} />
+
+      <Route path='/shoppinglist' component={ShoppingList}/>
 
       <Route path='/' component={ZipCodeCheck}/>
 

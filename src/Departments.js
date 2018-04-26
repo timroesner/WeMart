@@ -91,11 +91,20 @@ class Departments extends Component {
 		<div>
 			<Header />
 
+
 			<div style={gridContainer}>
 			  {this.renderDepartments(this.state.departments)}
 			</div>
 
-			<Footer />
+			
+
+			<div id="pageBody">
+				<div style={gridContainer}>
+				  {this.renderDepartments(this.state.departments)} 
+				</div>
+			</div>
+
+      <Footer />
 		</div>
 		)
 	}

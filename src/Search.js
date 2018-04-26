@@ -69,7 +69,7 @@ class Search extends Component {
 		 var items = [];
 		 dynamodb.scan(params, function(err, data) {
 		 	if(err) {
-				alert(JSON.stringify(err))
+				console.log(JSON.stringify(err))
 		 	} else {
 		 		data.Items.forEach((element) => {
 	            	items.push({
@@ -102,7 +102,7 @@ class Search extends Component {
 		 var items = [];
 		 dynamodb.scan(params, function(err, data) {
 		 	if(err) {
-				alert(JSON.stringify(err))
+				console.log(JSON.stringify(err))
 		 	} else {
 		 		data.Items.forEach((element) => {
 	            	items.push({
@@ -130,7 +130,7 @@ class Search extends Component {
 	    var items = [];
 	    dynamodb.scan(params, (err, data) => {
 	        if (err) {
-	        	alert(JSON.stringify(err))
+	        	console.log(JSON.stringify(err))
 	        } else {
 	            data.Items.forEach((element) => {
 
@@ -198,7 +198,7 @@ class Search extends Component {
 				   <span className="caret"></span></Button>}>
 				   <MenuItem label="Price: Low to High" value="lowtohigh" style={{padding: '6px'}} labelStyles={{padding: '0'}} />
 					<MenuItem label="Price: High to Low" value="hightolow" style={{padding: '6px'}} labelStyles={{padding: '0'}} />
-					<MenuItem label="Name" value="name" style={{padding: '6px'}} labelStyles={{padding: '0'}} />
+					<MenuItem label="Alphabetical" value="name" style={{padding: '6px'}} labelStyles={{padding: '0'}} />
     			</DropdownMenu>
     			</div>
 		)
@@ -208,8 +208,10 @@ class Search extends Component {
 		return(
 			<div>
 				<Header />
-				{this.renderSortingMenu()}
-				{this.renderItems()}
+				<div id="pageBody">
+					{this.renderSortingMenu()}
+					{this.renderItems()}
+				</div>
 			</div>
 		)
 	}

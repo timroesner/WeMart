@@ -3,8 +3,8 @@ import HorizontalScroll from './components/HorizontalScroll';
 import Header from './components/header';
 import Footer from './components/Footer';
 import { withRouter } from 'react-router-dom';
-import AWS from "aws-sdk/index";
-import {DynamoDB} from "aws-sdk/index";
+import AWS from 'aws-sdk/index';
+import {DynamoDB} from 'aws-sdk/index';
 
 
 class Home extends Component {
@@ -35,7 +35,8 @@ class Home extends Component {
 
     // Get the table whose name is "item"
     var params = {
-        TableName: "item"
+        TableName: "item",
+        Limit: 10
     };
 
     dynamodb.scan(params, (err, data) => {
@@ -52,21 +53,41 @@ class Home extends Component {
                 let quantity = (element.quantity.S);
                 let sale = (element.sale.N);
 
-                let testItem = {itemid: itemid, name: name, departmentid: departmentid, image: image, price: price, quantity: quantity, sale: sale};
+                let testItem = {
+                    itemid: itemid, name: name, departmentid: departmentid, image: image, price: price,
+                    quantity: quantity, sale: sale, inCart: 0};
                 this.setState({
                     savingsItems: [...this.state.savingsItems, testItem]
                 });
             });
         }
     });
+
+    var params = {
+	        TableName: "department",
+          Limit: 10
+	    };
+
+	    var departments = [];
+	    dynamodb.scan(params, (err, data) => {
+	        if (err) {
+	        	alert(JSON.stringify(err))
+	        } else {
+	            data.Items.forEach((element) => {
+	            	departments.push({name: element.departmentid.S, image: element.image.S})
+	            });
+				      this.setState({departmentItems: departments})
+	        }
+	    });
   }
+
 
   render() {
     return (
       <div>
         <Header />
-        <div className="container">
-          <HorizontalScroll items={this.state.savingsItems} title="Browse by Department"/>
+        <div id="pageBody" className="container-fluid">
+          <HorizontalScroll items={this.state.departmentItems} title="Browse by Department"/>
           <HorizontalScroll items={this.state.savingsItems} title="History"/>
           <HorizontalScroll items={this.state.savingsItems} title="Savings"/>
       </div>
