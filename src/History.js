@@ -34,7 +34,6 @@ class History extends React.Component{
     }
 
     getCognitoUser(){
-
         var userPool = new CognitoUserPool(poolData);
         var cognitoUser = userPool.getCurrentUser();
         if (cognitoUser != null) {
@@ -189,7 +188,7 @@ class History extends React.Component{
 
     render(){
         return(
-            <div>
+            <div id="pageBody">
                 <Header/>
                 <h1 style={pageTitle}>Your Past Purchases</h1>
                 {this.renderHistory()}
