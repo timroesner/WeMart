@@ -15,3 +15,8 @@
   transform: translateX(100%);
   transition: transform 300ms ease-in;
 }
+
+.overlay {
+  pointer-events: none;
+  opacity: 0.5
+}
