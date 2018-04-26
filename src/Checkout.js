@@ -557,7 +557,7 @@ export default class Checkout extends React.Component {
             <div>
                 <Header/>
                 <Elements>
-                    <div style={checkout}>
+                    <div style={checkout} id="pageBody">
                         <div>
                             <h1 style={{textAlign:'center', padding:'1.5rem' ,fontFamily:' "Open Sans", "Helvetica Neue", Helvetica, sans-serif'}}>Checkout</h1>
                         </div>
