@@ -1,7 +1,7 @@
 import {withRouter} from 'react-router-dom';
 import Header from './components/header';
 import React from "react";
-import {Button} from "ic-snacks";
+import {Button, DropdownMenu, MenuItem } from "ic-snacks";
 import itemsEmpty from './images/items_empty.png'
 import {CognitoUserPool} from "amazon-cognito-identity-js";
 import {DynamoDB} from "aws-sdk";
@@ -11,7 +11,7 @@ var poolData;
 var dynamodb;
 //Styles
 const history = {fontFamily:'"Open Sans", "Helvetica Neue", Helvetica, sans-serif', maxWidth:'120rem',
-    height:'auto !important', margin:'3rem auto', background:'#ffffff', borderRadius:'.6rem',border:'1px solid red'};
+    height:'auto !important', margin:'3rem auto', background:'#ffffff'};
 const pageTitle = {textAlign:'center', padding:'1.5rem', fontWeight:'600'};
 const panel = {backgroundColor:'#FFFFFF',
     marginBottom:'2rem',marginRight:'2rem',marginLeft:'2rem', padding:'4rem 0'}
@@ -186,11 +186,48 @@ class History extends React.Component{
         }
     }
 
+    // Written by https://github.com/timroesner
+    sortBy = (e, option) => {
+		if(option.value == "lowtohigh") {
+			this.setState({items: this.state.items.sort(function(a, b){
+				let priceA = a.sale != 0 ? a.sale : a.price;
+				let priceB = b.sale != 0 ? b.sale : b.price;
+				console.log(priceB)
+				return(priceA - priceB)
+			})})
+
+		} else if(option.value == "hightolow") {
+			this.setState({items: this.state.items.sort(function(a, b){
+				let priceA = a.sale != 0 ? a.sale : a.price;
+				let priceB = b.sale != 0 ? b.sale : b.price;
+				return(priceB - priceA)
+			})})
+
+		} else if(option.value == "name") {
+			this.setState({items: this.state.items.sort(function(a, b){return(a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0)})})
+		}
+	}
+
+    // Written by https://github.com/timroesner
+    renderSortingMenu() {
+		return(
+				<div style={{ margin: '16px'}}>
+				<DropdownMenu onSelect={this.sortBy} triggerElement={<Button snacksStyle="secondary" size="small" >Sorting by&nbsp;
+				   <span className="caret"></span></Button>}>
+				   <MenuItem label="Price: Low to High" value="lowtohigh" style={{padding: '6px'}} labelStyles={{padding: '0'}} />
+					<MenuItem label="Price: High to Low" value="hightolow" style={{padding: '6px'}} labelStyles={{padding: '0'}} />
+					<MenuItem label="Alphabetical" value="name" style={{padding: '6px'}} labelStyles={{padding: '0'}} />
+    			</DropdownMenu>
+    			</div>
+		)
+	}
+
     render(){
         return(
             <div id="pageBody">
                 <Header/>
                 <h1 style={pageTitle}>Your Past Purchases</h1>
+                {this.renderSortingMenu()}
                 {this.renderHistory()}
             </div>
 
