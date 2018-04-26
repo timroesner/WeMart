@@ -40,7 +40,7 @@ class History extends React.Component{
         if (cognitoUser != null) {
             cognitoUser.getSession(function(err, session) {
                 if (err) {
-                    alert(err);
+                    console.log(err)
                     return;
                 }
             });
@@ -48,8 +48,7 @@ class History extends React.Component{
             let self = this;
             cognitoUser.getUserAttributes(function(err, result) {
                 if (err) {
-                    alert(err);
-                    //TODO remove these alerts
+                    console.log(err)
                     return;
                 }
                 self.setState({isLoggedIn: true})
