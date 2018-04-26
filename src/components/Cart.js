@@ -3,6 +3,7 @@ import CartList from './cart_list'
 import './header.css'
 import {DynamoDB} from 'aws-sdk/index'
 import AWS from 'aws-sdk/index'
+import { withRouter } from "react-router-dom";
 
 class Cart extends Component {
   constructor(props) {
@@ -99,6 +100,10 @@ class Cart extends Component {
     }
   }
 
+  handleCheckoutClick = () => {
+    this.props.history.push('/checkout')
+  }
+
   render() {
     const title = {
       height: '10%',
@@ -159,7 +164,7 @@ class Cart extends Component {
                 handleDecrease={(itemID) => this.handleDecrease(itemID)}/>
             </div>
             <div style={{height: '10%', display: 'flex', justifyContent: 'center'}}>
-              <button style={checkoutBtn} className="primary">Checkout
+              <button style={checkoutBtn} className="primary" onClick={this.handleCheckoutClick} >Checkout
               </button>
             </div>
             <div style={{float: 'right', margin: '-57px 25px 0 auto', padding: '4px 7px', borderRadius: '4px' ,background: 'white', color: '#D30707'}}>
@@ -183,7 +188,7 @@ class Cart extends Component {
                         handleDecrease={(itemID) => this.handleDecrease(itemID)}/>
             </div>
             <div style={{height: '10%', display: 'flex', justifyContent: 'center'}}>
-              <button style={checkoutBtn} className="primary">Checkout
+              <button style={checkoutBtn} className="primary" onClick={this.handleCheckoutClick} >Checkout
               </button>
             </div>
             <div style={{float: 'right', margin: '-57px 25px 0 auto', padding: '4px 7px', borderRadius: '4px' ,background: 'white', color: '#D30707'}}>
@@ -194,4 +199,4 @@ class Cart extends Component {
       }
     }
   }
-export default Cart;
+export default withRouter(Cart);
