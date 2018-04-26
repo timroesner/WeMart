@@ -320,11 +320,13 @@ class ShoppingList extends Component {
 		return(
 		<div>
 			<Header />
-			<h2 style={{marginLeft: '10%'}} >Shopping List</h2>
-			<div style= {{margin: '2% 10% 2% 10%'}} >
-				{this.renderShoppingList()}
+			<div id="pageBody">
+				<h2 style={{marginLeft: '10%'}} >Shopping List</h2>
+				<div style= {{margin: '2% 10% 2% 10%'}} >
+					{this.renderShoppingList()}
+				</div>
+				<ToastContainer hideProgressBar={true} autoClose={2000} />
 			</div>
-			<ToastContainer hideProgressBar={true} autoClose={2000} />
 		</div>
 		)
 	}

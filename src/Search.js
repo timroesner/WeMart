@@ -208,8 +208,10 @@ class Search extends Component {
 		return(
 			<div>
 				<Header />
-				{this.renderSortingMenu()}
-				{this.renderItems()}
+				<div id="pageBody">
+					{this.renderSortingMenu()}
+					{this.renderItems()}
+				</div>
 			</div>
 		)
 	}
