@@ -138,9 +138,8 @@ class Cart extends Component {
 
     const checkoutBtn = {
       width: '98%',
-      margin: 'auto',
+      height: '82%',
       padding: '0',
-      height: '82%'
     }
 
     const isMobile = this.state.width <= 700;
@@ -161,10 +160,10 @@ class Cart extends Component {
             </div>
             <div style={{height: '10%', display: 'flex', justifyContent: 'center'}}>
               <button style={checkoutBtn} className="primary">Checkout
-                <span style={{position: 'absolute', right: '7%', padding: '4px 7px', borderRadius: '4px' ,background: 'linear-gradient(#d82929, #d82929)'}}>
-                  {'$'+this.getTotalPrice(this.state.cartItems).toFixed(2)}
-                </span>
               </button>
+            </div>
+            <div style={{float: 'right', margin: '-57px 25px 0 auto', padding: '4px 7px', borderRadius: '4px' ,background: 'white', color: '#D30707'}}>
+                  {'$'+this.getTotalPrice(this.state.cartItems).toFixed(2)}
             </div>
           </div>
         );
@@ -185,10 +184,10 @@ class Cart extends Component {
             </div>
             <div style={{height: '10%', display: 'flex', justifyContent: 'center'}}>
               <button style={checkoutBtn} className="primary">Checkout
-                <span style={{position: 'absolute', right: '7%', padding: '4px 7px', borderRadius: '4px' ,background: 'linear-gradient(#d82929, #d82929)'}}>
-                  {'$'+this.getTotalPrice(this.state.cartItems).toFixed(2)}
-                </span>
               </button>
+            </div>
+            <div style={{float: 'right', margin: '-57px 25px 0 auto', padding: '4px 7px', borderRadius: '4px' ,background: 'white', color: '#D30707'}}>
+                  {'$'+this.getTotalPrice(this.state.cartItems).toFixed(2)}
             </div>
           </div>
         );
