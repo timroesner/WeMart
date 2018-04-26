@@ -20,7 +20,7 @@ class Home extends Component {
       isLoggedIn: false,
       isLoaded: false,
       orderHistory: new Set(),
-       user: null
+      user: null
     }
   }
 
@@ -196,6 +196,10 @@ class Home extends Component {
           })
       }
 
+  handleSeeMoreClick = (link) => {
+    this.props.history.push('/'+link)
+  }
+
   componentDidMount = () =>  {
 
     this.setKeys()
@@ -236,9 +240,9 @@ class Home extends Component {
       <div>
         <Header />
         <div id="pageBody" className="container-fluid">
-          <HorizontalScroll items={this.state.departmentItems} title="Browse by Department"/>
-          <HorizontalScroll items={this.state.savingsItems} title="Savings"/>
-          {this.state.isLoggedIn && this.state.historyItems.length > 0? <HorizontalScroll items={this.state.historyItems} title="History"/> : this.noHistory()}
+          <HorizontalScroll onSeeMoreClick={() => this.handleSeeMoreClick('departments')} items={this.state.departmentItems} title="Browse by Department"/>
+          <HorizontalScroll onSeeMoreClick={() => this.handleSeeMoreClick('savings')} items={this.state.savingsItems} title="Savings"/>
+          {this.state.isLoggedIn && this.state.historyItems.length > 0? <HorizontalScroll onSeeMoreClick={() => this.handleSeeMoreClick('history')} items={this.state.historyItems} title="History"/> : this.noHistory()}
       </div>
       </div>
     );

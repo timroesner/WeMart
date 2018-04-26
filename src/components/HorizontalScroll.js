@@ -55,7 +55,8 @@ const HorizontalScroll = (props) => {
   return (
     <div style={scrollWrapper}>
       <div className="jumbotron jumbotron-fluid" style={scrollerTitle}>
-        <h4 className="lead">{props.title}</h4>
+        <span className="lead">{props.title}</span>
+        <button onClick={props.onSeeMoreClick} style={{float: 'right', background: 'none', border: 'none', paddingRight:'5%'}}>See more ></button>
       </div>
       <div style={wrapper}>
         <ul className="nav" style={list}>
