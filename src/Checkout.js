@@ -12,6 +12,8 @@ import PropTypes from 'prop-types';
 import NewCardForm from "./components/NewCardForm";
 import {CognitoUserPool} from "amazon-cognito-identity-js";
 import md5 from 'md5'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 var dynamodb;
 var poolData;
@@ -23,6 +25,8 @@ const checkoutForm = {width:'100%',overflow: 'hidden', borderTopLeftRadius:'.6re
 const validEntry = {margin:'1.5rem', fontWeight:'600',border:'1px solid red', padding:'1.5rem',borderRadius:'.6rem'}
 
 export default class Checkout extends React.Component {
+
+    orderToast = null
 
     constructor(){
         super();
@@ -72,6 +76,11 @@ export default class Checkout extends React.Component {
             });
         }
     }
+
+    notify = () => this.orderToast = toast("Placing Order", { type: toast.TYPE.INFO, autoClose: 4000});
+
+    toastSuccess = () => toast.update(this.orderToast, { type: toast.TYPE.SUCCESS, render: <div><h4>Order Succesfully Placed</h4><h5>Redirecting to homepage</h5></div>, onClose: () => this.props.history.push('/home') });
+    toastFail = () => toast.update(this.orderToast, { type: toast.TYPE.ERROR, render: "Something Went Wrong"});
 
     setKeys(){
         if(process.env.NODE_ENV === 'development'){
@@ -266,6 +275,8 @@ export default class Checkout extends React.Component {
     }
 
     handleOrderPlace = ()=>{
+        this.notify()
+        this.setState({addressPanel: false})
         var date = new Date().toJSON().slice(0,10).replace(/-/g,'/');
         var address = this.state.deliveryAddress.street + ' ' + this.state.deliveryAddress.city +', ' +
             this.state.deliveryAddress.state + ' ' + this.state.deliveryAddress.zipCode;
@@ -332,11 +343,11 @@ export default class Checkout extends React.Component {
         // })
 
         dynamodb.putItem(orderParams,(err, data)=>{
-            if(err) {console.log(err, err.stack)}
-            else { console.log('Order placed', data)}
+            if(err) {console.log(err, err.stack); this.toastFail}
+            else { this.toastSuccess()}
         } )
 
-        this.clearCart()
+        // this.clearCart()
         //TODO send the token to the back end
         // paymentRequest.on('token', function(ev) {
         //     // Send the token to your server to charge it!
@@ -621,6 +632,7 @@ export default class Checkout extends React.Component {
                         </div>
                     </div>
                 </Elements>
+                <ToastContainer />
             </div>
         );
     }
