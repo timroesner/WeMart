@@ -13,10 +13,12 @@ import Search from './Search'
 import Departments from './Departments'
 import ShoppingList from './ShoppingList'
 import AccountSettings from "./AccountSettings";
+import OrderHistory from './OrderHistory'
 
 const Router = () => (
   <main>
     <Switch>
+      <Route path={'/orderhistory'} component={OrderHistory}/>
       <Route path={'/accountsettings'} component={AccountSettings}/>
       <Route exact path='/signup' component={SignUp}/>
       <Route path='/login' component={LogIn}/>
