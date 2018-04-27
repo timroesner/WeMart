@@ -80,7 +80,7 @@ class Search extends Component {
 	            		quantity: element.quantity.S,
 	            		sale: element.sale.N,
 	            		departmentid: element.department.S,
-	            		inCart: 0,
+	            		quantityInCart: 0,
 	            	})
 	            });
 	            this.setState({items: items, finishedLoading: true})

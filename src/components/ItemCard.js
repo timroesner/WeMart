@@ -45,8 +45,8 @@ class ItemCard extends React.Component{
         if(localStorage.getItem('cart') != null) {
           var cartString = localStorage.getItem('cart')
           var cart = JSON.parse(cartString)
-          if(cart.hasOwnProperty(this.props.itemID)) {
-            var quantityInCart = cart[this.props.itemID].quantityInCart
+          if(cart.hasOwnProperty(this.props.itemid)) {
+            var quantityInCart = cart[this.props.itemid].quantityInCart
             this.setState({
               quantityInCart: quantityInCart
             });
@@ -76,10 +76,10 @@ class ItemCard extends React.Component{
     // If sale price is zero then it renders normally, otherwise
     // it renders the sale price in red and the original MSRP with a strike-through.
     renderPrice(){
-        if(this.props.salePrice !== "0") {
+        if(this.props.sale !== "0") {
             return (
                 <div style={itemCard_price}>
-                    <span style={itemCard_price_sale}>${Number(this.props.salePrice).toFixed(2)}</span>
+                    <span style={itemCard_price_sale}>${Number(this.props.sale).toFixed(2)}</span>
                     <span style={itemCard_price_crossedOut} >${Number(this.props.price).toFixed(2)}</span>
                 </div>
             );
@@ -91,7 +91,7 @@ class ItemCard extends React.Component{
     // Places a badge to the top right of the item to indicate any special properties of the item.
     // Currently "On Sale" is the only badge.
     renderBadge(){
-        if(this.props.salePrice !== "0"){
+        if(this.props.sale !== "0"){
             return (
                 <div style={itemCard_badge_onSale}>
                 </div>
@@ -140,11 +140,11 @@ class ItemCard extends React.Component{
       if(localStorage.getItem('cart') != null) {
         var cartString = localStorage.getItem('cart')
         var cart = JSON.parse(cartString)
-        if(cart.hasOwnProperty(this.props.itemID)) {
-          var item = cart[this.props.itemID]
+        if(cart.hasOwnProperty(this.props.itemid)) {
+          var item = cart[this.props.itemid]
           quantityInCart++
           item.quantityInCart = quantityInCart
-          cart[this.props.itemID] = item
+          cart[this.props.itemid] = item
           localStorage.setItem('cart', JSON.stringify(cart))
           this.setState({quantityInCart: quantityInCart})
         }
@@ -157,13 +157,13 @@ class ItemCard extends React.Component{
         if(localStorage.getItem('cart') != null) {
           var cartString = localStorage.getItem('cart')
           var cart = JSON.parse(cartString)
-          if(cart.hasOwnProperty(this.props.itemID)) {
-            var item = cart[this.props.itemID]
+          if(cart.hasOwnProperty(this.props.itemid)) {
+            var item = cart[this.props.itemid]
             quantityInCart--
             item.quantityInCart = quantityInCart
-            cart[this.props.itemID] = item
+            cart[this.props.itemid] = item
             localStorage.setItem('cart', JSON.stringify(cart))
-            console.log('Quantity of item with itemID '+this.props.itemID+ ' is ' + quantityInCart);
+            console.log('Quantity of item with itemid '+this.props.itemid+ ' is ' + quantityInCart);
             this.setState({quantityInCart: quantityInCart})
             console.log("State " + this.state.quantityInCart);
           }
@@ -176,12 +176,12 @@ class ItemCard extends React.Component{
       if(localStorage.getItem('cart') != null) {
         var cartString = localStorage.getItem('cart')
         var cart = JSON.parse(cartString)
-        if(cart.hasOwnProperty(this.props.itemID)) {
+        if(cart.hasOwnProperty(this.props.itemid)) {
           quantityInCart = 0
-          // cart[this.props.itemID] = quantity
-          delete cart[this.props.itemID]
+          // cart[this.props.itemid] = quantity
+          delete cart[this.props.itemid]
           localStorage.setItem('cart', JSON.stringify(cart))
-          console.log('Quantity of item with itemID '+this.props.itemID+ ' is ' + quantityInCart);
+          console.log('Quantity of item with itemid '+this.props.itemid+ ' is ' + quantityInCart);
           this.setState({quantityInCart: quantityInCart})
           console.log("State " + this.state.quantityInCart);
         }
@@ -192,18 +192,18 @@ class ItemCard extends React.Component{
     handleItemClicked = () => {
         this.props.history.push({
             pathname: '/item',
-            search: '?id='+this.props.itemID
+            search: '?id='+this.props.itemid
         })
     };
 
     handleAddToCart = () => {
         var quantityInCart = this.state.quantityInCart
         var item = {
-          itemID: this.props.itemID,
+          itemid: this.props.itemid,
           image: this.props.image,
           name: this.props.name,
           price: this.props.price,
-          salePrice: this.props.salePrice,
+          sale: this.props.sale,
           weight: this.props.weight
         }
         console.log("Prop quantity is " +this.props.quantity);
@@ -213,13 +213,13 @@ class ItemCard extends React.Component{
           var cart = JSON.parse(cartString)
           quantityInCart += 1
           item.quantityInCart = quantityInCart
-          cart[this.props.itemID] = item
+          cart[this.props.itemid] = item
           localStorage.setItem('cart', JSON.stringify(cart))
           this.setState({quantityInCart: quantityInCart})
       } else {
         var cart = {}
         item.quantityInCart = ++quantityInCart
-        cart[this.props.itemID] = item
+        cart[this.props.itemid] = item
         localStorage.setItem('cart', JSON.stringify(cart))
         this.setState({quantityInCart: quantityInCart})
       }
@@ -273,11 +273,11 @@ class ItemCard extends React.Component{
 export default withRouter(ItemCard);
 
 ItemCard.propTypes = {
-    itemID: PropTypes.string.isRequired,
+    itemid: PropTypes.string.isRequired,
     image: PropTypes.string,
     name: PropTypes.string,
     onSelect: PropTypes.func,
     price: PropTypes.string,
-    salePrice: PropTypes.string,
+    sale: PropTypes.string,
     quantity: PropTypes.string
 };
