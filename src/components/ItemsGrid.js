@@ -8,7 +8,6 @@ const gridContainer = {
     gridTemplateColumns: 'repeat( auto-fit, minmax(14.8rem, 1fr) )',
     gridColumnGap: '5%',
     margin: '2%',
-    width: '95%',
 }
 const itemGrid_itemCard = {display:'inline-block', position:'relative', verticalAlign:'top', margin: '3%', maxWidth: '200px'};
 
