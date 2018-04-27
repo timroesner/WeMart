@@ -159,7 +159,7 @@ class OrderHistory extends React.Component{
     renderOrders(){
         return(
             this.state.orders.map((order)=>
-                <ProfilePanel title={order.date.S + ' of '+ order.items.L.length + ' items' }>
+                <ProfilePanel title={'Order # '+ order.orderId.S}>
                     <h4>Order Status: {order.status.S}</h4>
                       <h4>Total: {order.total.N}</h4>
                 </ProfilePanel>
