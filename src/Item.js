@@ -112,7 +112,7 @@ class Item extends Component {
 		   		console.log(err, err.stack)	
 		   	} else { 
 		   		this.setState({ item: { itemid: data.Item.itemid.S, name: data.Item.name.S, department: data.Item.department.S, 
-		   		image: data.Item.image.S, price: data.Item.price.N, quantity: data.Item.quantity.S, sale: data.Item.sale.N } })
+		   		image: data.Item.image.S, price: data.Item.price.N, weight: data.Item.quantity.S, salePrice: data.Item.sale.N } })
 		   		this.getSimilarItems()
 		   	}
 		 }.bind(this));
@@ -320,10 +320,10 @@ class Item extends Component {
 	}
 
 	renderPrice() {
-		if(this.state.item.sale != 0) {
+		if(this.state.item.salePrice != 0) {
 			return (
 				<p style={{marginTop: '5%', color: 'red', fontSize: '1.8em'}}>
-					${Number(this.state.item.sale).toFixed(2)} &nbsp;&nbsp;
+					${Number(this.state.item.salePrice).toFixed(2)} &nbsp;&nbsp;
 					<span style={{color: '#808080', textDecoration: 'line-through'}}>${Number(this.state.item.price).toFixed(2)}</span>
 				</p>
 			);
@@ -370,7 +370,7 @@ class Item extends Component {
 					}}>
 
 						<h1 style={{marginTop: '0', fontSize: '2em'}}>{this.state.item.name}</h1>
-						<p style={{marginTop: '3%', color: 'grey', fontSize: '1.4em'}} >{this.state.item.quantity}</p>
+						<p style={{marginTop: '3%', color: 'grey', fontSize: '1.4em'}} >{this.state.item.weight}</p>
 						{this.renderPrice()}
 						<button className="primaryRedWithHover" style={astext} onClick={this.addToList} >
 							<i class="fa fa-th-list" style={{width: '20%'}}/>&nbsp;
@@ -417,7 +417,7 @@ class Item extends Component {
 					}}>
 
 						<h1 style={{marginTop: '0', fontSize: '2em'}}>{this.state.item.name}</h1>
-						<p style={{marginTop: '5%', color: 'grey', fontSize: '1.4em'}} >{this.state.item.quantity}</p>
+						<p style={{marginTop: '5%', color: 'grey', fontSize: '1.4em'}} >{this.state.item.weight}</p>
 						{this.renderPrice()}
 						{this.renderButtonBar()}
 						<div>
