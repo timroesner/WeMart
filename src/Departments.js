@@ -72,7 +72,7 @@ class Departments extends Component {
 	handleClick(depName) {
 		this.props.history.push({
           pathname: '/search',
-          search: '?query='+depName+'&special=true'
+          search: '?query='+encodeURIComponent(depName)+'&special=true'
         })
 	}
 
@@ -89,11 +89,11 @@ class Departments extends Component {
 		return(
 		<div>
 			<Header />
-
-			<div style={gridContainer}>
-			  {this.renderDepartments(this.state.departments)} 
+			<div id="pageBody">
+				<div style={gridContainer}>
+				  {this.renderDepartments(this.state.departments)} 
+				</div>
 			</div>
-
 		</div>
 		)
 	}

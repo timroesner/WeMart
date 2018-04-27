@@ -17,6 +17,7 @@ class ZipCodeCheck extends Component {
 
   handleFormSubmit = (model) => {
     if(model.zip > 90000 && model.zip < 96163) {
+      localStorage.setItem('zip', model.zip)
       this.props.history.push('/home')
     } else {
       toast.warn('Sorry, we are only in California as of now.', {
@@ -42,7 +43,7 @@ class ZipCodeCheck extends Component {
         height: window.innerHeight+'px',
         overflow: 'auto',
         backgroundImage: `url(${background})`,
-        backgroundRepeat: 'repeate',
+        backgroundRepeat: 'repeat',
         backgroundColor: 'red',
         display: 'flex',
         alignItems: 'center'

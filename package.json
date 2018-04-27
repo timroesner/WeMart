@@ -7,14 +7,17 @@
     "aws-amplify": "^0.2.14",
     "aws-sdk": "^2.218.1",
     "ic-snacks": "github:instacart/Snacks#master",
+    "prop-types": "^15.6.1",
     "radium": "^0.22.1",
-    "react": "^16.3.0",
+    "react": "^16.3.2",
     "react-addons-css-transition-group": "^15.6.2",
+    "react-bootstrap": "^0.32.1",
     "react-dom": "^16.3.0",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
     "react-scripts": "1.1.1",
     "react-toastify": "^4.0.0-rc.5",
+    "react-stripe-elements": "^1.6.0",
     "react-transition-group": "^2.3.0"
   },
   "scripts": {
