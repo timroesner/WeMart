@@ -111,7 +111,7 @@ class Item extends Component {
 			if (err) {
 		   		console.log(err, err.stack)	
 		   	} else { 
-		   		this.setState({ item: { itemid: data.Item.itemid.S, name: data.Item.name.S, department: data.Item.department.S, 
+		   		this.setState({ item: { itemID: data.Item.itemid.S, name: data.Item.name.S, department: data.Item.department.S, 
 		   		image: data.Item.image.S, price: data.Item.price.N, weight: data.Item.quantity.S, salePrice: data.Item.sale.N } })
 		   		this.getSimilarItems()
 		   	}
@@ -222,10 +222,10 @@ class Item extends Component {
         var cartString = localStorage.getItem('cart')
         var cart = JSON.parse(cartString)
 
-        if(cart.hasOwnProperty(this.state.item.itemid)) {
+        if(cart.hasOwnProperty(this.state.item.itemID)) {
         	var item = this.state.item
           	item.quantityInCart = quantity + 1
-          	cart[this.state.item.itemid] = item
+          	cart[this.state.item.itemID] = item
           	localStorage.setItem('cart', JSON.stringify(cart))
           	this.setState({quantityInCart: quantity + 1})
         }
@@ -240,10 +240,10 @@ class Item extends Component {
         var cartString = localStorage.getItem('cart')
         var cart = JSON.parse(cartString)
 
-        if(cart.hasOwnProperty(this.state.item.itemid)) {
+        if(cart.hasOwnProperty(this.state.item.itemID)) {
           var item = this.state.item
           item.quantityInCart = quantity - 1
-          cart[this.state.item.itemid] = item
+          cart[this.state.item.itemID] = item
           localStorage.setItem('cart', JSON.stringify(cart))
           this.setState({quantityInCart: quantity - 1})
         }
@@ -256,8 +256,8 @@ class Item extends Component {
         var cartString = localStorage.getItem('cart')
         var cart = JSON.parse(cartString)
 
-        if(cart.hasOwnProperty(this.state.item.itemid)) {
-          delete cart[this.state.item.itemid]
+        if(cart.hasOwnProperty(this.state.item.itemID)) {
+          delete cart[this.state.item.itemID]
           localStorage.setItem('cart', JSON.stringify(cart))
           this.setState({quantityInCart: 0})
         }
@@ -272,20 +272,20 @@ class Item extends Component {
         	console.log(cartString);
         	var cart = JSON.parse(cartString)
 
-        	if(cart.hasOwnProperty(this.state.item.itemid)) {
-	        	quantity = cart[this.state.item.itemid]
+        	if(cart.hasOwnProperty(this.state.item.itemID)) {
+	        	quantity = cart[this.state.item.itemID].quantityInCart
 	    	}
 
         	var item = this.state.item
           	item.quantityInCart = quantity + 1
-          	cart[this.state.item.itemid] = item
+          	cart[this.state.item.itemID] = item
         	localStorage.setItem('cart', JSON.stringify(cart))
         	this.setState({quantityInCart: quantity + 1})
     	} else {
       		var cart = {}
       		var item = this.state.item
       		item.quantityInCart = quantity + 1
-      		cart[this.state.item.itemid] = item
+      		cart[this.state.item.itemID] = item
       		localStorage.setItem('cart', JSON.stringify(cart))
       		this.setState({quantityInCart: quantity + 1})
     	}
@@ -308,9 +308,9 @@ class Item extends Component {
 				alert(JSON.stringify(err))
 		 	} else {
 		 		data.Items.forEach((element) => {
-		 			let tempItem = { itemid: element.itemid.S, name: element.name.S, department: element.department.S, 
+		 			let tempItem = { itemID: element.itemid.S, name: element.name.S, department: element.department.S, 
 		   		image: element.image.S, price: element.price.N, quantity: element.quantity.S, sale: element.sale.N }
-		   			if(tempItem.itemid !== this.state.item.itemid) {
+		   			if(tempItem.itemID !== this.state.item.itemID) {
 		   				similarItems.push(tempItem)
 		   			}
 		 		});
