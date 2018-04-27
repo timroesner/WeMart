@@ -36,8 +36,8 @@ class ScrollItem extends Component {
 
     function Items(props) {
       return <ItemCard
-          itemID={item.itemid} name={item.name} image={item.image} price={item.price} inCart={item.inCart}
-          weight={item.quantity} salePrice={item.sale} departmentid={item.departmentid} />
+          itemid={item.itemid} name={item.name} image={item.image} price={item.price} inCart={item.inCart}
+          weight={item.quantity} sale={item.sale} departmentid={item.departmentid} />
     }
 
     function Departments(props) {
