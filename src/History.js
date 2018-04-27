@@ -157,6 +157,7 @@ class History extends React.Component{
     renderHistory(){
         if(this.state.isLoaded){return(
             <div style={history}>
+            {this.renderSortingMenu()}
                 <ItemsGrid items={this.state.items}/>
             </div>
         )}
@@ -256,7 +257,7 @@ class History extends React.Component{
             <div id="pageBody">
                 <Header/>
                 <h1 style={pageTitle}>Your Past Purchases</h1>
-                {this.renderSortingMenu()}
+                
                 {this.renderHistory()}
             </div>
 
