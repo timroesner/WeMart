@@ -111,8 +111,8 @@ class Item extends Component {
 			if (err) {
 		   		console.log(err, err.stack)	
 		   	} else { 
-		   		this.setState({ item: { itemID: data.Item.itemid.S, name: data.Item.name.S, department: data.Item.department.S, 
-		   		image: data.Item.image.S, price: data.Item.price.N, weight: data.Item.quantity.S, salePrice: data.Item.sale.N } })
+		   		this.setState({ item: { itemid: data.Item.itemid.S, name: data.Item.name.S, department: data.Item.department.S, 
+		   		image: data.Item.image.S, price: data.Item.price.N, quantity: data.Item.quantity.S, sale: data.Item.sale.N } })
 		   		this.getSimilarItems()
 		   	}
 		 }.bind(this));
@@ -222,10 +222,10 @@ class Item extends Component {
         var cartString = localStorage.getItem('cart')
         var cart = JSON.parse(cartString)
 
-        if(cart.hasOwnProperty(this.state.item.itemID)) {
+        if(cart.hasOwnProperty(this.state.item.itemid)) {
         	var item = this.state.item
           	item.quantityInCart = quantity + 1
-          	cart[this.state.item.itemID] = item
+          	cart[this.state.item.itemid] = item
           	localStorage.setItem('cart', JSON.stringify(cart))
           	this.setState({quantityInCart: quantity + 1})
         }
@@ -240,10 +240,10 @@ class Item extends Component {
         var cartString = localStorage.getItem('cart')
         var cart = JSON.parse(cartString)
 
-        if(cart.hasOwnProperty(this.state.item.itemID)) {
+        if(cart.hasOwnProperty(this.state.item.itemid)) {
           var item = this.state.item
           item.quantityInCart = quantity - 1
-          cart[this.state.item.itemID] = item
+          cart[this.state.item.itemid] = item
           localStorage.setItem('cart', JSON.stringify(cart))
           this.setState({quantityInCart: quantity - 1})
         }
@@ -256,8 +256,8 @@ class Item extends Component {
         var cartString = localStorage.getItem('cart')
         var cart = JSON.parse(cartString)
 
-        if(cart.hasOwnProperty(this.state.item.itemID)) {
-          delete cart[this.state.item.itemID]
+        if(cart.hasOwnProperty(this.state.item.itemid)) {
+          delete cart[this.state.item.itemid]
           localStorage.setItem('cart', JSON.stringify(cart))
           this.setState({quantityInCart: 0})
         }
@@ -272,20 +272,20 @@ class Item extends Component {
         	console.log(cartString);
         	var cart = JSON.parse(cartString)
 
-        	if(cart.hasOwnProperty(this.state.item.itemID)) {
-	        	quantity = cart[this.state.item.itemID].quantityInCart
+        	if(cart.hasOwnProperty(this.state.item.itemid)) {
+	        	quantity = cart[this.state.item.itemid].quantityInCart
 	    	}
 
         	var item = this.state.item
           	item.quantityInCart = quantity + 1
-          	cart[this.state.item.itemID] = item
+          	cart[this.state.item.itemid] = item
         	localStorage.setItem('cart', JSON.stringify(cart))
         	this.setState({quantityInCart: quantity + 1})
     	} else {
       		var cart = {}
       		var item = this.state.item
       		item.quantityInCart = quantity + 1
-      		cart[this.state.item.itemID] = item
+      		cart[this.state.item.itemid] = item
       		localStorage.setItem('cart', JSON.stringify(cart))
       		this.setState({quantityInCart: quantity + 1})
     	}
@@ -308,9 +308,9 @@ class Item extends Component {
 				alert(JSON.stringify(err))
 		 	} else {
 		 		data.Items.forEach((element) => {
-		 			let tempItem = { itemID: element.itemid.S, name: element.name.S, department: element.department.S, 
+		 			let tempItem = { itemid: element.itemid.S, name: element.name.S, department: element.department.S, 
 		   		image: element.image.S, price: element.price.N, quantity: element.quantity.S, sale: element.sale.N }
-		   			if(tempItem.itemID !== this.state.item.itemID) {
+		   			if(tempItem.itemid !== this.state.item.itemid) {
 		   				similarItems.push(tempItem)
 		   			}
 		 		});
@@ -320,10 +320,10 @@ class Item extends Component {
 	}
 
 	renderPrice() {
-		if(this.state.item.salePrice != 0) {
+		if(this.state.item.sale != 0) {
 			return (
 				<p style={{marginTop: '5%', color: 'red', fontSize: '1.8em'}}>
-					${Number(this.state.item.salePrice).toFixed(2)} &nbsp;&nbsp;
+					${Number(this.state.item.sale).toFixed(2)} &nbsp;&nbsp;
 					<span style={{color: '#808080', textDecoration: 'line-through'}}>${Number(this.state.item.price).toFixed(2)}</span>
 				</p>
 			);
@@ -370,7 +370,7 @@ class Item extends Component {
 					}}>
 
 						<h1 style={{marginTop: '0', fontSize: '2em'}}>{this.state.item.name}</h1>
-						<p style={{marginTop: '3%', color: 'grey', fontSize: '1.4em'}} >{this.state.item.weight}</p>
+						<p style={{marginTop: '3%', color: 'grey', fontSize: '1.4em'}} >{this.state.item.quantity}</p>
 						{this.renderPrice()}
 						<button className="primaryRedWithHover" style={astext} onClick={this.addToList} >
 							<i class="fa fa-th-list" style={{width: '20%'}}/>&nbsp;
@@ -417,7 +417,7 @@ class Item extends Component {
 					}}>
 
 						<h1 style={{marginTop: '0', fontSize: '2em'}}>{this.state.item.name}</h1>
-						<p style={{marginTop: '5%', color: 'grey', fontSize: '1.4em'}} >{this.state.item.weight}</p>
+						<p style={{marginTop: '5%', color: 'grey', fontSize: '1.4em'}} >{this.state.item.quantity}</p>
 						{this.renderPrice()}
 						{this.renderButtonBar()}
 						<div>
