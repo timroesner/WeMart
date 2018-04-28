@@ -254,11 +254,12 @@ class History extends React.Component{
 
     render(){
         return(
-            <div id="pageBody">
+            <div>
                 <Header/>
-                <h1 style={pageTitle}>Your Past Purchases</h1>
-                
-                {this.renderHistory()}
+                <div id="pageBody">
+                    <h1 style={pageTitle}>Your Past Purchases</h1>
+                    {this.renderHistory()}
+                </div>
             </div>
 
         )
