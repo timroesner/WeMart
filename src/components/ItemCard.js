@@ -242,7 +242,7 @@ class ItemCard extends React.Component{
                             </div>
                             {this.renderPrice()}
                             <p style={itemCard_itemInfo_weight}>
-                                {this.props.weight}
+                                {this.props.quantity}
                             </p>
                         </div>
                     </div>
