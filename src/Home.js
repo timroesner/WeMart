@@ -86,12 +86,12 @@ class Home extends Component {
     return (
       <div>
         <Header />
-        <div id="pageBody" className="container-fluid">
+        <div id="pageBody" className="container-fluid"  style ={{minHeight:window.innerHeight-245}} >
           <HorizontalScroll items={this.state.departmentItems} title="Browse by Department"/>
           <HorizontalScroll items={this.state.savingsItems} title="History"/>
           <HorizontalScroll items={this.state.savingsItems} title="Savings"/>
-      </div>
-      <Footer />
+        </div>
+        <Footer />
       </div>
     );
   }

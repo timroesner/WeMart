@@ -91,6 +91,7 @@ class Terms extends Component {
     const styles={
       backgroundColor: "rgba(211,7,7,1)",
       height: "12em",
+      marginTop: '-15px',
     }
 
       return (

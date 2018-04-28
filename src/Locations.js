@@ -39,20 +39,24 @@ class Locations extends Component {
     const title={
       width: "100%",
       textAlign: 'center',
-      marginTop:"0.5em",
+      marginTop:"3%",
       fontWeight: "500",
     };
 
     const imageHolder={
       overflow: "hidden",
-      height: "25em",
-      clipPath: 'polygon(0% 0%, 100% 0%, 100% 30%, 50% 100%, 0% 30%)',
+      height: "30em",
+      clipPath: 'polygon(0% 0%, 100% 0%, 100% 60%, 50% 100%, 0% 60%)',
+      webkitClipPath: 'polygon(0% 0%, 100% 0%, 100% 60%, 50% 100%, 0% 60%)',
+      marginTop: '-15px',
     };
 
     const imageHolderSmall={
       overflow: "hidden",
       height: "10em",
-      clipPath: 'polygon(0% 0%, 100% 0%, 100% 30%, 50% 100%, 0% 30%)',
+      clipPath: 'polygon(0% 0%, 100% 0%, 100% 60%, 50% 100%, 0% 60%)',
+      webkitClipPath: 'polygon(0% 0%, 100% 0%, 100% 60%, 50% 100%, 0% 60%)',
+      marginTop: '-15px',
     };
 
 
@@ -61,8 +65,8 @@ class Locations extends Component {
     };
 
     const text={
-      width: '80%',
-      margin: 'auto',
+      margin: '3%',
+      textAlign: 'center',
     }
 
     const isMobile = width <= 500;
@@ -71,7 +75,7 @@ class Locations extends Component {
         <div>
           <Header />
 
-          <div style ={{minHeight:(this.state.height-260)}}>
+          <div style ={{minHeight:(this.state.height-283)}}>
             <div style={imageHolderSmall}>
               <img src={location} style={image}/>
             </div>
@@ -80,7 +84,7 @@ class Locations extends Component {
               <h1 style={title}>Locations</h1>
             </div>
 
-            <div style={text}>
+            <div style={{textAlign: 'justify', margin: '3%'}}>
               <TextFileReader txt={myTxt}/>
             </div>
           </div>
@@ -93,7 +97,7 @@ class Locations extends Component {
        <div>
          <Header />
 
-         <div style ={{minHeight:this.state.height-201}}>
+         <div style ={{minHeight:this.state.height-195}}>
            <div style={imageHolder}>
              <img src={location} style={image}/>
            </div>

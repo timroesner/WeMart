@@ -8,7 +8,6 @@ const gridContainer = {
     gridTemplateColumns: 'repeat( auto-fit, minmax(14.8rem, 1fr) )',
     gridColumnGap: '5%',
     margin: '2%',
-    width: '95%',
 }
 const itemGrid_itemCard = {display:'inline-block', position:'relative', verticalAlign:'top', margin: '3%', maxWidth: '200px'};
 
@@ -25,12 +24,12 @@ export default class ItemsGrid extends React.Component{
             return(this.props.items.map((item)=>
                 <li style={itemGrid_itemCard}>
                     <ItemCard
-                        itemID={item.itemid}
+                        itemid={item.itemid}
                         name={item.name}
                         image={item.image}
                         price={item.price}
                         quantity={item.quantity}
-                        salePrice={item.sale}
+                        sale={item.sale}
                         departmentid={item.departmentid}
                     />
                 </li>

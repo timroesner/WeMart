@@ -1,4 +1,5 @@
 import Header from './components/header';
+import Footer from './components/Footer';
 import React, { Component } from 'react';
 import { withRouter } from "react-router-dom";
 import HorizontalScroll from './components/HorizontalScroll';
@@ -273,7 +274,7 @@ class Item extends Component {
         	var cart = JSON.parse(cartString)
 
         	if(cart.hasOwnProperty(this.state.item.itemid)) {
-	        	quantity = cart[this.state.item.itemid]
+	        	quantity = cart[this.state.item.itemid].quantityInCart
 	    	}
 
         	var item = this.state.item
@@ -382,6 +383,7 @@ class Item extends Component {
 						</div>
 				    </div>
 				</div>
+				<Footer />
 			</div>
 			);
 		} else {
@@ -399,7 +401,7 @@ class Item extends Component {
 			return (
 			<div>
 			    <Header />
-			    <div id="pageBody">
+			    <div id="pageBody"  style ={{minHeight:window.innerHeight-245}} >
 				    <div style={{
 				    	margin: '3%',
 						width: '45%',
@@ -412,7 +414,7 @@ class Item extends Component {
 				    	margin: '3%',
 				    	marginLeft: '0%',
 						width: '45%',
-						height: '500px',
+						height: 'auto',
 						float: 'right',
 					}}>
 
@@ -432,6 +434,7 @@ class Item extends Component {
 						<ToastContainer hideProgressBar={true} autoClose={2000} />
 				    </div>
 				</div>
+				<Footer />
 			</div>
 		);
 	}

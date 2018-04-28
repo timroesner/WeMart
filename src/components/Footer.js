@@ -33,6 +33,7 @@ class Footer extends Component {
     const textarea={
       base:{
         position: "relative",
+        padding: '10px',
         width: "100%",
         height: "100px",
         border: "1px solid #BDBDBD",
@@ -49,8 +50,11 @@ class Footer extends Component {
       <div>
         <Modal show={this.state.contactUsModal} onHide={this.handleCloseContactUsModal}>
           <Modal.Header>
-            <h1>Email Us</h1>
-            <div>We'll get back to you in 2 working hours</div>
+            <div style={{ float: 'right'}}>
+                  <Button onClick={this.handleCloseContactUsModal} snacksStyle="secondary" style={{height:"30px"}}>Close</Button>
+            </div>
+            <h1 style={{marginTop: '2px'}}>Email Us</h1>
+            <div>We'll get back to you soon</div>
           </Modal.Header>
           <Modal.Body>
             <Form onSubmit={(model) => ( console.log(model) ) } serverErrors={{}} formProps={{}}>
@@ -90,13 +94,8 @@ class Footer extends Component {
                   ></textarea>
               </div>
 
-              <div style={{margin:"auto", width:"100%", paddingTop:"10px", display:"flex", justifyContent: "center", marginLeft:"0"}}>
-                <div style={{ margin:"auto", display:"inline-block"}}>
-                  <Button type="submit" className="primary" style={{height:"30px"}}>Submit</Button>
-                </div>
-                <div style={{ margin:"auto", display:"inline-block"}}>
-                  <Button onClick={this.handleCloseContactUsModal} snacksStyle="secondary" style={{height:"30px"}}>Close</Button>
-                </div>
+              <div style={{margin:"auto", width:"70%", paddingTop:"10px", justifyContent: "center"}}>
+                  <Button type="submit" className="primary" style={{height:"40px", width: '100%', display: 'inital'}}>Submit</Button>
               </div>
 
             </Form>
@@ -139,6 +138,7 @@ class Footer extends Component {
       height: "auto",
       backgroundColor: '#F5F5F5',
       overflow: "visible",
+      clear: 'both',
     };
 
     const footerLinksContainer = {
@@ -168,7 +168,8 @@ class Footer extends Component {
               </div>
 
               <div style={Spacing}>
-                Copyright © 2018 WeMart Inc.
+                Copyright © {new Date().getFullYear()} 
+                <a href={"https://github.com/timroesner/WeMart"} style={Links}>WeMart</a> Inc.
               </div>
 
             </div>

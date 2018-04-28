@@ -7,13 +7,14 @@ import Radium from 'radium';
 
 //Team Pictures
 import aayush from './images/Team/Aayush.jpg'
-import ian from './images/Team/Ian.jpeg'
+import ian from './images/Team/Ian.jpg'
 import jonathan from './images/Team/Jonathan.jpg'
 import juan from './images/Team/Juan.jpg'
 import raj from './images/Team/Raj.JPG'
 import tim from './images/Team/Tim.jpg'
 import daanyaal from './images/Team/Daanyaal.jpg'
 import leo from './images/Team/Leo.png'
+import shayan from './images/Team/Shayan.png'
 
 
 class AboutUs extends Component {
@@ -61,8 +62,10 @@ class AboutUs extends Component {
 
     const imageHolder={
       overflow: "hidden",
-      height: "25em",
-      clipPath: 'polygon(0% 0%, 100% 0%, 100% 30%, 50% 100%, 0% 30%)',
+      height: "30em",
+      clipPath: 'polygon(0% 0%, 100% 0%, 100% 60%, 50% 100%, 0% 60%)',
+      webkitClipPath: 'polygon(0% 0%, 100% 0%, 100% 60%, 50% 100%, 0% 60%)',
+      marginTop: '-15px',
     };
 
     const profileHolder={
@@ -75,7 +78,9 @@ class AboutUs extends Component {
     const imageHolderSmall={
       overflow: "hidden",
       height: "10em",
-      clipPath: 'polygon(0% 0%, 100% 0%, 100% 30%, 50% 100%, 0% 30%)',
+      clipPath: 'polygon(0% 0%, 100% 0%, 100% 60%, 50% 100%, 0% 60%)',
+      webkitClipPath: 'polygon(0% 0%, 100% 0%, 100% 60%, 50% 100%, 0% 60%)',
+      marginTop: '-15px',
     };
 
     const image={
@@ -84,11 +89,12 @@ class AboutUs extends Component {
 
     const profile={
         width: "70%",
-        clipPath: 'circle(45%)',
+        clipPath: 'circle(48%)',
         filter: "grayscale(100%)",
         display: "block",
         margin: "auto",
         transition: "filter 0.25s",
+        webkitClipPath: 'circle(48%)',
         ':hover': {
           filter: "none",
         }
@@ -100,21 +106,23 @@ class AboutUs extends Component {
     }
 
     const divBorderW={
-      borderBottom: "0.5px solid rgba(238,245,244,1)",
       width: "100%",
-      backgroundColor: "#FFFFFF"
+      backgroundColor: "#FFFFFF",
+      marginBottom: '5%',
+      marginTop: '5%',
     }
 
     const divBorderG={
       borderTop: "0.5px solid rgba(238,245,244,1)",
-      borderBottom: "0.5px solid rgba(238,245,244,1)",
       width: "100%",
-      backgroundColor: "#FCFCFC"
+      backgroundColor: "#FCFCFC",
+      paddingBottom: '5%'
     }
 
     const eachProfile={
-      width:"20em",
-      display: "inline-block",
+      width:'20em',
+      display: 'inline-block',
+      marginBottom: '3%',
     }
 
 
@@ -134,7 +142,7 @@ class AboutUs extends Component {
                 <h1 style={title}> About Us </h1>
               </div>
 
-              <div style={text}>
+              <div style={{margin: '0 5% 0 5%', textAlign: 'justify'}}>
                 <TextFileReader txt={myTxt}/>
               </div>
             </div>
@@ -254,7 +262,7 @@ class AboutUs extends Component {
                 </div>
 
                 <div style={eachProfile}>
-                  <img src={raj} style={profile}/>
+                  <img src={shayan} style={profile}/>
                   <h3 style={title}>Shayan Ahmed</h3>
                   <p style={{textAlign:"center"}}>Backend Lead</p>
                 </div>

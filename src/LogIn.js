@@ -4,6 +4,8 @@ import background from './images/background.svg';
 import './App.css';
 import { withRouter } from "react-router-dom";
 import wemartLogo from './images/logo.png'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const logo = {maxWidth:'20rem'}
 const greeting = {margin:'2.5rem auto', textAlign:'center'}
@@ -61,7 +63,14 @@ class LogIn extends Component {
         },
 
         onFailure: function(err) {
-            alert(err.message);
+            toast.warn(err.message,{
+              position: "top-center",
+              autoClose: 4000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              })
         },
 
     });
@@ -109,7 +118,14 @@ class LogIn extends Component {
         },
 
         onFailure: function(err) {
-            alert(err.message);
+            toast.warn(err.message,{
+              position: "top-center",
+              autoClose: 4000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              })
         }
     });
   }
@@ -184,6 +200,7 @@ class LogIn extends Component {
             Forgot your password? <a onClick={this.handlePasswordReset}>Reset It</a>
             </p>
         </div>
+        <ToastContainer/>
       </div>
     )
   }
