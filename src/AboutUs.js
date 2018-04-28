@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import TextFileReader from './components/TextFileReader'
 import aboutus from './images/aboutus.jpg'
 import aayush from './images/Team/Aayush.jpg'
+import tim from './images/Team/Tim.jpg'
 import Header from './components/header';
 import Footer from './components/Footer';
 
@@ -78,9 +79,8 @@ class AboutUs extends Component {
 
     const profile={
       width: "70%",
-      clipPath: 'circle(45%)',
-      webkitClipPath: 'circle(45%)',
-      filter: "grayscale(100%)",
+      clipPath: 'circle(48%)',
+      webkitClipPath: 'circle(48%)',
       display: "block",
       margin: "auto",
     };
@@ -174,7 +174,7 @@ class AboutUs extends Component {
                 </div>
 
                 <div style={eachProfile} >
-                  <img src={aayush} style={profile}/>
+                  <img src={tim} style={profile}/>
                   <h3 style={title}>Tim Roesner</h3>
                   <p style={{textAlign:"center"}}>Front-End Tech Lead / Marketing</p>
                 </div>
@@ -259,7 +259,7 @@ class AboutUs extends Component {
                 </div>
 
                 <div style={eachProfile} >
-                  <img src={aayush} style={profile}/>
+                  <img src={tim} style={profile}/>
                   <h3 style={title}>Tim Roesner</h3>
                   <p style={{textAlign:"center"}}>Front-End Tech Lead / Marketing</p>
                 </div>
