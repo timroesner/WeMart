@@ -3,6 +3,7 @@ import CartList from './cart_list'
 import './header.css'
 import {DynamoDB} from 'aws-sdk/index'
 import AWS from 'aws-sdk/index'
+import { withRouter } from "react-router-dom";
 
 class Cart extends Component {
   constructor(props) {
@@ -48,8 +49,8 @@ class Cart extends Component {
     var tPrice = 0
     items.forEach((item)=>{
       var priceToBeAdded = Number(item.price)
-      if (item.salePrice != '0') {
-        priceToBeAdded = Number(item.salePrice)
+      if (item.sale != '0') {
+        priceToBeAdded = Number(item.sale)
       }
       tPrice += priceToBeAdded * item.quantityInCart
     })
@@ -99,6 +100,10 @@ class Cart extends Component {
     }
   }
 
+  handleCheckoutClick = () => {
+    this.props.history.push('/checkout')
+  }
+
   render() {
     const title = {
       height: '10%',
@@ -138,9 +143,8 @@ class Cart extends Component {
 
     const checkoutBtn = {
       width: '98%',
-      margin: 'auto',
+      height: '82%',
       padding: '0',
-      height: '82%'
     }
 
     const isMobile = this.state.width <= 700;
@@ -160,11 +164,11 @@ class Cart extends Component {
                 handleDecrease={(itemID) => this.handleDecrease(itemID)}/>
             </div>
             <div style={{height: '10%', display: 'flex', justifyContent: 'center'}}>
-              <button style={checkoutBtn} className="primary">Checkout
-                <span style={{position: 'absolute', right: '7%', padding: '4px 7px', borderRadius: '4px' ,background: 'linear-gradient(#d82929, #d82929)'}}>
-                  {'$'+this.getTotalPrice(this.state.cartItems).toFixed(2)}
-                </span>
+              <button style={checkoutBtn} className="primary" onClick={this.handleCheckoutClick} >Checkout
               </button>
+            </div>
+            <div style={{float: 'right', margin: '-57px 25px 0 auto', padding: '4px 7px', borderRadius: '4px' ,background: 'white', color: '#D30707'}}>
+                  {'$'+this.getTotalPrice(this.state.cartItems).toFixed(2)}
             </div>
           </div>
         );
@@ -184,15 +188,15 @@ class Cart extends Component {
                         handleDecrease={(itemID) => this.handleDecrease(itemID)}/>
             </div>
             <div style={{height: '10%', display: 'flex', justifyContent: 'center'}}>
-              <button style={checkoutBtn} className="primary">Checkout
-                <span style={{position: 'absolute', right: '7%', padding: '4px 7px', borderRadius: '4px' ,background: 'linear-gradient(#d82929, #d82929)'}}>
-                  {'$'+this.getTotalPrice(this.state.cartItems).toFixed(2)}
-                </span>
+              <button style={checkoutBtn} className="primary" onClick={this.handleCheckoutClick} >Checkout
               </button>
+            </div>
+            <div style={{float: 'right', margin: '-57px 25px 0 auto', padding: '4px 7px', borderRadius: '4px' ,background: 'white', color: '#D30707'}}>
+                  {'$'+this.getTotalPrice(this.state.cartItems).toFixed(2)}
             </div>
           </div>
         );
       }
     }
   }
-export default Cart;
+export default withRouter(Cart);

@@ -55,6 +55,7 @@ class AccountSettings extends React.Component{
             personalInfoModal: false,
             editAddressModal: false,
             isLoggedIn: false,
+            isLoaded: false,
 
             // The user Object
             user: {
@@ -110,10 +111,13 @@ class AccountSettings extends React.Component{
             cognitoUser.getUserAttributes(function(err, result) {
                 if (err) {
                     alert(JSON.stringify(err));
+                    self.setState({isLoaded: true})
                     return;
                 }
                 self.setState({isLoggedIn: true})
                 // console.log(result) //Logs user attributes
+                self.setState({isLoaded: true})
+
 
                 result.forEach((attribute) => {
                     if(attribute.Name === 'email'){
@@ -782,58 +786,41 @@ class AccountSettings extends React.Component{
         );
     }
 
-    render(){
+    renderv2(){
         if(this.state.isLoggedIn){
             return (
-                <StyleRoot>
-                    <Header/>
-                    <div id="pageBody">
-                        <div style={accountSettings}>
-                            <h1 style={pageTitle}>Account Settings</h1>
-                            <Row maxColumns={11} style={{maxWidth: "109.2rem"}}>
-                                <Column sizes={{ sm: 6, md: 5, lg: 8, xl: 8}}>
-                                    <ProfilePanel title="Account Information" content={
-                                        <div>
-                                            <Line title="Email" value={this.state.user.email} onChange={this.handleShowEmailModal}/>
-                                            <Line title="Password" value={this.state.user.password} onChange={this.handleShowPasswordModal}/>
-                                        </div>}/>
-                                    <ProfilePanel title="Personal Information" content={
-                                        <div>
-                                            <Line title="First Name" value={this.state.user.firstName} onChange={this.handleShowPersonalInfoModal}/>
-                                            <Line title="Last Name" value={this.state.user.lastName} onChange={this.handleShowPersonalInfoModal}/>
-                                            <Line title="Phone" value={this.state.user.phoneNumber} onChange={this.handleShowPersonalInfoModal}/>
-                                        </div>}/>
-                                    <ProfilePanel title="Delivery Address" content={
-                                        <div>
-                                            {this.renderAddress()}
-                                        </div>}/>
-                                </Column>
-                                <Column sizes={{ sm: 6, md: 3, lg: 3, xl: 3 }}>
-                                    <ProfilePanel title="Payment Methods">
-                                        {this.renderCard()}
-                                    </ProfilePanel>
-                                    <div style={{textAlign:'center'}}>
-                                        <Button style={{margin:'1.5rem auto', width:'85%'}}
-                                        onClick={this.handleSignOut}>Sign Out</Button>
-                                    </div>
-                                </Column>
-                            </Row>
-                        </div>
-                    </div>
-                    {this.emailModal()}
-                    {this.passwordModal()}
-                    {this.editPerInfoModal()}
-                    {this.addCardModal()}
-                </StyleRoot>
+                <Row maxColumns={11} style={{maxWidth: "109.2rem"}}>
+                        <Column sizes={{ sm: 6, md: 5, lg: 8, xl: 8}}>
+                            <ProfilePanel title="Account Information" content={
+                                <div>
+                                    <Line title="Email" value={this.state.user.email} onChange={this.handleShowEmailModal}/>
+                                    <Line title="Password" value={this.state.user.password} onChange={this.handleShowPasswordModal}/>
+                                </div>}/>
+                            <ProfilePanel title="Personal Information" content={
+                                <div>
+                                    <Line title="First Name" value={this.state.user.firstName} onChange={this.handleShowPersonalInfoModal}/>
+                                    <Line title="Last Name" value={this.state.user.lastName} onChange={this.handleShowPersonalInfoModal}/>
+                                    <Line title="Phone" value={this.state.user.phoneNumber} onChange={this.handleShowPersonalInfoModal}/>
+                                </div>}/>
+                            <ProfilePanel title="Delivery Address" content={
+                                <div>
+                                    {this.renderAddress()}
+                                </div>}/>
+                        </Column>
+                        <Column sizes={{ sm: 6, md: 3, lg: 3, xl: 3 }}>
+                            <ProfilePanel title="Payment Methods">
+                                {this.renderCard()}
+                            </ProfilePanel>
+                            <div style={{textAlign:'center'}}>
+                                <Button style={{margin:'1.5rem auto', width:'85%'}}
+                                onClick={this.handleSignOut}>Sign Out</Button>
+                            </div>
+                        </Column>
+                    </Row>
             );
-        } else {
+        } else if(this.state.isLoaded){
             return(
-                <div>
-                    <Header/>
-                        <div id="pageBody">
-                            <div style={accountSettings}>
-                                <h1 style={pageTitle}>Account Settings</h1>
-                                <ProfilePanel >
+                <ProfilePanel >
                                     <div style={noSession}>
                                         <h2>
                                             You must be logged in to view account settings.
@@ -843,13 +830,27 @@ class AccountSettings extends React.Component{
                                     <div style={{margin:'2rem auto', textAlign:'center'}}>
                                         <Button size='large' onClick={()=>{this.props.history.push('/home')}}>Browse Store</Button>
                                     </div>
-                                </ProfilePanel>
-                            </div>
-                        </div>
-                </div>
+             </ProfilePanel>
             );
         }
+    }
 
+    render(){
+        return(
+            <StyleRoot>
+            <Header/>
+            <div id="pageBody">
+                <div style={accountSettings}>
+                    <h1 style={pageTitle}>Account Settings</h1>
+                    {this.renderv2()}
+                </div>
+            </div>
+            {this.emailModal()}
+            {this.passwordModal()}
+            {this.editPerInfoModal()}
+            {this.addCardModal()}
+        </StyleRoot>
+        );
     }
 }
 
