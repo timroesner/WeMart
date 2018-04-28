@@ -30,10 +30,15 @@ class History extends React.Component{
             user: null,
         }
         this.setKeys()
+    }
+
+    componentDidMount(){
+        // I have no idea why this works but it stops the flash 
         this.getCognitoUser()
     }
 
     getCognitoUser(){
+        let self = this;
         var userPool = new CognitoUserPool(poolData);
         var cognitoUser = userPool.getCurrentUser();
         if (cognitoUser != null) {
@@ -42,9 +47,9 @@ class History extends React.Component{
                     console.log(err)
                     return;
                 }
+                self.setState({isLoaded: true})
             });
             // Necessary because the closure has no access to this.state
-            let self = this;
             cognitoUser.getUserAttributes(function(err, result) {
                 if (err) {
                     console.log(err)
@@ -93,7 +98,6 @@ class History extends React.Component{
 
                     console.log('test item', testItem)
                 }
-                this.setState({isLoaded: true})
             })
         })
     }
