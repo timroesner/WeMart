@@ -18,7 +18,10 @@ class Search extends Component {
 			finishedLoading: false,
 		}
 		this.props.history.listen((location, action) => {
-			this.getQuerry()
+    		// This 100ms delay is necessary for the query to change
+    		setTimeout(function() {
+      			this.getQuerry()
+  			}.bind(this), 100)
 		})
 
 		this.initializeDatabase()
