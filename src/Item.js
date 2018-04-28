@@ -273,7 +273,7 @@ class Item extends Component {
         	var cart = JSON.parse(cartString)
 
         	if(cart.hasOwnProperty(this.state.item.itemid)) {
-	        	quantity = cart[this.state.item.itemid]
+	        	quantity = cart[this.state.item.itemid].quantityInCart
 	    	}
 
         	var item = this.state.item
