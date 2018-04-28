@@ -367,7 +367,7 @@ renderMobileAccountButton() {
   } else {
     return (
     <div style={{paddingBottom: '115px'}}>
-	<nav className="navbar navbar-light" style={{width: '100%', backgroundColor: '#F5F5F5', position: 'fixed', zIndex:'10', marginBottom: '115px'}}>
+	<nav className="navbar navbar-light" style={{width: '100%', backgroundColor: '#F5F5F5', position: 'fixed', zIndex:'10', marginBottom: '115px', borderRadius: '0'}}>
 
 		<div className="container-fluid" style={center}>
 			<div className="navbar-header" style={{width: '15%', paddingTop: '3px', marginLeft: '2.5vw'}}>
