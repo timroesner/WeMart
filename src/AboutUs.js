@@ -51,8 +51,10 @@ class AboutUs extends Component {
 
     const imageHolder={
       overflow: "hidden",
-      height: "25em",
-      clipPath: 'polygon(0% 0%, 100% 0%, 100% 30%, 50% 100%, 0% 30%)',
+      height: "30em",
+      clipPath: 'polygon(0% 0%, 100% 0%, 100% 60%, 50% 100%, 0% 60%)',
+      webkitClipPath: 'polygon(0% 0%, 100% 0%, 100% 60%, 50% 100%, 0% 60%)',
+      marginTop: '-15px',
     };
 
     const profileHolder={
@@ -65,7 +67,9 @@ class AboutUs extends Component {
     const imageHolderSmall={
       overflow: "hidden",
       height: "10em",
-      clipPath: 'polygon(0% 0%, 100% 0%, 100% 30%, 50% 100%, 0% 30%)',
+      clipPath: 'polygon(0% 0%, 100% 0%, 100% 60%, 50% 100%, 0% 60%)',
+      webkitClipPath: 'polygon(0% 0%, 100% 0%, 100% 60%, 50% 100%, 0% 60%)',
+      marginTop: '-15px',
     };
 
     const image={
@@ -75,6 +79,7 @@ class AboutUs extends Component {
     const profile={
       width: "70%",
       clipPath: 'circle(45%)',
+      webkitClipPath: 'circle(45%)',
       filter: "grayscale(100%)",
       display: "block",
       margin: "auto",
@@ -86,16 +91,17 @@ class AboutUs extends Component {
     }
 
     const divBorderW={
-      borderBottom: "0.5px solid rgba(238,245,244,1)",
       width: "100%",
-      backgroundColor: "#FFFFFF"
+      backgroundColor: "#FFFFFF",
+      marginBottom: '5%',
+      marginTop: '5%',
     }
 
     const divBorderG={
       borderTop: "0.5px solid rgba(238,245,244,1)",
-      borderBottom: "0.5px solid rgba(238,245,244,1)",
       width: "100%",
-      backgroundColor: "#FCFCFC"
+      backgroundColor: "#FCFCFC",
+      paddingBottom: '5%'
     }
 
     const eachProfile={
@@ -120,7 +126,7 @@ class AboutUs extends Component {
                 <h1 style={title}> About Us </h1>
               </div>
 
-              <div style={text}>
+              <div style={{margin: '0 5% 0 5%', textAlign: 'justify'}}>
                 <TextFileReader txt={myTxt}/>
               </div>
             </div>
