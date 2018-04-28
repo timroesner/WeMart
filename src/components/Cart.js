@@ -150,8 +150,6 @@ class Cart extends Component {
     const isMobile = this.state.width <= 700;
     if (isMobile) {
 
-      setTimeout(function () { window.scrollTo(1, 0); }, 500);
-
       return(
           <div style={shoppingCartMobile}>
             <div className="jumbotron" style={title}>
