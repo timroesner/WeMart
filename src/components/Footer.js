@@ -168,7 +168,8 @@ class Footer extends Component {
               </div>
 
               <div style={Spacing}>
-                Copyright © 2018 <a href={"https://github.com/timroesner/WeMart"} style={Links}>WeMart</a> Inc.
+                Copyright © {new Date().getFullYear()} 
+                <a href={"https://github.com/timroesner/WeMart"} style={Links}>WeMart</a> Inc.
               </div>
 
             </div>
