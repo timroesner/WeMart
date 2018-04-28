@@ -1,9 +1,19 @@
 import React, { Component } from 'react';
 import TextFileReader from './components/TextFileReader'
 import aboutus from './images/aboutus.jpg'
-import aayush from './images/Team/Aayush.jpg'
 import Header from './components/header';
 import Footer from './components/Footer';
+import Radium from 'radium';
+
+//Team Pictures
+import aayush from './images/Team/Aayush.jpg'
+import ian from './images/Team/Ian.jpeg'
+import jonathan from './images/Team/Jonathan.jpg'
+import juan from './images/Team/Juan.jpg'
+import raj from './images/Team/Raj.JPG'
+import tim from './images/Team/Tim.jpg'
+import daanyaal from './images/Team/Daanyaal.jpg'
+import leo from './images/Team/Leo.png'
 
 
 class AboutUs extends Component {
@@ -73,11 +83,15 @@ class AboutUs extends Component {
     };
 
     const profile={
-      width: "70%",
-      clipPath: 'circle(45%)',
-      filter: "grayscale(100%)",
-      display: "block",
-      margin: "auto",
+        width: "70%",
+        clipPath: 'circle(45%)',
+        filter: "grayscale(100%)",
+        display: "block",
+        margin: "auto",
+        transition: "filter 0.25s",
+        ':hover': {
+          filter: "none",
+        }
     };
 
     const text={
@@ -126,37 +140,37 @@ class AboutUs extends Component {
             </div>
 
 
-            <div style = {divBorderG}>
+            <div style = {divBorderW}>
               <h1 style={title}> The Team</h1>
               <div style={profileHolder}>
 
-                <div stlyle={eachProfile}>
+                <div style={eachProfile}>
                   <img src={aayush} style={profile}/>
                   <h3 style={title}>Aayush Dixit</h3>
-                  <p style={{textAlign:"center"}}>Backend Developer / Documentation</p>
+                  <p style={{textAlign:"center", margin:"auto"}}>Backend Developer / Documentation</p>
                 </div>
 
-                <div>
-                  <img src={aayush} style={profile}/>
-                  <h3 style={title}>Aayush Dixit</h3>
+                <div style={eachProfile}>
+                  <img src={ian} style={profile}/>
+                  <h3 style={title}>Ian Duron</h3>
                   <p style={{textAlign:"center"}}>Backend Developer/Documentation</p>
                 </div>
 
-                <div>
-                  <img src={aayush} style={profile}/>
-                  <h3 style={title}>Aayush Dixit</h3>
+                <div style={eachProfile}>
+                  <img src={jonathan} style={profile}/>
+                  <h3 style={title}>Jonathon Wong</h3>
                   <p style={{textAlign:"center"}}>Backend Developer/Documentation</p>
                 </div>
 
-                <div>
-                  <img src={aayush} style={profile}/>
-                  <h3 style={title}>Aayush Dixit</h3>
+                <div style={eachProfile}>
+                  <img src={juan} style={profile}/>
+                  <h3 style={title}>Juan Castillo</h3>
                   <p style={{textAlign:"center"}}>Backend Developer/Documentation</p>
                 </div>
 
-                <div>
-                  <img src={aayush} style={profile}/>
-                  <h3 style={title}>Aayush Dixit</h3>
+                <div style={eachProfile}>
+                  <img src={raj} style={profile}/>
+                  <h3 style={title}>Raj Makda</h3>
                   <p style={{textAlign:"center"}}>Backend Developer/Documentation</p>
                 </div>
 
@@ -192,33 +206,57 @@ class AboutUs extends Component {
               <div style={profileHolder}>
 
                 <div style={eachProfile}>
-                  <img src={aayush} style={profile}/>
+                  <img src={aayush} style={profile} key= "key1"/>
                   <h3 style={title}>Aayush Dixit</h3>
                   <p style={{textAlign:"center", margin:"auto"}}>Backend Developer / Documentation</p>
                 </div>
 
                 <div style={eachProfile}>
-                  <img src={aayush} style={profile}/>
-                  <h3 style={title}>Aayush Dixit</h3>
+                  <img src={ian} style={profile}  key= "key2"/>
+                  <h3 style={title}>Ian Duron</h3>
                   <p style={{textAlign:"center"}}>Backend Developer/Documentation</p>
                 </div>
 
                 <div style={eachProfile}>
-                  <img src={aayush} style={profile}/>
-                  <h3 style={title}>Aayush Dixit</h3>
+                  <img src={jonathan} style={profile}  key= "key3"/>
+                  <h3 style={title}>Jonathan Wong</h3>
                   <p style={{textAlign:"center"}}>Backend Developer/Documentation</p>
                 </div>
 
                 <div style={eachProfile}>
-                  <img src={aayush} style={profile}/>
-                  <h3 style={title}>Aayush Dixit</h3>
+                  <img src={juan} style={profile}  key= "key4"/>
+                  <h3 style={title}>Juan Castillo</h3>
+                  <p style={{textAlign:"center"}}>Frontend Developer / Tester</p>
+                </div>
+
+                <div style={eachProfile}>
+                  <img src={tim} style={profile}  key= "key5"/>
+                  <h3 style={title}>Tim Roesner</h3>
+                  <p style={{textAlign:"center"}}>Frontend Lead</p>
+                </div>
+
+                <div style={eachProfile}>
+                  <img src={raj} style={profile}  key= "key6"/>
+                  <h3 style={title}>Raj Makda</h3>
+                  <p style={{textAlign:"center"}}>Frontend Developer / Tester</p>
+                </div>
+
+                <div style={eachProfile}>
+                  <img src={daanyaal} style={profile}  key= "key7"/>
+                  <h3 style={title}>Daanyaal Saeed</h3>
+                  <p style={{textAlign:"center"}}>Frontend Developer / Documentation</p>
+                </div>
+
+                <div style={eachProfile}>
+                  <img src={leo} style={profile}  key= "key8"/>
+                  <h3 style={title}>Leonardo Pangco</h3>
                   <p style={{textAlign:"center"}}>Backend Developer/Documentation</p>
                 </div>
 
                 <div style={eachProfile}>
-                  <img src={aayush} style={profile}/>
-                  <h3 style={title}>Aayush Dixit</h3>
-                  <p style={{textAlign:"center"}}>Backend Developer/Documentation</p>
+                  <img src={raj} style={profile}/>
+                  <h3 style={title}>Shayan Ahmed</h3>
+                  <p style={{textAlign:"center"}}>Backend Lead</p>
                 </div>
 
               </div>
@@ -233,4 +271,4 @@ class AboutUs extends Component {
 }
 
 
-export default AboutUs;
+export default Radium(AboutUs);
