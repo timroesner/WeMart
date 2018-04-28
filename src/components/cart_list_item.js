@@ -27,11 +27,11 @@ class CartItem extends Component {
 
   render() {
     function SalePrice(props) {
-      return <div>{(props.price * props.quantity).toFixed(2)}</div>
+      return <div>${(props.price * props.quantity).toFixed(2)}</div>
     }
 
     function RegularPrice(props) {
-      return <div>{(props.price * props.quantity).toFixed(2)}</div>
+      return <div>${(props.price * props.quantity).toFixed(2)}</div>
     }
 
     function Price(props) {
@@ -43,10 +43,10 @@ class CartItem extends Component {
     }
 
     return (
-        <li className="list-group-item" style={{height: '100px'}}>
+        <li className="list-group-item">
           <div className="container-fluid">
             <div className="row">
-              <div className="col-xs-2">
+              <div className="col-xs-2" style={{padding: '4px', width: '70px'}}>
                 <img className="img-responsive" src={this.props.item.image} />
               </div>
               <div className="col-xs-8">
@@ -54,16 +54,14 @@ class CartItem extends Component {
                 <br />
                 <span style={{color: 'gray'}}>{this.props.item.weight}</span>
               </div>
-              <div className="col-xs-2">
+              <div className="col-xs-2" style={{textAlign: 'right'}}>
                 <Price isOnSale={this.props.item.salePrice != '0'} salePrice={this.props.item.salePrice} regularPrice={this.props.item.price} quantity={this.props.item.quantityInCart}/>
               </div>
-              <div className="row">
-                <div className="col-xs-12" style={{position:'absolute', left:'48%', top:'50%'}}>
-                  <Counter quantity={this.props.item.quantityInCart}
-                    onIncrease={() => this.props.handleIncrease(this.props.item.itemID)}
-                    onDecrease={()=> this.props.handleDecrease(this.props.item.itemID)}
-                    onRemove={() => this.props.handleRemove(this.props.item.itemID)} />
-                </div>
+              <div style={{marginRight: '15px', width: '40%', height: '30px', float: 'right', marginBottom: '2%'}}>
+                <Counter quantity={this.props.item.quantityInCart}
+                  onIncrease={() => this.props.handleIncrease(this.props.item.itemID)}
+                  onDecrease={()=> this.props.handleDecrease(this.props.item.itemID)}
+                  onRemove={() => this.props.handleRemove(this.props.item.itemID)} />
               </div>
             </div>
           </div>
