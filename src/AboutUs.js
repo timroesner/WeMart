@@ -105,8 +105,9 @@ class AboutUs extends Component {
     }
 
     const eachProfile={
-      width:"20em",
-      display: "inline-block",
+      width:'20em',
+      display: 'inline-block',
+      marginBottom: '3%',
     }
 
 
@@ -136,34 +137,58 @@ class AboutUs extends Component {
               <h1 style={title}> The Team</h1>
               <div style={profileHolder}>
 
-                <div stlyle={eachProfile}>
+                <div style={eachProfile}>
                   <img src={aayush} style={profile}/>
-                  <h3 style={title}>Aayush Dixit</h3>
-                  <p style={{textAlign:"center"}}>Backend Developer / Documentation</p>
+                  <h3 style={title}>Leo Pangco</h3>
+                  <p style={{textAlign:"center"}}>Project Manager / Documentation</p>
                 </div>
 
-                <div>
+                <div style={eachProfile} >
                   <img src={aayush} style={profile}/>
-                  <h3 style={title}>Aayush Dixit</h3>
-                  <p style={{textAlign:"center"}}>Backend Developer/Documentation</p>
+                  <h3 style={title}>Ian Duron</h3>
+                  <p style={{textAlign:"center"}}>Back-End Developer / Marketing</p>
                 </div>
 
-                <div>
+                <div style={eachProfile} >
                   <img src={aayush} style={profile}/>
                   <h3 style={title}>Aayush Dixit</h3>
-                  <p style={{textAlign:"center"}}>Backend Developer/Documentation</p>
+                  <p style={{textAlign:"center"}}>Back-End Developer / Documentation</p>
                 </div>
 
-                <div>
+                <div style={eachProfile} >
                   <img src={aayush} style={profile}/>
-                  <h3 style={title}>Aayush Dixit</h3>
-                  <p style={{textAlign:"center"}}>Backend Developer/Documentation</p>
+                  <h3 style={title}>Juan Castillo</h3>
+                  <p style={{textAlign:"center"}}>Front-End Developer / Tester</p>
                 </div>
 
-                <div>
+                <div style={eachProfile} >
                   <img src={aayush} style={profile}/>
-                  <h3 style={title}>Aayush Dixit</h3>
-                  <p style={{textAlign:"center"}}>Backend Developer/Documentation</p>
+                  <h3 style={title}>Shayan Ahmed</h3>
+                  <p style={{textAlign:"center"}}>Back-End Tech Lead / Documentation</p>
+                </div>
+
+                <div style={eachProfile} >
+                  <img src={aayush} style={profile}/>
+                  <h3 style={title}>Jonathan Wong</h3>
+                  <p style={{textAlign:"center"}}>Back-End Developer / Tester</p>
+                </div>
+
+                <div style={eachProfile} >
+                  <img src={aayush} style={profile}/>
+                  <h3 style={title}>Tim Roesner</h3>
+                  <p style={{textAlign:"center"}}>Front-End Tech Lead / Marketing</p>
+                </div>
+
+                <div style={eachProfile} >
+                  <img src={aayush} style={profile}/>
+                  <h3 style={title}>Raj Makda</h3>
+                  <p style={{textAlign:"center"}}>Front-End Developer / Tester</p>
+                </div>
+
+                <div style={eachProfile} >
+                  <img src={aayush} style={profile}/>
+                  <h3 style={title}>Daanyaal Saeed</h3>
+                  <p style={{textAlign:"center"}}>Front-End Developer / Marketing</p>
                 </div>
 
               </div>
@@ -199,32 +224,56 @@ class AboutUs extends Component {
 
                 <div style={eachProfile}>
                   <img src={aayush} style={profile}/>
-                  <h3 style={title}>Aayush Dixit</h3>
-                  <p style={{textAlign:"center", margin:"auto"}}>Backend Developer / Documentation</p>
+                  <h3 style={title}>Leo Pangco</h3>
+                  <p style={{textAlign:"center"}}>Project Manager / Documentation</p>
                 </div>
 
-                <div style={eachProfile}>
+                <div style={eachProfile} >
                   <img src={aayush} style={profile}/>
-                  <h3 style={title}>Aayush Dixit</h3>
-                  <p style={{textAlign:"center"}}>Backend Developer/Documentation</p>
+                  <h3 style={title}>Ian Duron</h3>
+                  <p style={{textAlign:"center"}}>Back-End Developer / Marketing</p>
                 </div>
 
-                <div style={eachProfile}>
+                <div style={eachProfile} >
                   <img src={aayush} style={profile}/>
                   <h3 style={title}>Aayush Dixit</h3>
-                  <p style={{textAlign:"center"}}>Backend Developer/Documentation</p>
+                  <p style={{textAlign:"center"}}>Back-End Developer / Documentation</p>
                 </div>
 
-                <div style={eachProfile}>
+                <div style={eachProfile} >
                   <img src={aayush} style={profile}/>
-                  <h3 style={title}>Aayush Dixit</h3>
-                  <p style={{textAlign:"center"}}>Backend Developer/Documentation</p>
+                  <h3 style={title}>Juan Castillo</h3>
+                  <p style={{textAlign:"center"}}>Front-End Developer / Tester</p>
                 </div>
 
-                <div style={eachProfile}>
+                <div style={eachProfile} >
                   <img src={aayush} style={profile}/>
-                  <h3 style={title}>Aayush Dixit</h3>
-                  <p style={{textAlign:"center"}}>Backend Developer/Documentation</p>
+                  <h3 style={title}>Shayan Ahmed</h3>
+                  <p style={{textAlign:"center"}}>Back-End Tech Lead / Documentation</p>
+                </div>
+
+                <div style={eachProfile} >
+                  <img src={aayush} style={profile}/>
+                  <h3 style={title}>Jonathan Wong</h3>
+                  <p style={{textAlign:"center"}}>Back-End Developer / Tester</p>
+                </div>
+
+                <div style={eachProfile} >
+                  <img src={aayush} style={profile}/>
+                  <h3 style={title}>Tim Roesner</h3>
+                  <p style={{textAlign:"center"}}>Front-End Tech Lead / Marketing</p>
+                </div>
+
+                <div style={eachProfile} >
+                  <img src={aayush} style={profile}/>
+                  <h3 style={title}>Raj Makda</h3>
+                  <p style={{textAlign:"center"}}>Front-End Developer / Tester</p>
+                </div>
+
+                <div style={eachProfile} >
+                  <img src={aayush} style={profile}/>
+                  <h3 style={title}>Daanyaal Saeed</h3>
+                  <p style={{textAlign:"center"}}>Front-End Developer / Marketing</p>
                 </div>
 
               </div>
