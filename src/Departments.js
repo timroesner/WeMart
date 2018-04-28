@@ -84,6 +84,7 @@ class Departments extends Component {
   			gridTemplateColumns: 'repeat( auto-fit, minmax(150px, 1fr) )',
   			gridColumnGap: '5%',
   			margin: '5%',
+  			marginBottom: '0',
   			width: '90%',
 		}
 
@@ -91,20 +92,13 @@ class Departments extends Component {
 		<div>
 			<Header />
 
-
-			<div style={gridContainer}>
-			  {this.renderDepartments(this.state.departments)}
-			</div>
-
-			
-
 			<div id="pageBody">
 				<div style={gridContainer}>
 				  {this.renderDepartments(this.state.departments)} 
 				</div>
 			</div>
 
-      <Footer />
+     		<Footer />
 		</div>
 		)
 	}

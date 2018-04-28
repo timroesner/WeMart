@@ -1,4 +1,5 @@
 import Header from './components/header';
+import Footer from './components/Footer';
 import React, { Component } from 'react';
 import { withRouter, Link } from "react-router-dom";
 import {DynamoDB} from "aws-sdk/index";
@@ -320,13 +321,14 @@ class ShoppingList extends Component {
 		return(
 		<div>
 			<Header />
-			<div id="pageBody">
+			<div id="pageBody" style ={{minHeight:window.innerHeight-245, marginBottom: '36px'}} >
 				<h2 style={{marginLeft: '10%'}} >Shopping List</h2>
 				<div style= {{margin: '2% 10% 2% 10%'}} >
 					{this.renderShoppingList()}
 				</div>
 				<ToastContainer hideProgressBar={true} autoClose={2000} />
 			</div>
+			<Footer />
 		</div>
 		)
 	}

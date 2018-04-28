@@ -139,6 +139,7 @@ class Footer extends Component {
       height: "auto",
       backgroundColor: '#F5F5F5',
       overflow: "visible",
+      clear: 'both',
     };
 
     const footerLinksContainer = {
