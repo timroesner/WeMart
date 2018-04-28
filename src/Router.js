@@ -12,12 +12,14 @@ import Home from './Home'
 import Item from './Item'
 import Search from './Search'
 import Departments from './Departments'
+import History from './History'
 import ShoppingList from './ShoppingList'
 import AccountSettings from "./AccountSettings";
 
 const Router = () => (
   <main>
     <Switch>
+      <Route path='/history' component={History}/>
       <Route path={'/accountsettings'} component={AccountSettings}/>
         <Route path={'/checkout'} component={Checkout}/>
       <Route exact path='/signup' component={SignUp}/>

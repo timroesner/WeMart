@@ -18,7 +18,10 @@ class Search extends Component {
 			finishedLoading: false,
 		}
 		this.props.history.listen((location, action) => {
-			this.getQuerry()
+    		// This 100ms delay is necessary for the query to change
+    		setTimeout(function() {
+      			this.getQuerry()
+  			}.bind(this), 100)
 		})
 
 		this.initializeDatabase()
@@ -80,7 +83,7 @@ class Search extends Component {
 	            		quantity: element.quantity.S,
 	            		sale: element.sale.N,
 	            		departmentid: element.department.S,
-	            		inCart: 0,
+	            		quantityInCart: 0,
 	            	})
 	            });
 	            this.setState({items: items, finishedLoading: true})
@@ -170,8 +173,8 @@ class Search extends Component {
 		}
 	}
 
-	sortBy = (e, option) => {
-		if(option.value == "lowtohigh") {
+	sortBy(option) {
+		if(option == "lowtohigh") {
 			this.setState({items: this.state.items.sort(function(a, b){
 				let priceA = a.sale != 0 ? a.sale : a.price;
 				let priceB = b.sale != 0 ? b.sale : b.price;
@@ -179,28 +182,57 @@ class Search extends Component {
 				return(priceA - priceB)
 			})})
 
-		} else if(option.value == "hightolow") {
+		} else if(option == "hightolow") {
 			this.setState({items: this.state.items.sort(function(a, b){
 				let priceA = a.sale != 0 ? a.sale : a.price;
 				let priceB = b.sale != 0 ? b.sale : b.price;
 				return(priceB - priceA)
 			})})
 
-		} else if(option.value == "name") {
+		} else if(option == "name") {
 			this.setState({items: this.state.items.sort(function(a, b){return(a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0)})})
 		}
 	}
 
 	renderSortingMenu() {
-		return(
-				<div style={{ margin: '16px'}}>
-				<DropdownMenu onSelect={this.sortBy} triggerElement={<Button snacksStyle="secondary" size="small" >Sorting by&nbsp;
-				   <span className="caret"></span></Button>}>
-				   <MenuItem label="Price: Low to High" value="lowtohigh" style={{padding: '6px'}} labelStyles={{padding: '0'}} />
-					<MenuItem label="Price: High to Low" value="hightolow" style={{padding: '6px'}} labelStyles={{padding: '0'}} />
-					<MenuItem label="Alphabetical" value="name" style={{padding: '6px'}} labelStyles={{padding: '0'}} />
-    			</DropdownMenu>
-    			</div>
+		const astext = {
+			background:'none',
+			border:'none',
+			margin:'0',
+			padding:'0',
+			marginTop: '14px',
+			fontSize: '1.25em',
+			textAlign: 'center'
+		}
+
+		const dropdownButton = {
+			background:'none',
+			border:'none',
+			margin:'7px 0 7px 8px',
+			padding:'0',
+			fontSize: '1.15em',
+			textAlign: 'center',
+			fontWeight: '200'
+		}
+
+		return (
+			<div className="dropdown" style={{margin: '16px'}} >
+  			<button className="dropdown-toggle primaryRedWithHover" style={astext} type="button" id="dropdownMenuHeader" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+    			Sorting by
+    			<span className="caret"></span>
+  			</button>
+  			<ul className="dropdown-menu" aria-labelledby="dropdownMenu1">
+			    <li>
+						<button className="primaryRedWithHover" style={dropdownButton} onClick={() => this.sortBy("lowtohigh")} >
+							Price: Low to High</button></li>
+			    <li>
+						<button className="primaryRedWithHover" style={dropdownButton} onClick={() => this.sortBy("hightolow")} >
+							Price: High to Low</button></li>
+			    <li>
+						<button className="primaryRedWithHover" style={dropdownButton} onClick={() => this.sortBy("name")} >
+							Alphabetical</button></li>
+  			</ul>
+			</div>
 		)
 	}
 
