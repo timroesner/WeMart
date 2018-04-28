@@ -5,6 +5,7 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group'; // ES6
 import './header.css'
 import Cart from './Cart'
 import {CognitoUserAttribute, CognitoUserPool} from 'amazon-cognito-identity-js';
+import {Button, Icon} from 'ic-snacks';
 
 //Styles
 const astext = {
@@ -386,7 +387,7 @@ renderMobileAccountButton() {
 
 		    	<li style={{width: '36%'}}>
 		      		<button className="primaryRedWithHover" style={astext} onClick={this.handleZipClick}>
-		      			<i className="fas fa-map-marker" /> &nbsp;
+		      			<Icon name="locationMarkerFilled" /> &nbsp;
 		      			{zip}
 		      		</button>
 		    	</li>
