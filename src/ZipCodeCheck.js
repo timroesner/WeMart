@@ -20,9 +20,9 @@ class ZipCodeCheck extends Component {
       localStorage.setItem('zip', model.zip)
       this.props.history.push('/home')
     } else {
-      toast.warn('Sorry, we are only in California as of now.', {
+      toast.info(<h5>Sorry, we are only in California as of now.</h5>, {
         position: "top-center",
-        autoClose: false,
+        autoClose: 4000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,

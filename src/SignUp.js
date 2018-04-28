@@ -58,9 +58,9 @@ class SignUp extends Component {
 
     userPool.signUp(model.email, model.password, attributeList, null, function(err, result) {
         if (err) {
-          toast.error(err.message, {
+          toast.warn(err.message, {
             position: "top-center",
-            autoClose: false,
+            autoClose: 4000,
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: true,

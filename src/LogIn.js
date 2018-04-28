@@ -63,7 +63,14 @@ class LogIn extends Component {
         },
 
         onFailure: function(err) {
-            toast.error(err.message)
+            toast.warn(err.message,{
+              position: "top-center",
+              autoClose: 4000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              })
         },
 
     });
@@ -111,7 +118,14 @@ class LogIn extends Component {
         },
 
         onFailure: function(err) {
-            toast.error(err.message)
+            toast.warn(err.message,{
+              position: "top-center",
+              autoClose: 4000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              })
         }
     });
   }
@@ -186,15 +200,7 @@ class LogIn extends Component {
             Forgot your password? <a onClick={this.handlePasswordReset}>Reset It</a>
             </p>
         </div>
-        <ToastContainer
-          position="top-center"
-          autoClose={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnVisibilityChange
-          draggable
-        />
+        <ToastContainer/>
       </div>
     )
   }
