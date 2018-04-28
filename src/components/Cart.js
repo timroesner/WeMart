@@ -49,8 +49,8 @@ class Cart extends Component {
     var tPrice = 0
     items.forEach((item)=>{
       var priceToBeAdded = Number(item.price)
-      if (item.salePrice != '0') {
-        priceToBeAdded = Number(item.salePrice)
+      if (item.sale != '0') {
+        priceToBeAdded = Number(item.sale)
       }
       tPrice += priceToBeAdded * item.quantityInCart
     })
