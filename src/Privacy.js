@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import TextFileReader from './components/TextFileReader'
-import aboutus from './images/aboutus.jpg'
 import Header from './components/header';
 import Footer from './components/Footer'
 
