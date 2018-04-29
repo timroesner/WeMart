@@ -43,6 +43,99 @@ class AboutUs extends Component {
     this.setState({ width: window.innerWidth, height: window.innerHeight, });
   };
 
+  renderTeam() {
+    const eachProfile={
+      width:'20em',
+      display: 'inline-block',
+      marginBottom: '3%',
+    }
+
+    const profileHolder={
+      display: "flex",
+      flexWrap: "wrap",
+      justifyContent: "center",
+      alignItems: "center",
+    };
+
+    const profile={
+      width: "70%",
+      clipPath: 'circle(48%)',
+      filter: "grayscale(100%)",
+      display: "block",
+      margin: "auto",
+      webkitClipPath: 'circle(48%)',
+      ':hover': {
+        filter: "grayscale(0)",
+        cursor: 'pointer'
+      }
+    };
+
+    const title={
+      width: "100%",
+      textAlign: 'center',
+      marginTop:"0.5em",
+      marginBottom:"0.5em",
+      fontWeight: "500",
+    };
+
+    return(
+    <div style={profileHolder}>
+    <div style={eachProfile}>
+      <img src={leo} style={profile}  key= "key8"/>
+      <h3 style={title}>Leonardo Pangco</h3>
+      <p style={{textAlign:"center"}}>Project Manager / Documentation</p>
+    </div>
+
+    <div style={eachProfile}>
+      <img src={shayan} style={profile}/>
+      <h3 style={title}>Shayan Ahmed</h3>
+      <p style={{textAlign:"center"}}>Backend Lead / Documentation</p>
+    </div>
+
+    <div style={eachProfile}>
+      <a href="https://timroesner.com" target="_blank"><img src={tim} style={profile}  key= "key5"/></a>
+      <h3 style={title}>Tim Roesner</h3>
+      <p style={{textAlign:"center"}}>Frontend Lead / Marketing</p>
+    </div>
+
+    <div style={eachProfile}>
+      <img src={aayush} style={profile} key= "key1"/>
+      <h3 style={title}>Aayush Dixit</h3>
+      <p style={{textAlign:"center", margin:"auto"}}>Backend Developer / Documentation</p>
+    </div>
+
+    <div style={eachProfile}>
+      <img src={ian} style={profile}  key= "key2"/>
+      <h3 style={title}>Ian Duron</h3>
+      <p style={{textAlign:"center"}}>Backend Developer / Marketing</p>
+    </div>
+
+    <div style={eachProfile}>
+      <img src={jonathan} style={profile}  key= "key3"/>
+      <h3 style={title}>Jonathan Wong</h3>
+      <p style={{textAlign:"center"}}>Backend Developer / Tester</p>
+    </div>
+
+    <div style={eachProfile}>
+      <img src={juan} style={profile}  key= "key4"/>
+      <h3 style={title}>Juan Castillo</h3>
+      <p style={{textAlign:"center"}}>Frontend Developer / Tester</p>
+    </div>
+
+    <div style={eachProfile}>
+      <img src={raj} style={profile}  key= "key6"/>
+      <h3 style={title}>Raj Makda</h3>
+      <p style={{textAlign:"center"}}>Frontend Developer / Tester</p>
+    </div>
+
+    <div style={eachProfile}>
+      <img src={daanyaal} style={profile}  key= "key7"/>
+      <h3 style={title}>Daanyaal Saeed</h3>
+      <p style={{textAlign:"center"}}>Frontend Developer / Documentation</p>
+    </div>
+    </div>
+    )
+  }
 
 
   render() {
@@ -68,13 +161,6 @@ class AboutUs extends Component {
       marginTop: '-15px',
     };
 
-    const profileHolder={
-      display: "flex",
-      flexWrap: "wrap",
-      justifyContent: "center",
-      alignItems: "center",
-    };
-
     const imageHolderSmall={
       overflow: "hidden",
       height: "10em",
@@ -85,19 +171,6 @@ class AboutUs extends Component {
 
     const image={
       width: "100%",
-    };
-
-    const profile={
-      width: "70%",
-      clipPath: 'circle(48%)',
-      filter: "grayscale(100%)",
-      display: "block",
-      margin: "auto",
-      transition: "filter 0.25s",
-      webkitClipPath: 'circle(48%)',
-      ':hover': {
-        filter: "none",
-      }
     };
 
     const text={
@@ -117,12 +190,6 @@ class AboutUs extends Component {
       width: "100%",
       backgroundColor: "#FCFCFC",
       paddingBottom: '5%'
-    }
-
-    const eachProfile={
-      width:'20em',
-      display: 'inline-block',
-      marginBottom: '3%',
     }
 
 
@@ -150,63 +217,7 @@ class AboutUs extends Component {
 
             <div style = {divBorderW}>
               <h1 style={title}> The Team</h1>
-              <div style={profileHolder}>
-
-                <div style={eachProfile}>
-                  <img src={leo} style={profile}  key= "key8"/>
-                  <h3 style={title}>Leonardo Pangco</h3>
-                  <p style={{textAlign:"center"}}>Project Manager / Documentation</p>
-                </div>
-
-                <div style={eachProfile}>
-                  <img src={shayan} style={profile}/>
-                  <h3 style={title}>Shayan Ahmed</h3>
-                  <p style={{textAlign:"center"}}>Backend Lead / Documentation</p>
-                </div>
-
-                <div style={eachProfile}>
-                  <img src={tim} style={profile}  key= "key5"/>
-                  <h3 style={title}>Tim Roesner</h3>
-                  <p style={{textAlign:"center"}}>Frontend Lead / Marketing</p>
-                </div>
-
-                <div style={eachProfile}>
-                  <img src={aayush} style={profile} key= "key1"/>
-                  <h3 style={title}>Aayush Dixit</h3>
-                  <p style={{textAlign:"center", margin:"auto"}}>Backend Developer / Documentation</p>
-                </div>
-
-                <div style={eachProfile}>
-                  <img src={ian} style={profile}  key= "key2"/>
-                  <h3 style={title}>Ian Duron</h3>
-                  <p style={{textAlign:"center"}}>Backend Developer / Marketing</p>
-                </div>
-
-                <div style={eachProfile}>
-                  <img src={jonathan} style={profile}  key= "key3"/>
-                  <h3 style={title}>Jonathan Wong</h3>
-                  <p style={{textAlign:"center"}}>Backend Developer / Tester</p>
-                </div>
-
-                <div style={eachProfile}>
-                  <img src={juan} style={profile}  key= "key4"/>
-                  <h3 style={title}>Juan Castillo</h3>
-                  <p style={{textAlign:"center"}}>Frontend Developer / Tester</p>
-                </div>
-
-                <div style={eachProfile}>
-                  <img src={raj} style={profile}  key= "key6"/>
-                  <h3 style={title}>Raj Makda</h3>
-                  <p style={{textAlign:"center"}}>Frontend Developer / Tester</p>
-                </div>
-
-                <div style={eachProfile}>
-                  <img src={daanyaal} style={profile}  key= "key7"/>
-                  <h3 style={title}>Daanyaal Saeed</h3>
-                  <p style={{textAlign:"center"}}>Frontend Developer / Documentation</p>
-                </div>
-
-              </div>
+                {this.renderTeam()}
             </div>
           </div>
 
@@ -235,63 +246,7 @@ class AboutUs extends Component {
 
             <div style = {divBorderG}>
               <h1 style={title}> The Team</h1>
-              <div style={profileHolder}>
-
-                <div style={eachProfile}>
-                  <img src={leo} style={profile}  key= "key8"/>
-                  <h3 style={title}>Leonardo Pangco</h3>
-                  <p style={{textAlign:"center"}}>Project Manager / Documentation</p>
-                </div>
-
-                <div style={eachProfile}>
-                  <img src={shayan} style={profile}/>
-                  <h3 style={title}>Shayan Ahmed</h3>
-                  <p style={{textAlign:"center"}}>Backend Lead / Documentation</p>
-                </div>
-
-                <div style={eachProfile}>
-                  <img src={tim} style={profile}  key= "key5"/>
-                  <h3 style={title}>Tim Roesner</h3>
-                  <p style={{textAlign:"center"}}>Frontend Lead / Marketing</p>
-                </div>
-
-                <div style={eachProfile}>
-                  <img src={aayush} style={profile} key= "key1"/>
-                  <h3 style={title}>Aayush Dixit</h3>
-                  <p style={{textAlign:"center", margin:"auto"}}>Backend Developer / Documentation</p>
-                </div>
-
-                <div style={eachProfile}>
-                  <img src={ian} style={profile}  key= "key2"/>
-                  <h3 style={title}>Ian Duron</h3>
-                  <p style={{textAlign:"center"}}>Backend Developer / Marketing</p>
-                </div>
-
-                <div style={eachProfile}>
-                  <img src={jonathan} style={profile}  key= "key3"/>
-                  <h3 style={title}>Jonathan Wong</h3>
-                  <p style={{textAlign:"center"}}>Backend Developer / Tester</p>
-                </div>
-
-                <div style={eachProfile}>
-                  <img src={juan} style={profile}  key= "key4"/>
-                  <h3 style={title}>Juan Castillo</h3>
-                  <p style={{textAlign:"center"}}>Frontend Developer / Tester</p>
-                </div>
-
-                <div style={eachProfile}>
-                  <img src={raj} style={profile}  key= "key6"/>
-                  <h3 style={title}>Raj Makda</h3>
-                  <p style={{textAlign:"center"}}>Frontend Developer / Tester</p>
-                </div>
-
-                <div style={eachProfile}>
-                  <img src={daanyaal} style={profile}  key= "key7"/>
-                  <h3 style={title}>Daanyaal Saeed</h3>
-                  <p style={{textAlign:"center"}}>Frontend Developer / Documentation</p>
-                </div>
-
-              </div>
+                  {this.renderTeam()}
             </div>
           </div>
 
