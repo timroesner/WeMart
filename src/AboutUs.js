@@ -87,7 +87,7 @@ class AboutUs extends Component {
     </div>
 
     <div style={eachProfile}>
-      <img src={shayan} style={profile}/>
+      <a href="https://tinyurl.com/2fcpre6" target="_blank"><img src={shayan} style={profile}/></a>
       <h3 style={title}>Shayan Ahmed</h3>
       <p style={{textAlign:"center"}}>Backend Lead / Documentation</p>
     </div>

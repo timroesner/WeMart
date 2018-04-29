@@ -162,15 +162,15 @@ class Footer extends Component {
           <div>
             <div style={footerLinksContainer}>
 
-              <Link to={"./AboutUs"} style={Links}>About Us</Link>
+              <Link to={"./aboutus"} style={Links}>About Us</Link>
 
               <a onClick={this.handleShowContactUsModal}  style={Links}>Contact Us</a>
 
-              <Link to={"./Locations"} style={Links}>Locations</Link>
+              <Link to={"./locations"} style={Links}>Locations</Link>
 
-              <Link to={"./Privacy"} style={Links}>Privacy</Link>
+              <Link to={"./privacy"} style={Links}>Privacy</Link>
 
-              <Link to={"./Terms"} style={Links}>Terms</Link>&nbsp;&nbsp;&nbsp;&nbsp;
+              <Link to={"./terms"} style={Links}>Terms</Link>&nbsp;&nbsp;&nbsp;&nbsp;
 
               </div>
 
