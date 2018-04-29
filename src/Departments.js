@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { withRouter } from "react-router-dom";
 import Header from './components/header';
+import Footer from './components/Footer';
 import {DynamoDB} from "aws-sdk/index";
 
 class Departments extends Component {
@@ -9,7 +10,7 @@ class Departments extends Component {
 		super(props)
 
 		this.state = { departments: [] }
-		
+
 		this.getDepartments()
 	}
 
@@ -83,17 +84,21 @@ class Departments extends Component {
   			gridTemplateColumns: 'repeat( auto-fit, minmax(150px, 1fr) )',
   			gridColumnGap: '5%',
   			margin: '5%',
+  			marginBottom: '0',
   			width: '90%',
 		}
 
 		return(
 		<div>
 			<Header />
+
 			<div id="pageBody">
 				<div style={gridContainer}>
 				  {this.renderDepartments(this.state.departments)} 
 				</div>
 			</div>
+
+     		<Footer />
 		</div>
 		)
 	}
