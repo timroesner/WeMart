@@ -11,6 +11,7 @@ import {DynamoDB} from "aws-sdk/index";
 import PropTypes from 'prop-types';
 import NewCardForm from "./components/NewCardForm";
 import {CognitoUserPool} from "amazon-cognito-identity-js";
+import AWS from 'aws-sdk'
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -18,6 +19,7 @@ import 'react-toastify/dist/ReactToastify.css';
 var dynamodb;
 var poolData;
 var stripeKey;
+var lambdaKey;
 const orderid = require('order-id')('mysecret')
 
 //STYLES
@@ -40,7 +42,7 @@ export default class Checkout extends React.Component {
             addressPanel: false,
             timePanel: false,
             paymentPanel: false,
-            phonePanel: false,
+            contactPanel: false,
 
 
             daySelected: false,
@@ -55,13 +57,14 @@ export default class Checkout extends React.Component {
 
 
             //Order Details
+            email: null,
             deliveryAddress: null,
             deliveryTime: null,
             deliveryDay: null,
             phoneNumber: null,
             total:0,
             orderItems: [],
-            token: null,
+            source: null,
         }
         this.setKeys()
         this.getCognitoUser()
@@ -87,6 +90,7 @@ export default class Checkout extends React.Component {
     setKeys(){
         if(process.env.NODE_ENV === 'development'){
             dynamodb = require('./db').db;
+            lambdaKey = require('./db').lambda
             poolData =require('./poolData').poolData;
             stripeKey = require('./stripeKey').stripeAPIKey
         } else {
@@ -101,6 +105,7 @@ export default class Checkout extends React.Component {
                 ClientId : process.env.REACT_APP_Auth_ClientId
             }
             stripeKey = process.env.REACT_APP_Stripe_Key
+            lambdaKey = process.env.REACT_APP_AWS_Lambda
         }
     }
 
@@ -171,7 +176,8 @@ export default class Checkout extends React.Component {
                     if(attribute.Name === 'email'){
                         self.setState({
                             // how are order going to be placed for a guest user with no userID?
-                            userId: attribute.Value
+                            userId: attribute.Value,
+                            email: attribute.Value
                         })
                         self.getUserDetails(attribute.Value)
                     }
@@ -197,7 +203,7 @@ export default class Checkout extends React.Component {
                     let phone = data.Item.phone.N;
                     this.setState({
                         phoneNumber: phone,
-                        phonePanel: true
+                        contactPanel: true
                     })
                 }
                 // Check that the user has an address in the attributes
@@ -217,17 +223,19 @@ export default class Checkout extends React.Component {
         sources.forEach((source)=>{
             let id = source.M.id.S;
             let client_secret = source.M.client_secret.S;
-            console.log(source)
+            console.log('Source',source)
             this.state.stripe.retrieveSource({
                 id: id,
                 client_secret: client_secret,
             }).then(function(result) {
-                // console.log('res',result)
+                console.log('res',result)
                 var label = result.source.card.brand + ' ' + result.source.card.last4
                 self.setState({ paymentPanel:true,
-                    paymentMethod: {brand: result.source.card.brand, last4:result.source.card.last4, label:label}});
+                    paymentMethod: {brand: result.source.card.brand, last4:result.source.card.last4, label:label},
+                    source: id});
             });
         })
+        console.log('Token source', this.state.source)
     }
 
     setDeliveryAddress(address){
@@ -244,8 +252,10 @@ export default class Checkout extends React.Component {
 
     calculateTotal(){
         var total = this.state.subtotal + this.state.deliveryFee + this.state.serviceFee;
-        total = Math.round(total * 100) / 100;
-        return Number(total).toFixed(2)
+        // total = Math.round(total * 100) / 100;
+        total = Number(total).toFixed(2)
+        console.log(total)
+        return total
     }
 
     handleNewAddress = (model) =>{
@@ -266,7 +276,8 @@ export default class Checkout extends React.Component {
 
     handleContact = (model) =>{
         this.setState({
-            phonePanel: true,
+            contactPanel: true,
+            email: model.email,
             phoneNumber: model.phone,
         })
     }
@@ -278,27 +289,26 @@ export default class Checkout extends React.Component {
     }
 
     handleOrderPlace = ()=>{
-        this.notify()
-        this.setState({addressPanel: false})
+        this.notify() //Let the user know that the order is being placed
+        this.setState({addressPanel: false}) // disable the order placec button to prevent aditional orders
+        this.charge();
+    }
+
+    submitOrder(){
         var date = new Date().toJSON().slice(0,10).replace(/-/g,'/');
         var address = this.state.deliveryAddress.street + ' ' + this.state.deliveryAddress.city +', ' +
             this.state.deliveryAddress.state + ' ' + this.state.deliveryAddress.zipCode;
-        var userid;
-        if(this.state.userId){
-            userid = this.state.userId
-        } else {
-            userid = 'guest'
-        }
 
         var orderParams = {
             Item: {
                 'orderId':{ S: orderid.generate()},
-                'userid':{S:userid},
+                'userid':{S:this.state.email},
                 'date':{S:date},
                 'deliveryDate': {S:this.state.deliveryDay},
                 'deliveryTime':{S:this.state.deliveryTime},
                 'deliveryAddress':{S:address},
                 'status':{S:'inProgress'},
+                'source':{S:this.state.source},
                 'total':{N:this.calculateTotal().toString()},
                 'phoneNumber':{N:this.state.phoneNumber},
                 'items':{L:this.state.orderItems}
@@ -308,57 +318,51 @@ export default class Checkout extends React.Component {
         }
 
         console.log('[orderParams]',orderParams)
-        // var userParams = {
-        //     ExpressionAttributeNames: {
-        //         "#H": "history",
-        //     },
-        //     ExpressionAttributeValues: {
-        //         ":h": {
-        //             L: history
-        //         }
-        //     },
-        //     Key: {
-        //         'userid': {S: this.state.userId}
-        //     },
-        //     ReturnValues: "ALL_NEW",
-        //     UpdateExpression: "SET #H = list_append( :h, #H) ",
-        //     TableName: "orders"
-        // };
-        // // Scan the DB and get the user
-        // dynamodb.updateItem(userParams, (err, data) => {
-        //     if(err) {console.log(err, err.stack)}
-        //     else{
-        //         console.log('[Order Placed]',data);
-        //     }
-        // })
 
         dynamodb.putItem(orderParams,(err, data)=>{
             if(err) {console.log(err, err.stack); this.toastFail}
-            else { this.toastSuccess(); console.log(data)}
+            else { console.log(data)}
         } )
+    }
 
-        this.clearCart()
-        //TODO send the token to the back end
-        // paymentRequest.on('token', function(ev) {
-        //     // Send the token to your server to charge it!
-        //     fetch('/charges', {
-        //         method: 'POST',
-        //         body: JSON.stringify({token: ev.token.id}),
-        //         headers: {'content-type': 'application/json'},
-        //     })
-        //         .then(function(response) {
-        //             if (response.ok) {
-        //                 // Report to the browser that the payment was successful, prompting
-        //                 // it to close the browser payment interface.
-        //                 ev.complete('success');
-        //             } else {
-        //                 // Report to the browser that the payment failed, prompting it to
-        //                 // re-show the payment interface, or show an error message and close
-        //                 // the payment interface.
-        //                 ev.complete('fail');
-        //             }
-        //         });
-        // });
+    //** This method uses AWS lanbda fucntion to charge the user using stripe source */
+    charge(){
+        var lambda = new AWS.Lambda(lambdaKey);
+
+        // This will be used for production
+        // var payLoad = {
+        //     "stripeSource": this.state.source,
+        //     "stripeEmail": this.state.email,
+        //     "chargeAmount": (this.calculateTotal() *100).toFixed()
+        // };
+
+        // Testing only 
+        var payLoad = {
+            "stripeSource": 'tok_visa',
+            "stripeEmail": this.state.email,
+            "chargeAmount": (this.calculateTotal() *100).toFixed()
+        };
+        
+        console.log(payLoad.valueOf())
+        var params = {
+            FunctionName: 'chargeUser', /* required */
+            Payload: JSON.stringify(payLoad)
+            
+        };
+        
+        var self = this
+        lambda.invoke(params, function(err, data) {
+            if (err){
+               console.log("error",err, err.stack); // an error occurred 
+               this.toastFail();
+            } 
+            else{
+                self.submitOrder();
+                self.toastSuccess();
+                console.log('success', data);           // successful response
+                self.clearCart()
+            }     
+        });
     }
 
     clearCart = () =>{
@@ -435,14 +439,17 @@ export default class Checkout extends React.Component {
     }
 
     renderContactDetails(){
-        if(this.state.phonePanel){
+        if(this.state.contactPanel){
             return(<div>
                 <div style={validEntry}>
                     {this.state.phoneNumber}
                 </div>
+                <div style={validEntry}>
+                    {this.state.email}
+                </div>
                 <div style={{marginLeft:'1.5rem'}}>
                     <Button style={{paddingLeft:'3rem', paddingRight:'3rem', marginTop:'2rem'}} snacksStyle={'secondary'}
-                            onClick={()=>{this.setState({phonePanel: false})}} type="submit">Change</Button>
+                            onClick={()=>{this.setState({contactPanel: false})}} type="submit">Change</Button>
                 </div>
             </div>)
 
@@ -456,6 +463,17 @@ export default class Checkout extends React.Component {
                             floatingLabelText="Phone number"
                             fullWidth
                             //TODO Validate
+                            required
+                        />
+                    </div>
+                    <div style={{margin: '1.5rem'}}>
+                        <TextField
+                            name="email"
+                            type="email"
+                            floatingLabelText="Email"
+                            fullWidth
+                            validations={{isEmail: null, isLength: {min: 3, max: 30}}}
+                            validationErrorText="Sorry, please enter a valid email."
                             required
                         />
                     </div>
@@ -567,8 +585,8 @@ export default class Checkout extends React.Component {
                                     {this.renderDeliveryTime()}
                                 </div>
                             </CheckoutPanel>
-                            <CheckoutPanel icon={"phone"} title='Enter contact number' valid={this.state.phonePanel}
-                                           onValidTitle={'Mobile number'}>
+                            <CheckoutPanel icon={"iconPerson"} title='Enter contact details' valid={this.state.contactPanel}
+                                           onValidTitle={'Contact Details'}>
                                 {this.renderContactDetails()}
                             </CheckoutPanel>
                             <CheckoutPanel
@@ -607,7 +625,7 @@ export default class Checkout extends React.Component {
                                     <Button style={{paddingLeft:'4rem', paddingRight:'4rem', marginLeft:'auto', marginRight:'0'}}
                                             onClick={this.handleOrderPlace}
                                             disabled={
-                                                !(this.state.addressPanel && this.state.paymentPanel && this.state.phonePanel && this.state.timePanel)}
+                                                !(this.state.addressPanel && this.state.paymentPanel && this.state.contactPanel && this.state.timePanel)}
                                     >
                                         Place order
                                     </Button>
