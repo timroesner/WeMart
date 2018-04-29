@@ -1,5 +1,6 @@
 import {withRouter} from 'react-router-dom';
 import Header from './components/header';
+import Footer from './components/Footer';
 import React from "react";
 import {Button, DropdownMenu, MenuItem } from "ic-snacks";
 import itemsEmpty from './images/items_empty.png'
@@ -289,10 +290,11 @@ class History extends React.Component{
         return(
             <div>
                 <Header/>
-                <div id="pageBody">
+                <div id="pageBody"  style ={{minHeight:window.innerHeight-245}} >
                     <h1 style={pageTitle}>Your Past Purchases</h1>
                     {this.renderHistory()}
                 </div>
+                <Footer />
             </div>
 
         )
