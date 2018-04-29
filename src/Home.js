@@ -20,7 +20,7 @@ class Home extends Component {
       isLoggedIn: false,
       isLoaded: false,
       orderHistory: new Set(),
-       user: null
+      user: null
     }
   }
 
@@ -57,6 +57,7 @@ class Home extends Component {
         data.Items.forEach((element) => {
 	      departments.push({name: element.departmentid.S, image: element.image.S})
 	      });
+        departments.sort(function(a,b) {return (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0);} );
 				this.setState({departmentItems: departments})
 	    }
 	  });
@@ -226,7 +227,36 @@ class Home extends Component {
     this.getCognitoUser()
     this.getDepartments()
     this.getSavingsItems()
+  }
 
+
+  handleSeeMoreClick = (link) => {
+    this.props.history.push('/'+link)
+  }
+
+  noHistory = () => {
+    const title = {
+      color: 'red',
+      position: 'relative',
+      height: '20%',
+      backgroundColor: 'white',
+      padding: '0',
+      paddingTop: '30px',
+      borderRadius: '0',
+      paddingLeft : '60px',
+      margin: '0'
+    }
+    return(
+      <div style={{border: '2px solid #efefef', margin: '30px', borderRadius: '5px', boxShadow: '0 4px 8px 0 rgba(0,0,0,0.2)'}}>
+        <div className="jumbotron jumbotron-fluid" style={title}>
+          <h4 className="lead">History</h4>
+          {this.state.isLoggedIn?
+            <p style={{color: 'black', fontSize: '1.4em', paddingRight: '10%'}}>No items in history, items that you order will show up here so you can quickly find them again</p>
+            :<p style={{color: 'black', fontSize: '1.4em', paddingRight: '10%'}}>You must be logged in to view your recently ordered items</p>
+            }
+        </div>
+      </div>
+    );
   }
 
 
@@ -235,9 +265,9 @@ class Home extends Component {
       <div>
         <Header />
         <div id="pageBody" className="container-fluid">
-          <HorizontalScroll items={this.state.departmentItems} title="Browse by Department"/>
-          <HorizontalScroll items={this.state.savingsItems} title="Savings"/>
-          <HorizontalScroll items={this.state.historyItems} title="History"/>
+          <HorizontalScroll onSeeMoreClick={() => this.handleSeeMoreClick('departments')} items={this.state.departmentItems} title="Browse by Department"/>
+          <HorizontalScroll onSeeMoreClick={() => this.handleSeeMoreClick('savings')} items={this.state.savingsItems} title="Savings"/>
+          {this.state.isLoggedIn && this.state.historyItems.length > 0? <HorizontalScroll onSeeMoreClick={() => this.handleSeeMoreClick('history')} items={this.state.historyItems} title="History"/> : this.noHistory()}
       </div>
       </div>
     );
