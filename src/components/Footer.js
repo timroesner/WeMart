@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 import {Link} from "react-router-dom";
 import {Modal} from "react-bootstrap";
 import Radium from 'radium';
-import {Button, Form, TextField} from 'ic-snacks';
+import {Button, Form, TextField, Icon} from 'ic-snacks';
 
 
 class Footer extends Component {
@@ -29,6 +29,8 @@ class Footer extends Component {
     this.setState({contactUsModal: false});
   }
 
+
+
   contactUsModal(){
     const textarea={
       base:{
@@ -45,13 +47,18 @@ class Footer extends Component {
         }
       }
     }
+    const close={
+      position: "relative",
+      cursor: "pointer",
+      padding: "10px"
+    }
 
     return(
       <div>
         <Modal show={this.state.contactUsModal} onHide={this.handleCloseContactUsModal}>
           <Modal.Header>
             <div style={{ float: 'right'}}>
-                  <Button onClick={this.handleCloseContactUsModal} snacksStyle="secondary" style={{height:"30px"}}>Close</Button>
+                  <Icon name="x" onClick={this.handleCloseContactUsModal} style={close}/>
             </div>
             <h1 style={{marginTop: '2px'}}>Email Us</h1>
             <div>We'll get back to you soon</div>
@@ -168,7 +175,7 @@ class Footer extends Component {
               </div>
 
               <div style={Spacing}>
-                Copyright © {new Date().getFullYear()} 
+                Copyright © {new Date().getFullYear()}
                 <a href={"https://github.com/timroesner/WeMart"} style={Links}>WeMart</a> Inc.
               </div>
 
