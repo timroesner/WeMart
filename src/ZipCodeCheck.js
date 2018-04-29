@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
-import { Button, Form, TextField } from 'ic-snacks';
+import { Form, TextField } from 'ic-snacks';
 import background from './images/background.svg';
 import './App.css';
-import registerServiceWorker from './registerServiceWorker';
 import { withRouter } from "react-router-dom";
+import wemartLogo from './images/logo.png'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-var AmazonCognitoIdentity = require('amazon-cognito-identity-js');
-var AWS = require('aws-sdk')
+const logo = {maxWidth:'20rem'}
+const greeting = {margin:'2.5rem auto', textAlign:'center'}
 
 class ZipCodeCheck extends Component {
   state = {
@@ -15,16 +17,24 @@ class ZipCodeCheck extends Component {
 
   handleFormSubmit = (model) => {
     if(model.zip > 90000 && model.zip < 96163) {
+      localStorage.setItem('zip', model.zip)
       this.props.history.push('/home')
     } else {
-      alert('Sorry, we are only in California as of now.')
+      toast.info(<h5>Sorry, we are only in California as of now.</h5>, {
+        position: "top-center",
+        autoClose: 4000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        });
+      // alert('Sorry, we are only in California as of now.')
     }
   }
 
   render() {
     const txtStyle = {
-      margin: '6%',
-      marginBottom: '0%',
+        margin: '6% 6% 0% 6%',
       width: '88%'
     }
 
@@ -33,7 +43,7 @@ class ZipCodeCheck extends Component {
         height: window.innerHeight+'px',
         overflow: 'auto',
         backgroundImage: `url(${background})`,
-        backgroundRepeat: 'repeate',
+        backgroundRepeat: 'repeat',
         backgroundColor: 'red',
         display: 'flex',
         alignItems: 'center'
@@ -46,7 +56,11 @@ class ZipCodeCheck extends Component {
           maxWidth: `${0.5*window.innerWidth}px`,
           minWidth: '250px'
         }} >
-
+            <div style={greeting}>
+            <img src={wemartLogo} style={logo}/>
+            <h3 style={{margin:'1rem 2rem'}}>Groceries delivered to your door</h3>
+                <h5>Enter your zip code below to continue</h5>
+            </div>
           <Form
             onSubmit={this.handleFormSubmit}
             serverErrors={this.state.serverErrors}
@@ -75,6 +89,7 @@ class ZipCodeCheck extends Component {
             Already have an Account? <a href="/login">Log In</a>
           </p>
         </div>
+        <ToastContainer />
       </div>
     )
   }

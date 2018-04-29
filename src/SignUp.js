@@ -1,10 +1,15 @@
 import React, { Component } from 'react';
-import { Button, Form, TextField } from 'ic-snacks';
+import { Form, TextField } from 'ic-snacks';
 import background from './images/background.svg';
 import './App.css';
 import { withRouter } from "react-router-dom";
 import {DynamoDB} from "aws-sdk/index";
+import wemartLogo from './images/logo.png'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
+const logo = {maxWidth:'200px', padding:'1.5rem'}
+const greeting = {margin:'2.5rem auto', textAlign:'center'}
 var AmazonCognitoIdentity = require('amazon-cognito-identity-js');
 
 class SignUp extends Component {
@@ -32,7 +37,7 @@ class SignUp extends Component {
     if(process.env.NODE_ENV === 'development'){
         poolData = require('./poolData').poolData;
     } else {
-      var poolData = {
+        poolData = {
         UserPoolId : process.env.REACT_APP_Auth_UserPoolId,
         ClientId : process.env.REACT_APP_Auth_ClientId
       };
@@ -53,7 +58,14 @@ class SignUp extends Component {
 
     userPool.signUp(model.email, model.password, attributeList, null, function(err, result) {
         if (err) {
-            alert(err.message);
+          toast.warn(err.message, {
+            position: "top-center",
+            autoClose: 4000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            });
             return;
         }
 
@@ -70,9 +82,9 @@ class SignUp extends Component {
             },
            "lastName": {
              S: model.lastName
-            }
-          },
-          ReturnConsumedCapacity: "TOTAL",
+            },
+          }, 
+          ReturnConsumedCapacity: "TOTAL", 
           TableName: "user"
         };
 
@@ -94,8 +106,7 @@ class SignUp extends Component {
 
   render() {
     const txtStyle = {
-      margin: '6%',
-      marginBottom: '0%',
+      margin: '6% 6% 0% 6%',
       width: '88%'
     }
 
@@ -117,7 +128,11 @@ class SignUp extends Component {
           maxWidth: `${0.5*window.innerWidth}px`,
           minWidth: '250px'
         }} >
-
+            <div style={greeting}>
+                <img src={wemartLogo} style={logo} alt={'logo'}/>
+                <h3 style={{margin:'1rem 2rem'}}>We're available in your area</h3>
+                <h5>Sign up to get started</h5>
+            </div>
           <Form
             onSubmit={this.handleFormSubmit}
             serverErrors={this.state.serverErrors}
@@ -170,6 +185,15 @@ class SignUp extends Component {
               color: '#696969',
             }}> Already have an Account? <a href="/login">Log In</a></p>
         </div>
+        <ToastContainer
+          position="top-center"
+          autoClose={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnVisibilityChange
+          draggable
+        />
       </div>
     )
   }
