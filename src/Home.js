@@ -101,7 +101,6 @@ class Home extends Component {
     var userPool = new CognitoUserPool(poolData);
     var cognitoUser = userPool.getCurrentUser();
     if (cognitoUser != null) {
-      this.setState({isLoggedIn: true})
         cognitoUser.getSession(function(err, session) {
             if (err) {
                 alert(err);
@@ -127,24 +126,35 @@ class Home extends Component {
             })
             self.getUserDetails()
         });
+
     }
     }
 
     getUserDetails(){
-      var orderParams = {
-           ExpressionAttributeValues: {
-               ":u": {
-                 S: this.state.user.userId
-                }
-           },
-           ExpressionAttributeNames: {
-               "#S": "items",
-              },
-           FilterExpression: "userid = :u",
-           ProjectionExpression: "#S",
-           TableName: 'orders'
-       }
-       dynamodb.scan(orderParams,(err, data) => {
+        var orderParams = {
+            ExpressionAttributeValues: {
+                ":u": {
+                  S: this.state.user.userId
+                 }
+            },
+            ExpressionAttributeNames: {
+                "#S": "items", 
+               },
+            FilterExpression: "userid = :u", 
+            ProjectionExpression: "#S", 
+            TableName: 'orders'
+        }
+        // var userParams = {
+        //     Key: {
+        //         'userid': {S: this.state.user.userId}
+        //     },AttributesToGet: [
+        //         'history',
+        //         /* more items */
+        //     ],
+        //     TableName: "user"
+        // };
+
+        dynamodb.scan(orderParams,(err, data) => {
             if(err) {console.log(err, err.stack)}
             else{
                 console.log('order history',data)
@@ -161,6 +171,21 @@ class Home extends Component {
                 this.getItemsFromDB()
             }
         } )
+        // dynamodb.getItem(userParams, (err, data) => {
+        //     if(err) {console.log(err, err.stack)}
+        //     else{
+        //         data.Item.history.L.forEach((item)=>{
+        //             item.M.items.L.forEach((i)=>{
+        //                 let itemId = i.M.itemid.S
+        //                 console.log('[itemids]',itemId)
+        //                 var set = this.state.orderHistory
+        //                 set.add(itemId)
+        //                 this.setState({orderHistory: set})
+        //             })
+        //         })
+        //         this.getItemsFromDB()
+        //     }
+        // })
     }
 
     getItemsFromDB(){
@@ -196,17 +221,17 @@ class Home extends Component {
           })
       }
 
-  handleSeeMoreClick = (link) => {
-    this.props.history.push('/'+link)
-  }
-
   componentDidMount = () =>  {
 
     this.setKeys()
     this.getCognitoUser()
     this.getDepartments()
     this.getSavingsItems()
+  }
 
+
+  handleSeeMoreClick = (link) => {
+    this.props.history.push('/'+link)
   }
 
   noHistory = () => {

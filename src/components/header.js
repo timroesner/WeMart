@@ -5,6 +5,7 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group'; // ES6
 import './header.css'
 import Cart from './Cart'
 import {CognitoUserAttribute, CognitoUserPool} from 'amazon-cognito-identity-js';
+import {Button, Icon} from 'ic-snacks';
 
 //Styles
 const astext = {
@@ -92,8 +93,10 @@ class Header extends Component {
 				isLoggedIn: false
  	 	};
     
-    this.props.history.listen((location, action) => {
-			this.getSearchValue()
+    	this.props.history.listen((location, action) => {
+			setTimeout(function() {
+      			this.getSearchValue()
+  			}.bind(this), 100)
 		})
     
 		this.handleSearch = this.handleSearch.bind(this);
@@ -173,7 +176,6 @@ handleSearch(event) {
 		pathname: 'search',
 		search: '?query='+query
 	})
-	window.location.reload()
 };
 
 handleSearchChange(event) {
@@ -217,7 +219,6 @@ handleSavingsClick = (e) => {
 		pathname: 'search',
 		search: '?query=savings&special=true'
 	})
-  	window.location.reload()
 }
 	
     
@@ -386,7 +387,7 @@ renderMobileAccountButton() {
 
 		    	<li style={{width: '36%'}}>
 		      		<button className="primaryRedWithHover" style={astext} onClick={this.handleZipClick}>
-		      			<i className="fas fa-map-marker" /> &nbsp;
+		      			<Icon name="locationMarkerFilled" /> &nbsp;
 		      			{zip}
 		      		</button>
 		    	</li>
