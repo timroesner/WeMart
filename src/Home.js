@@ -141,9 +141,9 @@ class Home extends Component {
                  }
             },
             ExpressionAttributeNames: {
-                "#S": "items", 
+                "#S": "items",
                },
-            FilterExpression: "userid = :u", 
+            FilterExpression: "userid = :u",
             ProjectionExpression: "#S",
             Limit: 10,
             TableName: 'orders'
@@ -231,7 +231,7 @@ class Home extends Component {
         margin: '3%',
         borderRadius: '5px', /* 5px rounded corners */
         boxShadow: '0 4px 8px 0 rgba(0,0,0,0.2)',
-        
+
   }
 
   const scrollerTitle = {
@@ -274,7 +274,7 @@ class Home extends Component {
         <Header />
         <div id="pageBody">
           <HorizontalScroll onSeeMoreClick={() => this.handleSeeMoreClick('departments')} items={this.state.departmentItems} title="Browse by Department"/>
-          <HorizontalScroll onSeeMoreClick={() => this.handleSeeMoreClick('savings')} items={this.state.savingsItems} title="Savings"/>
+          <HorizontalScroll onSeeMoreClick={() => this.handleSeeMoreClick('search?query=savings&special=true')} items={this.state.savingsItems} title="Savings"/>
           {this.renderHistory()}
         </div>
         <Footer />
