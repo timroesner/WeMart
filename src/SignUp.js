@@ -7,6 +7,7 @@ import {DynamoDB} from "aws-sdk/index";
 import wemartLogo from './images/logo.png'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import AWS from 'aws-sdk'
 
 const logo = {maxWidth:'200px', padding:'1.5rem'}
 const greeting = {margin:'2.5rem auto', textAlign:'center'}
@@ -55,6 +56,7 @@ class SignUp extends Component {
 
     // Necessary becuase the closure has no access to this.props
     let nestedProp = this.props;
+    let self = this
 
     userPool.signUp(model.email, model.password, attributeList, null, function(err, result) {
         if (err) {
@@ -92,6 +94,7 @@ class SignUp extends Component {
           if (err) {
             alert(err.message || JSON.stringify(err));
           } else {
+            self.createStripeCustomer(model.email)
             console.log(data);
 
             nestedProp.history.push({
@@ -101,6 +104,33 @@ class SignUp extends Component {
             })
           }
         });
+    });
+  }
+
+  createStripeCustomer(email){
+    var lambda;
+    if(process.env.NODE_ENV === 'development'){
+        lambda = new AWS.Lambda(require('./db').lambda)
+    } else {
+      lambda = new AWS.Lambda({
+        region: "us-west-1",
+        credentials: {
+            accessKeyId: process.env.REACT_APP_DB_accessKeyId,
+            secretAccessKey: process.env.REACT_APP_DB_secretAccessKey},
+    });
+    }
+    var payLoad = {
+      "email" : email
+    };
+
+    var params = {
+      FunctionName: 'createCustomer', 
+      Payload: JSON.stringify(payLoad)
+    };
+  
+    lambda.invoke(params, function(err, data) {
+      if (err) console.log(err, err.stack); // an error occurred
+      else     console.log(data);           // successful response
     });
   }
 
