@@ -4,6 +4,8 @@ import background from './images/background.svg';
 import './App.css';
 import { withRouter } from "react-router-dom";
 import wemartLogo from './images/logo.png'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const logo = {maxWidth:'20rem'}
 const greeting = {margin:'2.5rem auto', textAlign:'center'}
@@ -18,7 +20,15 @@ class ZipCodeCheck extends Component {
       localStorage.setItem('zip', model.zip)
       this.props.history.push('/home')
     } else {
-      alert('Sorry, we are only in California as of now.')
+      toast.info(<h5>Sorry, we are only in California as of now.</h5>, {
+        position: "top-center",
+        autoClose: 4000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        });
+      // alert('Sorry, we are only in California as of now.')
     }
   }
 
@@ -79,6 +89,7 @@ class ZipCodeCheck extends Component {
             Already have an Account? <a href="/login">Log In</a>
           </p>
         </div>
+        <ToastContainer />
       </div>
     )
   }
