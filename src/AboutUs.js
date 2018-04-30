@@ -141,8 +141,6 @@ class AboutUs extends Component {
   render() {
     const  width  = this.state.width;
     const  height  = this.state.height;
-    console.log(width);
-    console.log(height);
     var myTxt = require("./text/About.txt");
 
     const title={

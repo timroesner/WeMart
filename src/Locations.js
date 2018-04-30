@@ -31,7 +31,6 @@ class Locations extends Component {
 
 
   render() {
-    console.log(width);
     const  {width}  = this.state;
     var myTxt = require("./text/Locations.txt");
 

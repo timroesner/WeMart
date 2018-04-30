@@ -19,6 +19,7 @@
     "react-stripe-elements": "^1.6.0",
     "react-toastify": "^4.0.0-rc.5",
     "react-transition-group": "^2.3.0",
+    "validator": "^9.4.1",
     "stripe": "^5.6.1"
   },
   "scripts": {

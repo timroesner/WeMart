@@ -44,6 +44,7 @@ class Item extends Component {
     			this.getItem()
   			}.bind(this), 100)
 		})
+
 	}
 
 	initializeDB() {
@@ -132,7 +133,6 @@ class Item extends Component {
 	getItem() {
 
 		window.scrollTo(0, 0);
-	    
 		var params = {
 		  Key: {
 		   "itemid": {
@@ -144,9 +144,9 @@ class Item extends Component {
 
 		dynamodb.getItem(params, function(err, data) {
 			if (err) {
-		   		console.log(err, err.stack)	
-		   	} else { 
-		   		this.setState({ item: { itemid: data.Item.itemid.S, name: data.Item.name.S, department: data.Item.department.S, 
+		   		console.log(err, err.stack)
+		   	} else {
+		   		this.setState({ item: { itemid: data.Item.itemid.S, name: data.Item.name.S, department: data.Item.department.S,
 		   		image: data.Item.image.S, price: data.Item.price.N, quantity: data.Item.quantity.S, sale: data.Item.sale.N } })
 		   		this.getSimilarItems()
 		   	}
@@ -162,14 +162,14 @@ class Item extends Component {
 			   "userid": {
 			     S: email
 			    }
-			  }, 
+			  },
 			  TableName: "user"
 			};
 
 			dynamodb.getItem(params, function(err, data) {
 				if (err) {
-			   		console.log(err, err.stack)	
-			   	} else { 
+			   		console.log(err, err.stack)
+			   	} else {
 			   		try {
 			   			itemsInList = data.Item.lists.M.shoppingList.SS
 			   		} catch(error) {
@@ -210,7 +210,7 @@ class Item extends Component {
 			   	} else {
 			   		toast.error("Added to List")
 			   		console.log("Added to Shopping List: "+data)
-				} 
+				}
 			});
 		} else {
 			alert("Already in List")
@@ -222,14 +222,14 @@ class Item extends Component {
 		var buttonBarStyle;
 		// Mobile
 		if(window.innerWidth < 550) {
-			buttonBarStyle = { 
-				height:'46px', 
+			buttonBarStyle = {
+				height:'46px',
 				width: '100%',
 			}
 		} else {
 			buttonBarStyle = {
-				marginTop: '3%', 
-				height:'44px', 
+				marginTop: '3%',
+				height:'44px',
 				width: '40%',
 				float: 'left'
 			}
@@ -327,13 +327,13 @@ class Item extends Component {
     };
 
 	getSimilarItems() {
-		var params = { 
+		var params = {
 		  ExpressionAttributeValues: {
 		   ":d": {
 		     S: this.state.item.department
 		    }
-		  }, 
-		  FilterExpression: "department = :d",  
+		  },
+		  FilterExpression: "department = :d",
 		  TableName: "item"
 		 };
 
@@ -343,7 +343,7 @@ class Item extends Component {
 				alert(JSON.stringify(err))
 		 	} else {
 		 		data.Items.forEach((element) => {
-		 			let tempItem = { itemid: element.itemid.S, name: element.name.S, department: element.department.S, 
+		 			let tempItem = { itemid: element.itemid.S, name: element.name.S, department: element.department.S,
 		   		image: element.image.S, price: element.price.N, quantity: element.quantity.S, sale: element.sale.N }
 		   			if(tempItem.itemid !== this.state.item.itemid) {
 		   				similarItems.push(tempItem)
@@ -394,7 +394,7 @@ class Item extends Component {
 				    	marginLeft: '25%',
 				    	marginRight: '25%',
 						width: '50%',
-						float: 'left' 
+						float: 'left'
 					}}>
 				    	<img className="img-responsive" style={{width: '100%', width: '100%'}} src={this.state.item.image} />
 				    </div>
@@ -440,7 +440,7 @@ class Item extends Component {
 				    	margin: '3%',
 						width: '45%',
 						height: '500px',
-						float: 'left' 
+						float: 'left'
 					}}>
 				    	<img className="img-responsive" style={{width: '100%', width: '100%', maxWidth: '500px', margin: '0 auto 0 auto'}} src={this.state.item.image} />
 				    </div>
