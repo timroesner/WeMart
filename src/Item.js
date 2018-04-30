@@ -326,6 +326,13 @@ class Item extends Component {
     	}
     };
 
+    handleSeeMoreClick() {
+    	this.props.history.push({
+			pathname: 'search',
+			search: '?query='+this.state.item.department+'&special=true'
+		})
+    }
+
 	getSimilarItems() {
 		var params = {
 		  ExpressionAttributeValues: {
@@ -407,13 +414,13 @@ class Item extends Component {
 						<h1 style={{marginTop: '0', fontSize: '2em'}}>{this.state.item.name}</h1>
 						<p style={{marginTop: '3%', color: 'grey', fontSize: '1.4em'}} >{this.state.item.quantity}</p>
 						{this.renderPrice()}
-						<button className="primaryRedWithHover" style={astext} onClick={this.addToList} >
+						<button className="primaryRedWithHover" style={astext} onClick={this.addToList.bind(this)} >
 							<i class="fa fa-th-list" style={{width: '20%'}}/>&nbsp;
 							Add to List
 						</button>
 						{this.renderButtonBar()}
-						<div style={{marginLeft: '-30px', marginRight: '-30px'}}>
-							<HorizontalScroll items={this.state.similarItems} title="Similar Items"/>
+						<div style={{marginLeft: '-3%', marginRight: '-3%'}}>
+							<HorizontalScroll items={this.state.similarItems} title="Similar Items"  onSeeMoreClick={() => this.handleSeeMoreClick()} />
 						</div>
 				    </div>
 				</div>
@@ -462,8 +469,8 @@ class Item extends Component {
 							Add to List
 						</button>
 						</div>
-						<div style={{marginLeft: '-30px', marginRight: '-30px'}}>
-							<HorizontalScroll items={this.state.similarItems} title="Similar Items"/>
+						<div style={{marginLeft: '-3%', marginRight: '-3%'}}>
+							<HorizontalScroll items={this.state.similarItems} title="Similar Items" onSeeMoreClick={() => this.handleSeeMoreClick()} />
 						</div>
 						<ToastContainer hideProgressBar={true} autoClose={2000} />
 				    </div>
