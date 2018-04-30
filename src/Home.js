@@ -54,7 +54,7 @@ class Home extends Component {
 	  var departments = [];
 	  dynamodb.scan(params, (err, data) => {
 	    if (err) {
-	      alert(JSON.stringify(err))
+	      console.log(JSON.stringify(err))
 	    }
       else {
         data.Items.forEach((element) => {
@@ -103,10 +103,10 @@ class Home extends Component {
   getCognitoUser(){
     var userPool = new CognitoUserPool(poolData);
     cognitoUser = userPool.getCurrentUser();
-    if (cognitoUser != null) {
+    if (cognitoUser !== null) {
         cognitoUser.getSession(function(err, session) {
             if (err) {
-                alert(err);
+                console.log(err);
                 return;
             }
         });
@@ -114,8 +114,7 @@ class Home extends Component {
         let self = this;
         cognitoUser.getUserAttributes(function(err, result) {
             if (err) {
-                alert(err);
-                //TODO remove these alerts
+                console.log(err);
                 return;
             }
             self.setState({isLoggedIn: true})
