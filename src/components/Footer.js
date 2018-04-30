@@ -123,7 +123,7 @@ class Footer extends Component {
               <div style={{margin:"auto", width:"70%", paddingTop:"10px", justifyContent: "center"}}>
                   <Button type="submit" className="primary" style={{height:"40px", width: '100%', display: 'inital'}} onClick={this.handleCloseContactUsModal} >Submit</Button>
               </div>
-
+              <input type="hidden" name="_next" value="https://wemart-133.herokuapp.com/home" />
             </form>
 
           </Modal.Body>
