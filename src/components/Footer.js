@@ -79,8 +79,9 @@ class Footer extends Component {
             <form
               action="https://formspree.io/d7i2n9i1l9g6v3k0@cmpe-133-grouplp.slack.com"
               method="POST"
+              onSubmit="this.handleCloseContactUsModal"
               >
-              <input type="hidden" name="_next" value="" />
+              <input type="hidden" name="_next" value="https://wemart-133.herokuapp.com/home" />
 
               <div style={{marginBottom: '10px'}}>
                 <TextField
@@ -121,9 +122,9 @@ class Footer extends Component {
               </div>
 
               <div style={{margin:"auto", width:"70%", paddingTop:"10px", justifyContent: "center"}}>
-                  <Button type="submit" className="primary" style={{height:"40px", width: '100%', display: 'inital'}} onClick={this.handleCloseContactUsModal} >Submit</Button>
+                  <Button type="submit" className="primary" style={{height:"40px", width: '100%', display: 'inital'}} >Submit</Button>
               </div>
-              <input type="hidden" name="_next" value="https://wemart-133.herokuapp.com/home" />
+
             </form>
 
           </Modal.Body>
