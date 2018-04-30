@@ -12,6 +12,7 @@ import PropTypes from 'prop-types';
 import NewCardForm from "./components/NewCardForm";
 import {CognitoUserPool} from "amazon-cognito-identity-js";
 import AWS from 'aws-sdk'
+import Footer from './components/Footer'
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -73,6 +74,7 @@ export default class Checkout extends React.Component {
 
 
     componentDidMount(){
+        window.scrollTo(0,0)
         if (window.Stripe) {
             this.setState({stripe: window.Stripe(stripeKey)});
         } else {
@@ -712,6 +714,7 @@ export default class Checkout extends React.Component {
                     </div>
                 </Elements>
                 <ToastContainer />
+                <Footer/>
             </div>
         );
     }
