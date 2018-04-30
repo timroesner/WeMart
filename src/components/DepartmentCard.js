@@ -21,9 +21,8 @@ class DepartmentCard extends Component {
 		  borderRadius: '10px',
 		  fontSize: '1.4em',
 		  textAlign: 'center',
-		  marginBottom: '5vw',
-		  height: 'minmax(150px, 1fr)',
 		  cursor: 'pointer',
+		  marginBottom: '25px',
 		}
 
     return(

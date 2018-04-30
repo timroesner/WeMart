@@ -265,7 +265,7 @@ class Home extends Component {
     return (
       <div>
         <Header />
-        <div id="pageBody" className="container-fluid">
+        <div id="pageBody">
           <HorizontalScroll onSeeMoreClick={() => this.handleSeeMoreClick('departments')} items={this.state.departmentItems} title="Browse by Department"/>
           <HorizontalScroll onSeeMoreClick={() => this.handleSeeMoreClick('savings')} items={this.state.savingsItems} title="Savings"/>
           {this.state.isLoggedIn && this.state.historyItems.length > 0? <HorizontalScroll onSeeMoreClick={() => this.handleSeeMoreClick('history')} items={this.state.historyItems} title="History"/> : this.noHistory()}

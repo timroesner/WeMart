@@ -10,28 +10,29 @@ class ScrollItem extends Component {
 
   render() {
     const item = this.props.item
-    const liStyle = {
-      display:'inline-block',
-      position:'relative',
-      cursor:'pointer',
-      verticalAlign:'middle',
-      padding: '0 30px',
-      width: '250px',
-      whiteSpace: 'initial',
-    }
 
-    const footer = {
-      backgroundColor: 'white',
-      padding: '2.5px 15px',
-      height: '30px',
-      border: '0',
-    }
+    var liStyle = {}
 
-    const panelStyle = {
-      // boxShadow: '0 4px 8px 0 rgba(0,0,0,0.2)',
-      // transition: '0.3s',
-      // borderRadius: '5px', /* 5px rounded corners */
-      // width: '18rem'
+    if(window.innerWidth < 550) {
+      liStyle = {
+        display:'inline-block',
+        position:'relative',
+        cursor:'pointer',
+        verticalAlign:'middle',
+        padding: '0 3%',
+        width: '150px',
+        whiteSpace: 'initial',
+      }
+    } else {
+      liStyle = {
+        display:'inline-block',
+        position:'relative',
+        cursor:'pointer',
+        verticalAlign:'middle',
+        padding: '0 3%',
+        width: '250px',
+        whiteSpace: 'initial',
+      }
     }
 
     function Items(props) {
