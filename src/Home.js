@@ -6,9 +6,11 @@ import { withRouter } from 'react-router-dom';
 import AWS from 'aws-sdk/index';
 import {DynamoDB} from 'aws-sdk/index';
 import {CognitoUserPool} from "amazon-cognito-identity-js";
+import itemsEmpty from './images/items_empty.png'
 
 var poolData;
 var dynamodb;
+var cognitoUser;
 
 class Home extends Component {
   constructor(props) {
@@ -100,7 +102,7 @@ class Home extends Component {
 
   getCognitoUser(){
     var userPool = new CognitoUserPool(poolData);
-    var cognitoUser = userPool.getCurrentUser();
+    cognitoUser = userPool.getCurrentUser();
     if (cognitoUser != null) {
         cognitoUser.getSession(function(err, session) {
             if (err) {
@@ -145,15 +147,6 @@ class Home extends Component {
             ProjectionExpression: "#S", 
             TableName: 'orders'
         }
-        // var userParams = {
-        //     Key: {
-        //         'userid': {S: this.state.user.userId}
-        //     },AttributesToGet: [
-        //         'history',
-        //         /* more items */
-        //     ],
-        //     TableName: "user"
-        // };
 
         dynamodb.scan(orderParams,(err, data) => {
             if(err) {console.log(err, err.stack)}
@@ -172,21 +165,6 @@ class Home extends Component {
                 this.getItemsFromDB()
             }
         } )
-        // dynamodb.getItem(userParams, (err, data) => {
-        //     if(err) {console.log(err, err.stack)}
-        //     else{
-        //         data.Item.history.L.forEach((item)=>{
-        //             item.M.items.L.forEach((i)=>{
-        //                 let itemId = i.M.itemid.S
-        //                 console.log('[itemids]',itemId)
-        //                 var set = this.state.orderHistory
-        //                 set.add(itemId)
-        //                 this.setState({orderHistory: set})
-        //             })
-        //         })
-        //         this.getItemsFromDB()
-        //     }
-        // })
     }
 
     getItemsFromDB(){
@@ -235,28 +213,56 @@ class Home extends Component {
     this.props.history.push('/'+link)
   }
 
-  noHistory = () => {
-    const title = {
-      color: 'red',
-      position: 'relative',
-      height: '20%',
-      backgroundColor: 'white',
-      padding: '0',
-      paddingTop: '30px',
-      borderRadius: '0',
-      paddingLeft : '60px',
-      margin: '0'
+  renderHistory() {
+    if(cognitoUser === null) {
+      return(this.noHistory())
+    } else if(this.state.historyItems.length != 0) {
+      return(<HorizontalScroll onSeeMoreClick={() => this.handleSeeMoreClick('history')} items={this.state.historyItems} title="History"/>)
+    } else if(this.state.isLoggedIn) {
+      return(this.noHistory())
     }
+  }
+
+  noHistory = () => {
+    const scrollWrapper = {
+        backgroundColor: 'white',
+        border: '2px solid #efefef',
+        margin: '3%',
+        borderRadius: '5px', /* 5px rounded corners */
+        boxShadow: '0 4px 8px 0 rgba(0,0,0,0.2)',
+        
+  }
+
+  const scrollerTitle = {
+    color: 'red',
+    position: 'sticky',
+    height: '20%',
+    backgroundColor: 'white',
+    padding: '0',
+    borderRadius: '0',
+    margin: '8px 0 12px 3%'
+  }
+
+  const wrapper = {
+        width: '100%',
+        textAlign: 'center',
+        marginBottom: '12px'
+  }
     return(
-      <div style={{border: '2px solid #efefef', margin: '30px', borderRadius: '5px', boxShadow: '0 4px 8px 0 rgba(0,0,0,0.2)'}}>
-        <div className="jumbotron jumbotron-fluid" style={title}>
-          <h4 className="lead">History</h4>
-          {this.state.isLoggedIn?
-            <p style={{color: 'black', fontSize: '1.4em', paddingRight: '10%'}}>No items in history, items that you order will show up here so you can quickly find them again</p>
-            :<p style={{color: 'black', fontSize: '1.4em', paddingRight: '10%'}}>You must be logged in to view your recently ordered items</p>
-            }
-        </div>
+      <div style={scrollWrapper}>
+      <div style={scrollerTitle} >
+        <span className="lead">History</span>
       </div>
+      <div style={wrapper}>
+        <div>
+            <img src={itemsEmpty} style={{maxWidth:'20%'}}/>
+        </div>
+        <h1>No Items</h1>
+        <h4>
+            Items that you order will show up here, so that you can quickly find your items again
+        </h4>
+      </div>
+    </div>
     );
   }
 
@@ -268,7 +274,7 @@ class Home extends Component {
         <div id="pageBody">
           <HorizontalScroll onSeeMoreClick={() => this.handleSeeMoreClick('departments')} items={this.state.departmentItems} title="Browse by Department"/>
           <HorizontalScroll onSeeMoreClick={() => this.handleSeeMoreClick('savings')} items={this.state.savingsItems} title="Savings"/>
-          {this.state.isLoggedIn && this.state.historyItems.length > 0? <HorizontalScroll onSeeMoreClick={() => this.handleSeeMoreClick('history')} items={this.state.historyItems} title="History"/> : this.noHistory()}
+          {this.renderHistory()}
       </div>
       </div>
     );
