@@ -5,7 +5,7 @@ import {Icon} from "ic-snacks";
 //STYLES
 const addressCard = {fontSize:'1.6rem',padding:'1.5rem',cursor:'pointer',
 margin:'1.5rem',
-border:'1px solid #2333',
+border:'1px solid #DC0808',
 borderRadius:'.6rem'}
 const addressCard_addressLabel = {fontWeight:'600',width:'30rem',display:'inline-block',paddingRight:'.8rem'}
 const addressCard_addressIcon = {display:'inline-block',paddingRight:'.6rem',verticalAlign:'top'}
