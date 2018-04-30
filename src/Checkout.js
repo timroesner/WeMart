@@ -19,7 +19,6 @@ import 'react-toastify/dist/ReactToastify.css';
 var dynamodb;
 var poolData;
 var stripeKey;
-const orderid = require('order-id')('mysecret')
 const tax = .0925
 
 //STYLES
@@ -234,6 +233,20 @@ export default class Checkout extends React.Component {
         })
     }
 
+    createOrderID(date){
+        let now = date ? new Date(date).getTime().toString() : Date.now().toString()
+        // pad with additional random digits
+        if (now.length < 14) {
+        const pad = 14 - now.length
+        now += this.randomNumber(pad)
+        return [now.slice(0, 4), now.slice(4, 10), now.slice(10, 14)].join('-')
+      }
+    }
+
+    randomNumber (length) {
+        return (Math.floor(Math.pow(10, length - 1) + Math.random() * (Math.pow(10, length) - Math.pow(10, length - 1) - 1))).toString()
+      }
+
     setPaymentSources(email){
         var lambda;
         if(process.env.NODE_ENV === 'development'){
@@ -340,7 +353,7 @@ export default class Checkout extends React.Component {
 
         var orderParams = {
             Item: {
-                'orderId':{ S: orderid.generate()},
+                'orderId':{ S: this.createOrderID(date)},
                 'userid':{S:this.state.email},
                 'date':{S:date},
                 'deliveryDate': {S:this.state.deliveryDay},

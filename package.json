@@ -7,7 +7,6 @@
     "aws-amplify": "^0.2.14",
     "aws-sdk": "^2.218.1",
     "ic-snacks": "github:instacart/Snacks#master",
-    "order-id": "^1.1.0",
     "prop-types": "^15.6.1",
     "radium": "^0.22.1",
     "react": "^16.3.2",
