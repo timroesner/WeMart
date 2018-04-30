@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { withRouter } from "react-router-dom";
-import {Link} from "react-router-dom";
-import {Modal} from "react-bootstrap";
+import { Link } from "react-router-dom";
+import { Modal } from "react-bootstrap";
 import Radium from 'radium';
-import {Button, Form, TextField, Icon} from 'ic-snacks';
+import validator from 'validator';
+import { Form, TextField, Button, Icon } from 'ic-snacks';
 
 
 class Footer extends Component {
@@ -29,6 +30,10 @@ class Footer extends Component {
     this.setState({contactUsModal: false});
   }
 
+  handleModalSubmit = (model) => {
+    console.log(model)
+  }
+
 
 
   contactUsModal(){
@@ -47,15 +52,20 @@ class Footer extends Component {
         }
       }
     }
+
     const close={
       position: "relative",
       cursor: "pointer",
       padding: "10px"
     }
 
+
+
     return(
+
       <div>
         <Modal show={this.state.contactUsModal} onHide={this.handleCloseContactUsModal}>
+
           <Modal.Header>
             <div style={{ float: 'right'}}>
                   <Icon name="x" onClick={this.handleCloseContactUsModal} style={close}/>
@@ -63,15 +73,22 @@ class Footer extends Component {
             <h1 style={{marginTop: '2px'}}>Email Us</h1>
             <div>We'll get back to you soon</div>
           </Modal.Header>
+
           <Modal.Body>
-            <Form onSubmit={(model) => ( console.log(model) ) } serverErrors={{}} formProps={{}}>
+
+            <form
+              action="https://formspree.io/d7i2n9i1l9g6v3k0@cmpe-133-grouplp.slack.com"
+              method="POST"
+              >
+              <input type="hidden" name="_next" value="" />
 
               <div style={{marginBottom: '10px'}}>
                 <TextField
-                  name="Subject"
+                  type="text"
+                  name="subject"
                   floatingLabelText="Subject"
                   hintText="Enter the subject of your message"
-                  validations={{isSubject: null, isLength: {min: 3, max: 50}}}
+                  validations={{isLength: {min: 3, max: 30}}}
                   validationErrorText="Please enter a subject"
                   fullWidth
                   required
@@ -80,11 +97,11 @@ class Footer extends Component {
 
               <div style={{marginBottom: '10px'}}>
                 <TextField
-                  name="email"
                   type="email"
+                  name="email"
                   floatingLabelText="Email"
                   hintText="Enter your email address"
-                  validations={{isEmail: null, isLength: {min: 3, max: 50}}}
+                  validations={{isEmail: null, isLength: {min: 3, max: 30}}}
                   validationErrorText="Please enter a valid email"
                   fullWidth
                   required
@@ -95,17 +112,20 @@ class Footer extends Component {
                 <label>Your Message</label>
                 <textarea
                   className = "message"
+                  name="message"
                   placeholder="Please write your message"
                   style={textarea.base}
                   required
-                  ></textarea>
+                  >
+                </textarea>
               </div>
 
               <div style={{margin:"auto", width:"70%", paddingTop:"10px", justifyContent: "center"}}>
-                  <Button type="submit" className="primary" style={{height:"40px", width: '100%', display: 'inital'}}>Submit</Button>
+                  <Button type="submit" className="primary" style={{height:"40px", width: '100%', display: 'inital'}} onClick={this.handleCloseContactUsModal} >Submit</Button>
               </div>
 
-            </Form>
+            </form>
+
           </Modal.Body>
         </Modal>
       </div>
