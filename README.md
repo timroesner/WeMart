@@ -17,7 +17,7 @@ You can clone this repo and run it locally with the following commands: `npm ins
 - [Daanyaal Saeed](https://github.com/Delta09)
 
 ## Screenshots
-![Home][https://user-images.githubusercontent.com/13894518/39417002-2a67a438-4c06-11e8-8ee2-bd8a682854e4.png]
+![Home](https://user-images.githubusercontent.com/13894518/39417002-2a67a438-4c06-11e8-8ee2-bd8a682854e4.png)
 ![Departments](https://user-images.githubusercontent.com/13894518/39418508-a83aa000-4c0f-11e8-9805-3bea115a87a4.png)
 ![Savings](https://user-images.githubusercontent.com/13894518/39418517-b223a88c-4c0f-11e8-9962-64a60a0fcad1.png)
 ![List](https://user-images.githubusercontent.com/13894518/39418520-b402f7a2-4c0f-11e8-8010-70ca56761aff.png)
