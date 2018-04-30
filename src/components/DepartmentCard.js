@@ -1,9 +1,17 @@
 import React,{Component} from 'react';
+import { withRouter } from 'react-router-dom';
 
 class DepartmentCard extends Component {
   constructor(props) {
     super(props)
 
+  }
+
+  handleClick(dep) {
+  	this.props.history.push({
+		pathname: 'search',
+		search: '?query='+dep+'&special=true'
+	})
   }
 
   render() {
@@ -19,12 +27,12 @@ class DepartmentCard extends Component {
 		}
 
     return(
-      <div style={gridItem} >
+      	<div style={gridItem} onClick={() => this.handleClick(dept.name)} >
 				<img src={dept.image} style={{width: '80%', marginLeft:'20%', borderRadius: '0 10px 0 0'}} />
 			     <span style={{display: 'block'}}>{dept.name}</span>
-			</div>
+		</div>
     );
   }
 }
 
-export default DepartmentCard;
+export default withRouter(DepartmentCard);
