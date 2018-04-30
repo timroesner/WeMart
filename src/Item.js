@@ -98,6 +98,8 @@ class Item extends Component {
 	}
 
 	getItem() {
+
+		window.scrollTo(0, 0);
 	    
 		var params = {
 		  Key: {
