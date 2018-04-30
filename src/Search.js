@@ -27,7 +27,7 @@ class Search extends Component {
 
 		this.initializeDatabase()
 		this.getQuerry()
-	
+
 	}
 
 	getQuerry() {
@@ -60,13 +60,13 @@ class Search extends Component {
 	}
 
 	getDepartmentItems() {
-		var params = { 
+		var params = {
 		  ExpressionAttributeValues: {
 		   ":d": {
 		     S: query
 		    }
-		  }, 
-		  FilterExpression: "department = :d",  
+		  },
+		  FilterExpression: "department = :d",
 		  TableName: "item"
 		 };
 
@@ -78,7 +78,7 @@ class Search extends Component {
 		 		data.Items.forEach((element) => {
 	            	items.push({
 	            		itemid: element.itemid.S,
-	            		name: element.name.S, 
+	            		name: element.name.S,
 	            		image: element.image.S,
 	            		price: element.price.N,
 	            		quantity: element.quantity.S,
@@ -93,13 +93,13 @@ class Search extends Component {
 	}
 
 	getSavingsItems() {
-		var params = { 
+		var params = {
 		  ExpressionAttributeValues: {
 		   ":s": {
 		     N: "0"
 		    }
-		  }, 
-		  FilterExpression: "sale <> :s",  
+		  },
+		  FilterExpression: "sale <> :s",
 		  TableName: "item"
 		};
 
@@ -111,7 +111,7 @@ class Search extends Component {
 		 		data.Items.forEach((element) => {
 	            	items.push({
 	            		itemid: element.itemid.S,
-	            		name: element.name.S, 
+	            		name: element.name.S,
 	            		image: element.image.S,
 	            		price: element.price.N,
 	            		quantity: element.quantity.S,
@@ -126,8 +126,7 @@ class Search extends Component {
 	}
 
 	searchItems() {
-
-	    var params = {  
+	    var params = {
 		  	TableName: "item"
 		};
 
@@ -147,7 +146,7 @@ class Search extends Component {
 	            	if(department.toLowerCase().includes(query) || name.toLowerCase().includes(query) || keywords.includes(query)) {
 		            	items.push({
 		            		itemid: element.itemid.S,
-		            		name: name, 
+		            		name: name,
 		            		image: element.image.S,
 		            		price: element.price.N,
 		            		quantity: element.quantity.S,
@@ -196,6 +195,7 @@ class Search extends Component {
 	}
 
 	renderSortingMenu() {
+		window.scroll(0,0);
 		const astext = {
 			background:'none',
 			border:'none',
