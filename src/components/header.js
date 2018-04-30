@@ -236,7 +236,7 @@ renderAccountButton() {
 							Account Settings</button></a></li>
 			    <li><a href="/shoppinglist">
 						<button className="primaryRedWithHover" style={dropdownButton}>
-							Shopping Lists</button></a></li>
+							Shopping List</button></a></li>
 			    <li><a href="/login">
 						<button className="primaryRedWithHover" style={dropdownButton} onClick={this.handleSignOut}>
 							Sign Out</button></a></li>
@@ -266,7 +266,7 @@ renderMobileAccountButton() {
 							Account Settings</button></a></li>
 			    <li><a href="/shoppinglist">
 						<button className="primaryRedWithHover" style={dropdownButton}>
-							Shopping Lists</button></a></li>
+							Shopping List</button></a></li>
 			    <li><a href="/login">
 						<button className="primaryRedWithHover" style={dropdownButton} onClick={this.handleSignOut}>
 							Sign Out</button></a></li>
