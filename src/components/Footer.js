@@ -115,7 +115,6 @@ class Footer extends Component {
                   required
                   >
                 </textarea>
-              </div>
 
               <div style={{margin:"auto", width:"70%", paddingTop:"10px", justifyContent: "center"}}>
                   <Button type="submit" className="primary" style={{height:"40px", width: '100%', display: 'inital'}} >Submit</Button>
