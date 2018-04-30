@@ -34,6 +34,8 @@ class Item extends Component {
     	this.getCurrentUser()
     	this.getItem()
 
+    	this.cartChanged = this.cartChanged.bind(this)
+
     	this.props.history.listen((location, action) => {
     		// This 100ms delay is necessary for the id to change
     		setTimeout(function() {
@@ -42,7 +44,6 @@ class Item extends Component {
     			this.getItem()
   			}.bind(this), 100)
 		})
-    	
 	}
 
 	initializeDB() {
@@ -57,6 +58,37 @@ class Item extends Component {
 	        });
 	    }
 	}
+
+	cartChanged() {
+		var quantity = this.state.quantityInCart
+
+    	if(localStorage.getItem('cart') != null) {
+        	var cartString = localStorage.getItem('cart')
+        	console.log(cartString);
+        	var cart = JSON.parse(cartString)
+
+        	if(cart.hasOwnProperty(this.state.item.itemid)) {
+	        	quantity = cart[this.state.item.itemid].quantityInCart
+	        	this.setState({quantityInCart: quantity})
+	    	} else {
+	    		this.setState({quantityInCart: 0})
+	    	}
+    	} else {
+      		this.setState({quantityInCart: 0})
+    	}
+	}
+
+	componentWillUnmount(){
+        if (typeof window !== 'undefined') {
+            window.removeEventListener('cartChanged', this.cartChanged, false)
+        }
+    }
+
+    componentDidMount() {
+        if (typeof window !== 'undefined') {
+            window.addEventListener('cartChanged', this.cartChanged, false)
+        }
+    }
 
 	getCurrentUser() {
 		// Get poolData
@@ -98,6 +130,8 @@ class Item extends Component {
 	}
 
 	getItem() {
+
+		window.scrollTo(0, 0);
 	    
 		var params = {
 		  Key: {
