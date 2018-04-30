@@ -13,7 +13,6 @@ class Footer extends Component {
 
     this.handleShowContactUsModal = this.handleShowContactUsModal.bind(this);
     this.handleCloseContactUsModal = this.handleCloseContactUsModal.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
 
     this.state = {
       contactUsModal: false,
@@ -31,9 +30,6 @@ class Footer extends Component {
     this.setState({contactUsModal: false});
   }
 
-  handleModalSubmit = (model) => {
-    console.log(model)
-  }
 
   contactUsModal() {
     const textarea={
