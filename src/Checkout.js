@@ -237,7 +237,7 @@ export default class Checkout extends React.Component {
         }
         var payLoad = {
             "stripeEmail": email
-            };
+        };
            
            var params = {
                FunctionName: 'retrieveCustomerSources',
@@ -359,7 +359,7 @@ export default class Checkout extends React.Component {
         if(process.env.NODE_ENV === 'development'){
             lambda = new AWS.Lambda(require('./db').lambda)
         } else {
-          lambda = new AWS.Lambda({
+            lambda = new AWS.Lambda({
             region: "us-west-1",
             credentials: {
                 accessKeyId: process.env.REACT_APP_DB_accessKeyId,
@@ -382,12 +382,6 @@ export default class Checkout extends React.Component {
                 "customerID": ''
             };
         }
-        // Testing only 
-        // var payLoad = {
-        //     "stripeSource": 'tok_visa',
-        //     "stripeEmail": this.state.email,
-        //     "chargeAmount": (this.calculateTotal() *100).toFixed()
-        // };
         
         console.log("payload ", payLoad.valueOf())
         var params = {
@@ -581,13 +575,13 @@ export default class Checkout extends React.Component {
                                 onSelect={()=>{this.setState({daySelected: true})}}
                                 required
                         >
-                            <MenuItem label="Monday" value="monday"/>
-                            <MenuItem label="Tuesday" value="tuesday"/>
-                            <MenuItem label="Wednesday" value="wednesday"/>
-                            <MenuItem label="Thursday" value="thursday"/>
-                            <MenuItem label="Friday" value="friday"/>
-                            <MenuItem label="Saturday" value="saturday"/>
-                            <MenuItem label="Sunday" value="sunday"/>
+                            <MenuItem label="Monday" value="Monday"/>
+                            <MenuItem label="Tuesday" value="Tuesday"/>
+                            <MenuItem label="Wednesday" value="Wednesday"/>
+                            <MenuItem label="Thursday" value="Thursday"/>
+                            <MenuItem label="Friday" value="Friday"/>
+                            <MenuItem label="Saturday" value="Saturday"/>
+                            <MenuItem label="Sunday" value="Sunday"/>
                         </Select>
                         <Select style={{margin:'1.5rem'}}
                                 name="deliveryTime"
