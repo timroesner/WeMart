@@ -1,23 +1,24 @@
 import React from 'react';
 import {
-    CardCVCElement, CardExpiryElement, CardNumberElement, injectStripe,
+    CardCVCElement, CardElement, CardExpiryElement, CardNumberElement, injectStripe,
     PostalCodeElement
 } from 'react-stripe-elements';
 import PropTypes from 'prop-types'
 import {Button} from "ic-snacks";
 
 //STYLES
-const checkoutForm = {padding:'3rem'};
+const checkoutForm = {padding:'2rem'};
 const label = {display: 'block', fontSize:'2rem', color:'#808080', borderRadius:'.6rem'}
 const cardElement = {
     base: {
-        fontSize:'2rem',
+        fontSize:'20px',
         color: '#424770',
         letterSpacing: '0.025em',
         '::placeholder': {
             color: '#aab7c4',
         }}, invalid: {
         color: '#9e2146',
+        border:'1px solid grey'
     }};
 const cardElementDiv = {border:'1px solid', padding:'1rem', borderRadius:'.6rem',
     maxHeight:'6rem'};
@@ -48,7 +49,7 @@ class NewCardForm extends React.Component {
                 type: 'card',
                 currency: 'usd',
                 owner:{name:this.props.name} })
-                .then(payload => {this.props.onSubmit(payload)} );
+                .then(payload => {this.props.onSubmit(payload);} );
         } else {
             console.log("Stripe.js hasn't loaded yet.");
         }
@@ -58,55 +59,18 @@ class NewCardForm extends React.Component {
         return (
             <form onSubmit={this.handleSubmit} style={checkoutForm} id={'newcard'}>
                 <label style={label}>
-                    Card number
-                    <div style={cardElementDiv}>
-                        <CardNumberElement
-                            style={cardElement}
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            onFocus={handleFocus}
-                            onReady={handleReady}
-                        />
-                    </div>
+                    Card details
                 </label>
-                <label style={label}>
-                    Expiration date
-                    <div style={cardElementDiv}>
-                        <CardExpiryElement
-                            style={cardElement}
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            onFocus={handleFocus}
-                            onReady={handleReady}
-                        />
-                    </div>
-                </label>
-                <label style={label}>
-                    CVC
-                    <div style={cardElementDiv}>
-                        <CardCVCElement
-                            style={cardElement}
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            onFocus={handleFocus}
-                            onReady={handleReady}
-                        />
-                    </div>
-                </label>
-                <label style={label}>
-                    Postal code
-                    <div style={cardElementDiv}>
-                        <PostalCodeElement
-                            style={cardElement}
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            onFocus={handleFocus}
-                            onReady={handleReady}
-                        />
-                    </div>
-                </label>
-                <div>
+                <div style={{padding:'1.5rem', borderRadius:'.6rem', boxShadow:'0 0 7px 0px #828282'}}>
+                    <CardElement
+                        style={cardElement}
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        onFocus={handleFocus}
+                        onReady={handleReady}
+                    />
                 </div>
+
             </form>
         );
     }

@@ -2,6 +2,7 @@ import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 
 // All pages here
+import Checkout from "./Checkout";
 import SignUp from './SignUp'
 import LogIn from './LogIn'
 import Confirm from './Confirm'
@@ -26,6 +27,7 @@ const Router = () => (
     <Switch>
       <Route path='/history' component={History}/>
       <Route path={'/accountsettings'} component={AccountSettings}/>
+        <Route path={'/checkout'} component={Checkout}/>
       <Route exact path='/signup' component={SignUp}/>
       <Route path='/login' component={LogIn}/>
       <Route path='/confirm' component={Confirm}/>

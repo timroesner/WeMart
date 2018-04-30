@@ -22,7 +22,6 @@ class ScrollItem extends Component {
         padding: '0 3%',
         width: '150px',
         whiteSpace: 'initial',
-        textAlign: 'center',
       }
     } else {
       liStyle = {
@@ -33,7 +32,6 @@ class ScrollItem extends Component {
         padding: '0 3%',
         width: '250px',
         whiteSpace: 'initial',
-        textAlign: 'center',
       }
     }
 

@@ -30,7 +30,8 @@ const HorizontalScroll = (props) => {
   }
 
   const wrapper = {
-        overflow: 'auto',
+        overflowY: 'hidden',
+        overflowX: 'auto',
         whiteSpace: 'nowrap',
         webkitOverflowScrolling: 'touch',
   }
