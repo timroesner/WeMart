@@ -66,6 +66,8 @@ class Cart extends Component {
         delete cart[itemID]
         localStorage.setItem('cart', JSON.stringify(cart))
         this.setState({cartItems: this.getItemsFromCart(cart)})
+        var event = new Event('cartChanged');
+        window.dispatchEvent(event);
       }
     }
   }
@@ -81,6 +83,8 @@ class Cart extends Component {
         cart[itemID] = item
         localStorage.setItem('cart', JSON.stringify(cart))
         this.setState({cartItems: this.getItemsFromCart(cart)})
+        var event = new Event('cartChanged');
+        window.dispatchEvent(event);
       }
     }
   };
@@ -96,6 +100,8 @@ class Cart extends Component {
         cart[itemID] = item
         localStorage.setItem('cart', JSON.stringify(cart))
         this.setState({cartItems: this.getItemsFromCart(cart)})
+        var event = new Event('cartChanged');
+        window.dispatchEvent(event);
       }
     }
   }
