@@ -241,7 +241,7 @@ class Search extends Component {
 		return(
 			<div>
 				<Header />
-				<div id="pageBody" style ={{minHeight:window.innerHeight-245}} >
+				<div id="pageBody" style ={{minHeight:window.innerHeight-228}} >
 					{this.renderSortingMenu()}
 					{this.renderItems()}
 				</div>

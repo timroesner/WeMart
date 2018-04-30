@@ -81,7 +81,7 @@ class AboutUs extends Component {
     return(
     <div style={profileHolder}>
     <div style={eachProfile}>
-      <img src={leo} style={profile}  key= "key8"/>
+      <a href="https://github.com/lpangco" target="_blank"><img src={leo} style={profile}  key= "key8"/></a>
       <h3 style={title}>Leonardo Pangco</h3>
       <p style={{textAlign:"center"}}>Project Manager / Documentation</p>
     </div>
@@ -93,43 +93,43 @@ class AboutUs extends Component {
     </div>
 
     <div style={eachProfile}>
-      <a href="https://timroesner.com" target="_blank"><img src={tim} style={profile}  key= "key5"/></a>
+      <a href="https://github.com/timroesner" target="_blank"><img src={tim} style={profile}  key= "key5"/></a>
       <h3 style={title}>Tim Roesner</h3>
       <p style={{textAlign:"center"}}>Frontend Lead / Marketing</p>
     </div>
 
     <div style={eachProfile}>
-      <img src={aayush} style={profile} key= "key1"/>
+      <a href="https://github.com/dixitaayush8" target="_blank"><img src={aayush} style={profile} key= "key1"/></a>
       <h3 style={title}>Aayush Dixit</h3>
       <p style={{textAlign:"center", margin:"auto"}}>Backend Developer / Documentation</p>
     </div>
 
     <div style={eachProfile}>
-      <img src={ian} style={profile}  key= "key2"/>
+      <a href="https://github.com/ianduron" target="_blank"><img src={ian} style={profile}  key= "key2"/></a>
       <h3 style={title}>Ian Duron</h3>
       <p style={{textAlign:"center"}}>Backend Developer / Marketing</p>
     </div>
 
     <div style={eachProfile}>
-      <img src={jonathan} style={profile}  key= "key3"/>
+      <a href="https://github.com/jonlikesapples" target="_blank"><img src={jonathan} style={profile}  key= "key3"/></a>
       <h3 style={title}>Jonathan Wong</h3>
       <p style={{textAlign:"center"}}>Backend Developer / Tester</p>
     </div>
 
     <div style={eachProfile}>
-      <img src={juan} style={profile}  key= "key4"/>
+      <a href="https://github.com/juancstlm" target="_blank"><img src={juan} style={profile}  key= "key4"/></a>
       <h3 style={title}>Juan Castillo</h3>
       <p style={{textAlign:"center"}}>Frontend Developer / Tester</p>
     </div>
 
     <div style={eachProfile}>
-      <img src={raj} style={profile}  key= "key6"/>
+      <a href="https://github.com/rajmakda" target="_blank"><img src={raj} style={profile}  key= "key6"/></a>
       <h3 style={title}>Raj Makda</h3>
       <p style={{textAlign:"center"}}>Frontend Developer / Tester</p>
     </div>
 
     <div style={eachProfile}>
-      <img src={daanyaal} style={profile}  key= "key7"/>
+      <a href="https://github.com/Delta09" target="_blank"><img src={daanyaal} style={profile}  key= "key7"/></a>
       <h3 style={title}>Daanyaal Saeed</h3>
       <p style={{textAlign:"center"}}>Frontend Developer / Documentation</p>
     </div>
