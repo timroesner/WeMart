@@ -144,7 +144,8 @@ class Home extends Component {
                 "#S": "items", 
                },
             FilterExpression: "userid = :u", 
-            ProjectionExpression: "#S", 
+            ProjectionExpression: "#S",
+            Limit: 10,
             TableName: 'orders'
         }
 
@@ -275,7 +276,8 @@ class Home extends Component {
           <HorizontalScroll onSeeMoreClick={() => this.handleSeeMoreClick('departments')} items={this.state.departmentItems} title="Browse by Department"/>
           <HorizontalScroll onSeeMoreClick={() => this.handleSeeMoreClick('savings')} items={this.state.savingsItems} title="Savings"/>
           {this.renderHistory()}
-      </div>
+        </div>
+        <Footer />
       </div>
     );
   }
