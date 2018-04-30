@@ -19,7 +19,6 @@ import 'react-toastify/dist/ReactToastify.css';
 var dynamodb;
 var poolData;
 var stripeKey;
-var lambdaKey;
 const orderid = require('order-id')('mysecret')
 
 //STYLES
@@ -38,6 +37,7 @@ export default class Checkout extends React.Component {
         this.state = {
             //Stripe
             stripe: null,
+            customerid: null,
             //Validators
             addressPanel: false,
             timePanel: false,
@@ -71,6 +71,7 @@ export default class Checkout extends React.Component {
         this.getCartItems()
     }
 
+
     componentDidMount(){
         if (window.Stripe) {
             this.setState({stripe: window.Stripe(stripeKey)});
@@ -82,15 +83,14 @@ export default class Checkout extends React.Component {
         }
     }
 
-    notify = () => this.orderToast = toast("Placing Order", { type: toast.TYPE.INFO, autoClose: 4000});
-
-    toastSuccess = () => toast.update(this.orderToast, { type: toast.TYPE.SUCCESS, render: <div><h4>Order Succesfully Placed</h4><h5>Redirecting to homepage</h5></div>, onClose: () => this.props.history.push('/home') });
-    toastFail = () => toast.update(this.orderToast, { type: toast.TYPE.ERROR, render: "Something Went Wrong"});
+    // Toasts
+    notify = () => this.orderToast = toast("Placing Order", { type: toast.TYPE.INFO, autoClose: false});
+    toastSuccess = () => toast.update(this.orderToast, { type: toast.TYPE.SUCCESS,autoClose: 3000, render: <div><h4>Order Succesfully Placed</h4><h5>Redirecting to homepage</h5></div>, onClose: () => this.props.history.push('/home') });
+    toastFail = () => toast.update(this.orderToast, { type: toast.TYPE.ERROR, autoClose: 4000, render: "Something Went Wrong"});
 
     setKeys(){
         if(process.env.NODE_ENV === 'development'){
             dynamodb = require('./db').db;
-            lambdaKey = require('./db').lambda
             poolData =require('./poolData').poolData;
             stripeKey = require('./stripeKey').stripeAPIKey
         } else {
@@ -105,7 +105,6 @@ export default class Checkout extends React.Component {
                 ClientId : process.env.REACT_APP_Auth_ClientId
             }
             stripeKey = process.env.REACT_APP_Stripe_Key
-            lambdaKey = process.env.REACT_APP_AWS_Lambda
         }
     }
 
@@ -211,31 +210,57 @@ export default class Checkout extends React.Component {
                     console.log('address',data.Item)
                     this.setDeliveryAddress(data.Item)
                 }
-                if(data.Item.sources){
-                    this.setPaymentSources(data.Item.sources.L)
+
+                // get the stripe customer id 
+                if(data.Item.customerid){
+                    this.setState({customerid: data.Item.customerid.S})
+                    console.log('customer id ', this.state.customerid)
                 }
+
+                // Gets the payment sources
+                this.setPaymentSources(userId)
             }
         })
     }
 
-    setPaymentSources(sources){
-        var self = this
-        sources.forEach((source)=>{
-            let id = source.M.id.S;
-            let client_secret = source.M.client_secret.S;
-            console.log('Source',source)
-            this.state.stripe.retrieveSource({
-                id: id,
-                client_secret: client_secret,
-            }).then(function(result) {
-                console.log('res',result)
-                var label = result.source.card.brand + ' ' + result.source.card.last4
-                self.setState({ paymentPanel:true,
-                    paymentMethod: {brand: result.source.card.brand, last4:result.source.card.last4, label:label},
-                    source: id});
-            });
-        })
-        console.log('Token source', this.state.source)
+    setPaymentSources(email){
+        var lambda;
+        if(process.env.NODE_ENV === 'development'){
+            lambda = new AWS.Lambda(require('./db').lambda)
+        } else {
+          lambda = new AWS.Lambda({
+            region: "us-west-1",
+            credentials: {
+                accessKeyId: process.env.REACT_APP_DB_accessKeyId,
+                secretAccessKey: process.env.REACT_APP_DB_secretAccessKey},
+        });
+        }
+        var payLoad = {
+            "stripeEmail": email
+            };
+           
+           var params = {
+               FunctionName: 'retrieveCustomerSources',
+               Payload: JSON.stringify(payLoad)
+           
+           };
+           let self =this
+           lambda.invoke(params, function(err, data) {
+               if (err) console.log(err, err.stack); // an error occurred
+               else{
+                   console.log('Data from lambda',data)
+                   var sources = JSON.parse(data.Payload)
+                   console.log(sources)
+                   if(sources != null && !sources.errorMessage){
+                    //We are limited to one  card for now
+                    sources.forEach((source)=>{console.log('Payment Source',source);
+                    var label = source.card.brand + ' ' + source.card.last4
+                    self.setState({ paymentPanel:true,
+                     paymentMethod: {brand: source.card.brand, last4:source.card.last4, label:label}, source: source.id})
+                    })
+                   }
+               }
+           });
     }
 
     setDeliveryAddress(address){
@@ -282,18 +307,21 @@ export default class Checkout extends React.Component {
         })
     }
 
+    // Gets called when the user wants to pay with new or different payment method 
     handlePaymentMethod = (token) => {
         var label = token.source.card.brand + ' ' + token.source.card.last4
-        this.setState({token: token, paymentPanel: true,
+        this.setState({token: token, paymentPanel: true, source: token.source.id,
         paymentMethod: {brand: token.source.card.brand, last4:token.source.card.last4, label:label}});
     }
 
     handleOrderPlace = ()=>{
         this.notify() //Let the user know that the order is being placed
         this.setState({addressPanel: false}) // disable the order placec button to prevent aditional orders
-        this.charge();
+        this.charge(); // User Stripe to charge the customer 
     }
 
+
+    // Send the order to the database 
     submitOrder(){
         var date = new Date().toJSON().slice(0,10).replace(/-/g,'/');
         var address = this.state.deliveryAddress.street + ' ' + this.state.deliveryAddress.city +', ' +
@@ -327,23 +355,41 @@ export default class Checkout extends React.Component {
 
     //** This method uses AWS lanbda fucntion to charge the user using stripe source */
     charge(){
-        var lambda = new AWS.Lambda(lambdaKey);
-
-        // This will be used for production
+        var lambda;
+        if(process.env.NODE_ENV === 'development'){
+            lambda = new AWS.Lambda(require('./db').lambda)
+        } else {
+          lambda = new AWS.Lambda({
+            region: "us-west-1",
+            credentials: {
+                accessKeyId: process.env.REACT_APP_DB_accessKeyId,
+                secretAccessKey: process.env.REACT_APP_DB_secretAccessKey},
+        });
+        }
+        var payLoad
+        if(this.state.customerid){
+            payLoad = {
+                "stripeSource": this.state.source,
+                "stripeEmail": this.state.email,
+                "chargeAmount": (this.calculateTotal() *100).toFixed(),
+                "customerID": this.state.customerid
+            };
+        } else {
+            payLoad = {
+                "stripeSource": this.state.source,
+                "stripeEmail": this.state.email,
+                "chargeAmount": (this.calculateTotal() *100).toFixed(),
+                "customerID": ''
+            };
+        }
+        // Testing only 
         // var payLoad = {
-        //     "stripeSource": this.state.source,
+        //     "stripeSource": 'tok_visa',
         //     "stripeEmail": this.state.email,
         //     "chargeAmount": (this.calculateTotal() *100).toFixed()
         // };
-
-        // Testing only 
-        var payLoad = {
-            "stripeSource": 'tok_visa',
-            "stripeEmail": this.state.email,
-            "chargeAmount": (this.calculateTotal() *100).toFixed()
-        };
         
-        console.log(payLoad.valueOf())
+        console.log("payload ", payLoad.valueOf())
         var params = {
             FunctionName: 'chargeUser', /* required */
             Payload: JSON.stringify(payLoad)
@@ -353,8 +399,9 @@ export default class Checkout extends React.Component {
         var self = this
         lambda.invoke(params, function(err, data) {
             if (err){
+                // This never gets called 
                console.log("error",err, err.stack); // an error occurred 
-               this.toastFail();
+               self.toastFail();
             } 
             else{
                 self.submitOrder();
