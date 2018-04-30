@@ -20,6 +20,7 @@ var dynamodb;
 var poolData;
 var stripeKey;
 const orderid = require('order-id')('mysecret')
+const tax = .0925
 
 //STYLES
 const checkout = {margin:' 1rem auto', maxWidth:'71rem',};
@@ -52,7 +53,7 @@ export default class Checkout extends React.Component {
             cart: [],
             paymentMethod: null,
             deliveryFee: 3.99,
-            serviceFee: 2.98,
+            tax: 0,
             subtotal: 0,
 
 
@@ -108,6 +109,13 @@ export default class Checkout extends React.Component {
         }
     }
 
+    calculateTax(department, price){
+        const taxDepartments = ['Alcohol','Household','Personal Care','Pets']
+        if(taxDepartments.includes(department)){
+            return Number(price * tax).toFixed(2)
+        } else return 0
+    }
+
     getCartItems(){
         // Get the items from local storage
         if(localStorage.getItem('cart') != null) {
@@ -123,6 +131,7 @@ export default class Checkout extends React.Component {
                 dynamodb.getItem(itemParams,(err, data)=>{
                     if(err) console.log(err, err.stack)
                     else if(data.Item){
+                        let department = data.Item.department.S;
                         let image = data.Item.image.S;
                         let itemid = (data.Item.itemid.S);
                         let price = data.Item.price.N;
@@ -141,9 +150,10 @@ export default class Checkout extends React.Component {
                         })
                         //TODO calculate using sale price
                         var itemTotalPrice = sale != 0 ? sale : price;
-                        itemTotalPrice =+ itemTotalPrice * item.quantityInCart
+                        itemTotalPrice = itemTotalPrice * item.quantityInCart
                         this.setState({
-                            subtotal: this.state.subtotal + Number(itemTotalPrice)
+                            subtotal: this.state.subtotal + Number(itemTotalPrice),
+                            tax: Number(this.state.tax+this.calculateTax(department,itemTotalPrice)),
                         })
                     }
                 })
@@ -276,7 +286,7 @@ export default class Checkout extends React.Component {
     }
 
     calculateTotal(){
-        var total = this.state.subtotal + this.state.deliveryFee + this.state.serviceFee;
+        var total = this.state.subtotal + this.state.deliveryFee + this.state.tax;
         // total = Math.round(total * 100) / 100;
         total = Number(total).toFixed(2)
         console.log(total)
@@ -650,7 +660,7 @@ export default class Checkout extends React.Component {
                                         Delivery <div style={{flexGrow:'1', textAlign:'end'}}>${this.state.deliveryFee}</div>
                                     </div>
                                     <div style={{overflow:'hidden', lineHeight:'2.rem', display:'flex', alignItems:'center'}}>
-                                        Service Fee <div style={{flexGrow:'1', textAlign:'end'}}>${this.state.serviceFee}</div>
+                                        Tax <div style={{flexGrow:'1', textAlign:'end'}}>${Number(this.state.tax).toFixed(2)}</div>
                                     </div>
                                     <hr></hr>
                                     <div style={{fontWeight:'600',overflow:'hidden', lineHeight:'2.rem', display:'flex', alignItems:'center'}}>
