@@ -5,6 +5,7 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group'; // ES6
 import './header.css'
 import Cart from './Cart'
 import {CognitoUserAttribute, CognitoUserPool} from 'amazon-cognito-identity-js';
+import {Button, Icon} from 'ic-snacks';
 
 //Styles
 const astext = {
@@ -366,7 +367,7 @@ renderMobileAccountButton() {
   } else {
     return (
     <div style={{paddingBottom: '115px'}}>
-	<nav className="navbar navbar-light" style={{width: '100%', backgroundColor: '#F5F5F5', position: 'fixed', zIndex:'10', marginBottom: '115px'}}>
+	<nav className="navbar navbar-light" style={{width: '100%', backgroundColor: '#F5F5F5', position: 'fixed', zIndex:'10', marginBottom: '115px', borderRadius: '0'}}>
 
 		<div className="container-fluid" style={center}>
 			<div className="navbar-header" style={{width: '15%', paddingTop: '3px', marginLeft: '2.5vw'}}>
@@ -386,7 +387,7 @@ renderMobileAccountButton() {
 
 		    	<li style={{width: '36%'}}>
 		      		<button className="primaryRedWithHover" style={astext} onClick={this.handleZipClick}>
-		      			<i className="fas fa-map-marker" /> &nbsp;
+		      			<Icon name="locationMarkerFilled" /> &nbsp;
 		      			{zip}
 		      		</button>
 		    	</li>

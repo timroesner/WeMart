@@ -15,6 +15,12 @@ import Departments from './Departments'
 import History from './History'
 import ShoppingList from './ShoppingList'
 import AccountSettings from "./AccountSettings";
+import AboutUs from './AboutUs'
+import Locations from './Locations'
+import Privacy from './Privacy'
+import Terms from './Terms'
+
+
 
 const Router = () => (
   <main>
@@ -30,7 +36,14 @@ const Router = () => (
       <Route path='/item' component={Item} />
       <Route path='/search' component={Search} />
       <Route path='/departments' component={Departments}/>
+
+      <Route path='/aboutus' component={AboutUs} />
+      <Route path='/locations' component={Locations} />
+      <Route path='/privacy' component={Privacy} />
+      <Route path='/terms' component={Terms} />
+
       <Route path='/shoppinglist' component={ShoppingList}/>
+
       <Route path='/' component={ZipCodeCheck}/>
 
     </Switch>

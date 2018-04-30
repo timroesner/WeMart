@@ -1,5 +1,6 @@
 import {withRouter} from 'react-router-dom';
 import Header from './components/header';
+import Footer from './components/Footer';
 import React from "react";
 import {Button, DropdownMenu, MenuItem } from "ic-snacks";
 import itemsEmpty from './images/items_empty.png'
@@ -9,6 +10,7 @@ import ItemsGrid from "./components/ItemsGrid";
 
 var poolData;
 var dynamodb;
+var cognitoUser
 //Styles
 const history = {fontFamily:'"Open Sans", "Helvetica Neue", Helvetica, sans-serif', maxWidth:'120rem',
     height:'auto !important', margin:'3rem auto', background:'#ffffff'};
@@ -30,24 +32,19 @@ class History extends React.Component{
             user: null,
         }
         this.setKeys()
-    }
-
-    componentDidMount(){
-        // I have no idea why this works but it stops the flash 
         this.getCognitoUser()
     }
 
     getCognitoUser(){
         let self = this;
         var userPool = new CognitoUserPool(poolData);
-        var cognitoUser = userPool.getCurrentUser();
+        cognitoUser = userPool.getCurrentUser();
         if (cognitoUser != null) {
             cognitoUser.getSession(function(err, session) {
                 if (err) {
                     console.log(err)
                     return;
                 }
-                self.setState({isLoaded: true})
             });
             // Necessary because the closure has no access to this.state
             cognitoUser.getUserAttributes(function(err, result) {
@@ -55,9 +52,8 @@ class History extends React.Component{
                     console.log(err)
                     return;
                 }
-                self.setState({isLoggedIn: true})
+                
                 console.log('[Cognito User Attributes]',result) //Logs user attributes
-
                 result.forEach((attribute) => {
                     if(attribute.Name === 'email'){
                         self.setState({user: {...self.state.user , email: attribute.Value}}) // set the email
@@ -65,9 +61,13 @@ class History extends React.Component{
                     }
                 })
                 self.getUserDetails()
+                
+                console.log('STATE',self.state)
             });
-
+        } else {
+            this.setState({isLoaded: true})
         }
+        
     }
 
     getItemsFromDB(){
@@ -95,7 +95,7 @@ class History extends React.Component{
                     this.setState({
                         items: [...this.state.items, testItem]
                     });
-
+                    this.setState({isLoaded: true})
                     console.log('test item', testItem)
                 }
             })
@@ -138,6 +138,9 @@ class History extends React.Component{
                         this.setState({orderHistory: set})
                     })
                 })
+                if(data.Items.length == 0){
+                    this.setState({isLoaded: true})
+                }
                 this.getItemsFromDB()
             }
         } )
@@ -159,34 +162,61 @@ class History extends React.Component{
     }
 
     renderHistory(){
-        if(this.state.isLoaded){return(
-            <div style={history}>
-            {this.renderSortingMenu()}
-                <ItemsGrid items={this.state.items}/>
-            </div>
-        )}
-        else{
+        if(this.state.isLoaded){
+            if(this.state.items.length > 0 ){
+               return(
+                    <div style={history}>
+                    {this.renderSortingMenu()}
+                        <ItemsGrid items={this.state.items}/>
+                    </div>
+                ) 
+            }
+            else {
+                return(
+                    <div style={history}>
+                            <div style={panel}>
+                                <div style={noItems}>
+                                    <div>
+                                        <img src={itemsEmpty} style={noItemsImage}/>
+                                    </div>
+                                    <h1>No Items</h1>
+                                    <h4>
+                                        Items that you order will show up here, so that you can quickly find your items again
+                                    </h4>
+                                </div>
+                                <div style={{margin:'3rem auto 2rem auto', textAlign:'center'}}>
+                                    <Button size='large'
+                                            onClick={()=>{this.props.history.push('/home')}}
+                                            style={noItemsButton}>
+                                        Browse Store
+                                    </Button>
+                                </div>
+                            </div>
+                        </div>
+                )
+            }
+        } else if (this.state.isLoaded || cognitoUser == null){
             return(
                 <div style={history}>
-                    <div style={panel}>
-                        <div style={noItems}>
-                            <div>
-                                <img src={itemsEmpty} style={noItemsImage}/>
+                        <div style={panel}>
+                            <div style={noItems}>
+                                <div>
+                                    <img src={itemsEmpty} style={noItemsImage}/>
+                                </div>
+                                <h1>No Items</h1>
+                                <h4>
+                                    Items that you order will show up here, so that you can quickly find your items again
+                                </h4>
                             </div>
-                            <h1>No Items</h1>
-                            <h4>
-                                Items that you order will show up here, so that you can quickly find your items again
-                            </h4>
-                        </div>
-                        <div style={{margin:'3rem auto 2rem auto', textAlign:'center'}}>
-                            <Button size='large'
-                                    onClick={()=>{this.props.history.push('/home')}}
-                                    style={noItemsButton}>
-                                Browse Store
-                            </Button>
+                            <div style={{margin:'3rem auto 2rem auto', textAlign:'center'}}>
+                                <Button size='large'
+                                        onClick={()=>{this.props.history.push('/home')}}
+                                        style={noItemsButton}>
+                                    Browse Store
+                                </Button>
+                            </div>
                         </div>
                     </div>
-                </div>
             )
         }
     }
@@ -260,10 +290,11 @@ class History extends React.Component{
         return(
             <div>
                 <Header/>
-                <div id="pageBody">
+                <div id="pageBody"  style ={{minHeight:window.innerHeight-245}} >
                     <h1 style={pageTitle}>Your Past Purchases</h1>
                     {this.renderHistory()}
                 </div>
+                <Footer />
             </div>
 
         )

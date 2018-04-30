@@ -1,4 +1,5 @@
 import Header from './components/header';
+import Footer from './components/Footer';
 import ItemsGrid from './components/ItemsGrid';
 import React, { Component } from 'react';
 import { withRouter } from "react-router-dom";
@@ -29,7 +30,7 @@ class Search extends Component {
 	
 	}
 
-	getQuerry(){
+	getQuerry() {
 		const queryParams = new URLSearchParams(this.props.location.search);
     	query = queryParams.get('query')
     	let special = queryParams.get('special')
@@ -240,10 +241,11 @@ class Search extends Component {
 		return(
 			<div>
 				<Header />
-				<div id="pageBody">
+				<div id="pageBody" style ={{minHeight:window.innerHeight-228}} >
 					{this.renderSortingMenu()}
 					{this.renderItems()}
 				</div>
+				<Footer />
 			</div>
 		)
 	}

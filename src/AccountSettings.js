@@ -9,6 +9,7 @@ import {Modal} from "react-bootstrap";
 import CreditCard from "./components/CreditCard";
 import {Elements} from "react-stripe-elements";
 import Header from "./components/header";
+import Footer from './components/Footer';
 import { withRouter } from "react-router-dom";
 import {CognitoUserAttribute, CognitoUserPool} from 'amazon-cognito-identity-js';
 import {DynamoDB} from "aws-sdk/index";
@@ -837,9 +838,9 @@ class AccountSettings extends React.Component{
 
     render(){
         return(
-            <StyleRoot>
+        <StyleRoot>
             <Header/>
-            <div id="pageBody">
+            <div id="pageBody" style ={{minHeight:window.innerHeight-245}} >
                 <div style={accountSettings}>
                     <h1 style={pageTitle}>Account Settings</h1>
                     {this.renderv2()}
@@ -849,6 +850,7 @@ class AccountSettings extends React.Component{
             {this.passwordModal()}
             {this.editPerInfoModal()}
             {this.addCardModal()}
+            <Footer />
         </StyleRoot>
         );
     }
