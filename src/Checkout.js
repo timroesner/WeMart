@@ -234,13 +234,25 @@ export default class Checkout extends React.Component {
     }
 
     createOrderID(date){
-        let now = date ? new Date(date).getTime().toString() : Date.now().toString()
-        // pad with additional random digits
+        let now =  Date.now().toString()
         if (now.length < 14) {
         const pad = 14 - now.length
         now += this.randomNumber(pad)
-        return [now.slice(0, 4), now.slice(4, 10), now.slice(10, 14)].join('-')
       }
+      return [now.slice(0, 4), now.slice(4, 10), now.slice(10, 14)].join('-')
+    }
+
+    hashCode(str){
+        var hash = 0;
+        var i =0
+        var char;
+        if (str.length == 0) return hash;
+        for (i = 0; i < str.length; i++) {
+            char = str.charCodeAt(i);
+            hash = ((hash<<5)-hash)+char;
+            hash = hash & hash; // Convert to 32bit integer
+        }
+        return hash;
     }
 
     randomNumber (length) {
