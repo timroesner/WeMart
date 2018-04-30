@@ -153,8 +153,9 @@ export default class Checkout extends React.Component {
                         itemTotalPrice = itemTotalPrice * item.quantityInCart
                         this.setState({
                             subtotal: this.state.subtotal + Number(itemTotalPrice),
-                            tax: Number(this.state.tax+this.calculateTax(department,itemTotalPrice)),
+                            tax: Number(this.state.tax) + Number(this.calculateTax(department,itemTotalPrice)),
                         })
+                        console.log('Tax:',this.state.tax)
                     }
                 })
             })
