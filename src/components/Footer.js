@@ -13,6 +13,7 @@ class Footer extends Component {
 
     this.handleShowContactUsModal = this.handleShowContactUsModal.bind(this);
     this.handleCloseContactUsModal = this.handleCloseContactUsModal.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
 
     this.state = {
       contactUsModal: false,
@@ -34,9 +35,7 @@ class Footer extends Component {
     console.log(model)
   }
 
-
-
-  contactUsModal(){
+  contactUsModal() {
     const textarea={
       base:{
         position: "relative",
@@ -83,7 +82,6 @@ class Footer extends Component {
               >
               <input type="hidden" name="_next" value="https://wemart-133.herokuapp.com/home" />
 
-              <div style={{marginBottom: '10px'}}>
                 <TextField
                   type="text"
                   name="subject"
@@ -93,10 +91,9 @@ class Footer extends Component {
                   validationErrorText="Please enter a subject"
                   fullWidth
                   required
+                  style={{marginBottom: '10px'}}
                   />
-              </div>
 
-              <div style={{marginBottom: '10px'}}>
                 <TextField
                   type="email"
                   name="email"
@@ -106,10 +103,9 @@ class Footer extends Component {
                   validationErrorText="Please enter a valid email"
                   fullWidth
                   required
+                  style={{marginBottom: '10px'}}
                   />
-              </div>
 
-              <div style={{marginBottom: '10px'}}>
                 <label>Your Message</label>
                 <textarea
                   className = "message"

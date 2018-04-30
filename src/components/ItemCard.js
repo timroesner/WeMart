@@ -13,7 +13,7 @@ const addToCart = {display: "inherit", margin:'0 0 auto', width:'100%'};
 //Item Card Styles
 const itemCard = {background:'#ffffff', width:'100%', marginBottom: '25px'};
 const itemCard_cardContents = {cursor:'pointer', margin:'0 5% 1rem 5%',width:'90%',display:'block'};
-const itemCard_badge = {position: 'absolute', top: '.8rem', left: '.8rem', height: '2rem', width:'10rem',
+const itemCard_badge = {position: 'absolute', height: '2rem', width:'10rem',
     backgroundRepeat:'no-repeat'};
 const itemCard_badge_onSale = {...itemCard_badge,  backgroundImage: `url(${onSaleBadge})`, backgroundSize: 'auto 2rem'};
 const itemCard_media = {margin: '0 auto'};

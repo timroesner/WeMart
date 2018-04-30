@@ -14,6 +14,7 @@ import { withRouter } from "react-router-dom";
 import {CognitoUserAttribute, CognitoUserPool} from 'amazon-cognito-identity-js';
 import {DynamoDB} from "aws-sdk/index";
 import NewCardForm from "./components/NewCardForm";
+import AWS from 'aws-sdk'
 
 let newAddressStyle = {textAlign: "center", fontSize: "1.6rem", paddingBottom: ".6rem", paddingTop: ".6rem"};
 
@@ -187,23 +188,67 @@ class AccountSettings extends React.Component{
                     this.setDeliveryAddress(data.Item)
                 }
 
-                if(data.Item.sources){
-                    data.Item.sources.L.forEach((source)=>{
-                        let id = source.M.id.S;
-                        let client_secret = source.M.client_secret.S;
-                        this.state.stripe.retrieveSource({
-                            id: id,
-                            client_secret: client_secret,
-                        }).then(function(result) {
-                            // console.log('res',result)
-                            var label = result.source.card.brand + ' ' + result.source.card.last4
-                            self.setState({user: {...self.state.user,
-                                    paymentMethod: {brand: result.source.card.brand, last4:result.source.card.last4, label:label}}});
-                        });
-                    })
-                }
+                // if(data.Item.sources){
+                //     data.Item.sources.L.forEach((source)=>{
+                //         let id = source.M.id.S;
+                //         let client_secret = source.M.client_secret.S;
+                //         this.state.stripe.retrieveSource({
+                //             id: id,
+                //             client_secret: client_secret,
+                //         }).then(function(result) {
+                //             // console.log('res',result)
+                //             var label = result.source.card.brand + ' ' + result.source.card.last4
+                //             self.setState({user: {...self.state.user,
+                //                     paymentMethod: {brand: result.source.card.brand, last4:result.source.card.last4, label:label}}});
+                //         });
+                //     })
+                // }
+
+
             }
         })
+        this.getPaymentSources(this.state.user.email)
+    }
+
+    // Gets the payment sources of a user
+    getPaymentSources(email){
+        var lambda;
+        if(process.env.NODE_ENV === 'development'){
+            lambda = new AWS.Lambda(require('./db').lambda)
+        } else {
+          lambda = new AWS.Lambda({
+            region: "us-west-1",
+            credentials: {
+                accessKeyId: process.env.REACT_APP_DB_accessKeyId,
+                secretAccessKey: process.env.REACT_APP_DB_secretAccessKey},
+        });
+        }
+        var payLoad = {
+            "stripeEmail": email
+            };
+           
+           var params = {
+               FunctionName: 'retrieveCustomerSources',
+               Payload: JSON.stringify(payLoad)
+           
+           };
+           let self =this
+           lambda.invoke(params, function(err, data) {
+               if (err) console.log(err, err.stack); // an error occurred
+               else{
+                   console.log('Data from lambda',data)
+                   var sources = JSON.parse(data.Payload)
+                   console.log(sources)
+                   if(sources != null && !sources.errorMessage){
+                    //We are limited to one  card for now
+                    sources.forEach((source)=>{console.log('Payment Source',source);
+                    var label = source.card.brand + ' ' + source.card.last4
+                    self.setState({user: {...self.state.user,
+                     paymentMethod: {brand: source.card.brand, last4:source.card.last4, label:label}}})
+                 })
+                   }
+               }
+           });
     }
 
     // This should Close all modals
@@ -251,55 +296,37 @@ class AccountSettings extends React.Component{
     }
 
     handleNewCard(token){
-        var label = token.source.card.brand + ' ' + token.source.card.last4
-        this.stripeTokenHandler()
-        this.setState({user: {...this.state.user,
-                paymentMethod: {brand: token.source.card.brand, last4:token.source.card.last4, label:label}}});
-        console.log('[token]',token)
-
-        var id = token.source.id;
-        var clientSecret = token.source.client_secret;
-        var source = {
-            'id' : {'S':id},
-            'client_secret':{'S':clientSecret}
+        var lambda;
+        if(process.env.NODE_ENV === 'development'){
+            lambda = new AWS.Lambda(require('./db').lambda)
+        } else {
+          lambda = new AWS.Lambda({
+            region: "us-west-1",
+            credentials: {
+                accessKeyId: process.env.REACT_APP_DB_accessKeyId,
+                secretAccessKey: process.env.REACT_APP_DB_secretAccessKey},
+        });
         }
-        var sources = [{'M': source}];
 
+        var payLoad = {
+         "email": this.state.user.email,
+         "stripeSource": token.source.id
+         };
+        
         var params = {
-            ExpressionAttributeNames: {
-                "#S": "sources",
-            },
-            ExpressionAttributeValues: {
-                ":s": {
-                    L: sources
-                }
-            },
-            Key: {
-                'userid': {S: this.state.user.userId}
-            },
-            TableName: 'user',
-            ReturnValues: "UPDATED_NEW",
-            UpdateExpression: 'SET #S = :s',
-        }
-
-        console.log(params)
-
-        dynamodb.updateItem(params, (err, data) => {
-            if(err) {console.log(err, err.stack)}
-            else{
-                console.log('[Card Added]',data);
-            }
-        })
-        this.handleClose()
-    }
-
-    stripeTokenHandler(token) {
-        // var hiddenInput = document.createElement('input');
-        // hiddenInput.setAttribute('type', 'hidden');
-        // hiddenInput.setAttribute('name', 'stripeToken');
-        // hiddenInput.setAttribute('value', token.id);
-
-        //send to the back end here
+            FunctionName: 'updateCustomer',
+            Payload: JSON.stringify(payLoad)
+        };
+        
+        let self = this
+        lambda.invoke(params, function(err, data) {
+            if (err) console.log(err, err.stack); // an error occurred
+            else     {console.log(data);
+                var label = token.source.card.brand + ' ' + token.source.card.last4
+                self.setState({user: {...self.state.user,
+                        paymentMethod: {brand: token.source.card.brand, last4:token.source.card.last4, label:label}}})
+                self.handleClose()};           // successful response
+        });
     }
 
 

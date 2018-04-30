@@ -218,13 +218,13 @@ class ShoppingList extends Component {
 	        item.quantityInCart = quantity+1
 	        cart[item.itemid] = item
 	        localStorage.setItem('cart', JSON.stringify(cart))
-	        toast("Added to cart")
+	        toast.error("Added to cart")
 	    } else {
 			var cart = {}
 			item.quantityInCart = 1
 	        cart[item.itemid] = item
 			localStorage.setItem('cart', JSON.stringify(cart))
-			toast("Added to cart")
+			toast.error("Added to cart")
 	    }
 	}
 
