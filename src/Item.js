@@ -422,6 +422,7 @@ class Item extends Component {
 						<div style={{marginLeft: '-3%', marginRight: '-3%'}}>
 							<HorizontalScroll items={this.state.similarItems} title="Similar Items"  onSeeMoreClick={() => this.handleSeeMoreClick()} />
 						</div>
+						<ToastContainer hideProgressBar={true} autoClose={2000} />
 				    </div>
 				</div>
 				<Footer />
