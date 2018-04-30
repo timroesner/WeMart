@@ -23,12 +23,19 @@ class DepartmentCard extends Component {
 		  textAlign: 'center',
 		  cursor: 'pointer',
 		  marginBottom: '25px',
-		}
+	}
+
+	const webkitEllipsis = {
+		display: '-webkit-box',
+		webkitLineClamp: '1',
+		webkitBoxOrient: 'vertical',
+		overflow: 'hidden'
+  	}
 
     return(
       	<div style={gridItem} onClick={() => this.handleClick(dept.name)} >
 				<img src={dept.image} style={{width: '80%', marginLeft:'20%', borderRadius: '0 10px 0 0'}} />
-			     <span style={{display: 'block'}}>{dept.name}</span>
+			     <span style={webkitEllipsis}>{dept.name}</span>
 		</div>
     );
   }
