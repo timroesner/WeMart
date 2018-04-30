@@ -13,25 +13,25 @@ class ScrollItem extends Component {
     const liStyle = {
       display:'inline-block',
       position:'relative',
-      textAlign:'center',
       cursor:'pointer',
       verticalAlign:'middle',
       padding: '0 30px',
-      width: '250px'
+      width: '250px',
+      whiteSpace: 'initial',
     }
 
     const footer = {
       backgroundColor: 'white',
       padding: '2.5px 15px',
       height: '30px',
-      border: '0'
+      border: '0',
     }
 
     const panelStyle = {
-      boxShadow: '0 4px 8px 0 rgba(0,0,0,0.2)',
-      transition: '0.3s',
-      borderRadius: '5px', /* 5px rounded corners */
-      width: '18rem'
+      // boxShadow: '0 4px 8px 0 rgba(0,0,0,0.2)',
+      // transition: '0.3s',
+      // borderRadius: '5px', /* 5px rounded corners */
+      // width: '18rem'
     }
 
     function Items(props) {

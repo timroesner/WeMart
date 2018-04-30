@@ -12,6 +12,7 @@ class Footer extends Component {
 
     this.handleShowContactUsModal = this.handleShowContactUsModal.bind(this);
     this.handleCloseContactUsModal = this.handleCloseContactUsModal.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
 
     this.state = {
       contactUsModal: false,
@@ -29,9 +30,11 @@ class Footer extends Component {
     this.setState({contactUsModal: false});
   }
 
+  handleSubmit() {
+    // Doesn't work
+  }
 
-
-  contactUsModal(){
+  contactUsModal() {
     const textarea={
       base:{
         position: "relative",
@@ -64,9 +67,8 @@ class Footer extends Component {
             <div>We'll get back to you soon</div>
           </Modal.Header>
           <Modal.Body>
-            <Form onSubmit={(model) => ( console.log(model) ) } serverErrors={{}} formProps={{}}>
+            <Form onSubmit={this.handleSubmit} serverErrors={{}} formProps={{}}>
 
-              <div style={{marginBottom: '10px'}}>
                 <TextField
                   name="Subject"
                   floatingLabelText="Subject"
@@ -75,10 +77,9 @@ class Footer extends Component {
                   validationErrorText="Please enter a subject"
                   fullWidth
                   required
+                  style={{marginBottom: '10px'}}
                   />
-              </div>
 
-              <div style={{marginBottom: '10px'}}>
                 <TextField
                   name="email"
                   type="email"
@@ -88,21 +89,19 @@ class Footer extends Component {
                   validationErrorText="Please enter a valid email"
                   fullWidth
                   required
+                  style={{marginBottom: '10px'}}
                   />
-              </div>
 
-              <div style={{marginBottom: '10px'}}>
                 <label>Your Message</label>
                 <textarea
                   className = "message"
                   placeholder="Please write your message"
                   style={textarea.base}
                   required
-                  ></textarea>
-              </div>
+                  />
 
               <div style={{margin:"auto", width:"70%", paddingTop:"10px", justifyContent: "center"}}>
-                  <Button type="submit" className="primary" style={{height:"40px", width: '100%', display: 'inital'}}>Submit</Button>
+                  <Button type="submit" className="primary" style={{height:"40px", width: '100%', display: 'inital'}} >Submit</Button>
               </div>
 
             </Form>
